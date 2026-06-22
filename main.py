@@ -321,7 +321,8 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
     if _rag_available and req.prompt.strip() and not req.image:
         try:
             results = rag_search(req.prompt)
-            if results:
+            # 用分数阈值过滤：低分说明检索结果不相关
+            if results and results[0]["score"] >= 28:
                 rag_context = format_context_for_prompt(results)
             else:
                 rag_context = "__NO_RESULTS__"
