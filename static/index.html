@@ -48,11 +48,9 @@
     height: 100%;
     min-height: 0;
     min-width: 0;
-    overflow: hidden;
+    overflow-y: auto;
   }
   .side .panel { overflow: hidden; }
-  /* 最后一个面板撑满剩余空间，左右底线对齐 */
-  .side .panel:last-child { flex: 1; overflow-y: auto; }
   .side .panel .quote,
   .side .panel .tags { overflow: hidden; }
   /* 允许换行，自适应宽度 */
@@ -1382,60 +1380,32 @@ const DRAWER_GROUPS = [
 const EXAM_GROUPS = [
   // 第 1 组：桑白皮基原鉴定
   `<span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">来源</strong> 桑科植物<span style="color:#3a8f7a;">桑 Morus alba L.</span> 的干燥根皮；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">药用部位</strong> <span style="color:#3a8f7a;">除去栓皮</span>的干燥根皮（非枝皮、非树皮）；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">性状</strong> 呈扭曲的卷筒状或板片状，外表面白色或淡黄白色；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">质地</strong> 体轻，质韧，<span style="color:#3a8f7a;">纤维性强</span>，难折断，撕之有粉尘；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">断面</strong> 纤维性，易纵向撕裂，层片状；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">气味</strong> 气微，味微甘。
-   <div style="margin-top:8px;padding:6px 10px;background:#fdf6e3;border-left:3px solid #a83224;font-size:11px;color:#6b4a24;font-style:italic;">"桑根白皮，<span style="color:#a83224;font-weight:700;">泻肺平喘，利水消肿</span>。"—《中国药典》2020版</div>`,
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">药用部位</strong> <span style="color:#3a8f7a;">除去栓皮</span>的干燥根皮；<br/>
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">性状</strong> 卷筒状或板片状，色白质韧纤维强。`,
   // 第 2 组：桑白皮化学成分
   `<span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">黄酮类</strong> Diels-Alder型加合物（<span style="color:#3a8f7a;">桑根酮C</span>为代表）；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">桑皮苷A</strong> <span style="color:#3a8f7a;">含量测定指标</span>成分，药典法定检测项；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">二苯乙烯类</strong> 包括桑皮苷类糖苷化合物；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">多糖</strong> 具有免疫调节和降血糖活性；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">无机元素</strong> ICP-MS检出21种，<span style="color:#3a8f7a;">K含量最高</span>；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">氨基酸</strong> 含多种必需氨基酸，营养价值较高。
-   <div style="margin-top:8px;padding:6px 10px;background:#fdf6e3;border-left:3px solid #a83224;font-size:11px;color:#6b4a24;font-style:italic;">"桑根酮C为桑白皮<span style="color:#a83224;font-weight:700;">特征性成分</span>，可作为质量标志物。"</div>`,
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">桑皮苷A</strong> <span style="color:#3a8f7a;">药典含量测定指标</span>成分；<br/>
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">无机元素</strong> ICP-MS检出21种，K含量最高。`,
   // 第 3 组：桑白皮伪品鉴别
-  `<span style="color:#c9a13a;">⚠</span> <strong style="color:#a83224;">构树皮</strong> 桑科构树根皮，外表面<span style="color:#3a8f7a;">棕黄色</span>，纤维性弱；<br/>
-   <span style="color:#c9a13a;">⚠</span> <strong style="color:#a83224;">刺桑皮</strong> 桑科柘树根皮，质地<span style="color:#3a8f7a;">坚硬</span>，不易撕裂；<br/>
-   <span style="color:#c9a13a;">⚠</span> <strong style="color:#a83224;">构棘根皮</strong> 外表面灰棕色，断面<span style="color:#3a8f7a;">颗粒性</span>非纤维性；<br/>
-   <span style="color:#c9a13a;">⚠</span> <strong style="color:#a83224;">肥皂荚</strong> 豆科植物，味苦涩，有泡沫反应；<br/>
-   <span style="color:#c9a13a;">⚠</span> <strong style="color:#a83224;">柘树皮</strong> 与桑白皮薄层色谱<span style="color:#3a8f7a;">Rf值不同</span>；<br/>
-   <span style="color:#c9a13a;">⚠</span> <strong style="color:#a83224;">鉴别要点</strong> 正品纤维性强、色白、味甘，伪品多色深质硬。
-   <div style="margin-top:8px;padding:6px 10px;background:#fdf6e3;border-left:3px solid #a83224;font-size:11px;color:#6b4a24;font-style:italic;">"<span style="color:#a83224;font-weight:700;">体轻质韧色白味甘</span>为正品桑白皮辨识关键。"</div>`,
+  `<span style="color:#c9a13a;">⚠</span> <strong style="color:#a83224;">构树皮</strong> 外表面<span style="color:#3a8f7a;">棕黄色</span>，纤维性弱；<br/>
+   <span style="color:#c9a13a;">⚠</span> <strong style="color:#a83224;">刺桑皮</strong> 质地<span style="color:#3a8f7a;">坚硬</span>，不易撕裂；<br/>
+   <span style="color:#c9a13a;">⚠</span> <strong style="color:#a83224;">鉴别要点</strong> 正品纤维性强、色白、味甘。`,
   // 第 4 组：桑白皮质量控制
-  `<span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">HPLC法</strong> <span style="color:#3a8f7a;">指纹图谱</span>可区分不同产地和批次；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">含量测定</strong> 药典规定以<span style="color:#3a8f7a;">桑皮苷A</span>为指标成分；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">产地影响</strong> 不同产地7种成分含量差异显著；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">栽培年限</strong> 年限越长，<span style="color:#3a8f7a;">有效成分积累越多</span>；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">粗皮与内皮</strong> 内皮质量优于粗皮；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">熵权TOPSIS</strong> 多指标综合评价桑白皮品质。
-   <div style="margin-top:8px;padding:6px 10px;background:#fdf6e3;border-left:3px solid #a83224;font-size:11px;color:#6b4a24;font-style:italic;">"<span style="color:#a83224;font-weight:700;">多成分含量测定结合化学模式识别</span>为质控发展方向。"</div>`,
+  `<span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">含量测定</strong> 药典以<span style="color:#3a8f7a;">桑皮苷A</span>为指标；<br/>
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">栽培年限</strong> 年限越长有效成分越多；<br/>
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">粗皮内皮</strong> 内皮质量优于粗皮。`,
   // 第 5 组：桑白皮DNA条形码
-  `<span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">ITS2</strong> 通用DNA条形码，可区分桑白皮<span style="color:#3a8f7a;">正品与伪品</span>；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">psbA-trnH</strong> 叶绿体片段，<span style="color:#3a8f7a;">种间区分能力强</span>；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">NJ聚类树</strong> 正品桑单独聚为一枝，支持率高；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">遗传距离</strong> 种内距离＜种间距离，存在barcoding gap；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">构树</strong> 与桑ITS2序列差异明显，可准确鉴别；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">适用场景</strong> 粉末/饮片等形态难辨时，DNA条形码为有力补充。
-   <div style="margin-top:8px;padding:6px 10px;background:#fdf6e3;border-left:3px solid #a83224;font-size:11px;color:#6b4a24;font-style:italic;">"<span style="color:#a83224;font-weight:700;">DNA条形码鉴定</span>为中药材真伪鉴定提供分子证据。"</div>`,
+  `<span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">ITS2</strong> 通用条形码，可区分<span style="color:#3a8f7a;">正品与伪品</span>；<br/>
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">psbA-trnH</strong> 叶绿体片段，种间区分能力强；<br/>
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">适用场景</strong> 粉末/饮片形态难辨时的补充。`,
   // 第 6 组：桑白皮炮制
-  `<span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">蜜炙</strong> 蜜桑白皮<span style="color:#3a8f7a;">增强润肺止咳</span>功效；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">炒制</strong> 炒桑白皮缓和寒性，<span style="color:#3a8f7a;">HPLC图谱有变化</span>；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">桑根酮C</strong> 蜜炙后含量有所下降；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">标准汤剂</strong> 生品与蜜炙品质量传递规律不同；<br/>
+  `<span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">蜜炙</strong> 增强<span style="color:#3a8f7a;">润肺止咳</span>功效；<br/>
    <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">炮制目的</strong> 生用泻肺利水，蜜炙润肺止咳；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">鉴别区分</strong> 蜜桑白皮颜色偏深，手感发黏。
-   <div style="margin-top:8px;padding:6px 10px;background:#fdf6e3;border-left:3px solid #a83224;font-size:11px;color:#6b4a24;font-style:italic;">"<span style="color:#a83224;font-weight:700;">生泻蜜润</span>，炮制不同功效各异。"</div>`,
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">鉴别</strong> 蜜桑白皮颜色偏深，手感发黏。`,
   // 第 7 组：桑白皮本草考证
   `<span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">始载</strong> 《神农本草经》列为<span style="color:#3a8f7a;">中品</span>；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">功效</strong> 泻肺平喘，<span style="color:#3a8f7a;">利水消肿</span>；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">主治</strong> 肺热咳喘、面目浮肿、小便不利；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">性味归经</strong> 甘、寒，归<span style="color:#3a8f7a;">肺经</span>；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">经典名方</strong> 泻白散（桑白皮+地骨皮+甘草+粳米）；<br/>
-   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">用量</strong> 6～12g，蜜炙后入煎剂。
-   <div style="margin-top:8px;padding:6px 10px;background:#fdf6e3;border-left:3px solid #a83224;font-size:11px;color:#6b4a24;font-style:italic;">"桑根白皮，<span style="color:#a83224;font-weight:700;">主伤中，五劳六极</span>，羸瘦，崩中，脉绝。"—《神农本草经》</div>`,
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">功效</strong> 泻肺平喘，利水消肿；<br/>
+   <span style="color:#c9a13a;">⛩</span> <strong style="color:#a83224;">经典名方</strong> 泻白散（桑白皮+地骨皮+甘草+粳米）。`,
 ];
 
 /* ============ 本草·玄机 关键词标签（每 10 分钟换一组）============ */
