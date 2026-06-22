@@ -315,7 +315,9 @@ async function loadAccounts() {
       <tr>
         <td>${i + 1}</td>
         <td><code style="background:#f7faf8;padding:2px 8px;border-radius:4px;color:#3a8f7a;font-size:13px;">${escapeHtml(a.account)}</code></td>
-        <td><span style="color:#999;font-size:12px;letter-spacing:1px;">●●●●●● 已加密</span></td>
+        <td id="pwd_${i}"><span style="color:#999;font-size:12px;">●●●●●●</span>
+          <button onclick="resetPwd('${escapeHtml(a.account).replace(/'/g, "\\'")}', ${i})" style="background:#fff8e3;color:#8b5a2b;border:1px solid #c9a771;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;margin-left:6px;">重置并查看</button>
+        </td>
         <td><button onclick="delAccount('${escapeHtml(a.account).replace(/'/g, "\\'")}')" style="background:#fff;color:#a83224;border:1.5px solid #a83224;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;">删除</button></td>
       </tr>`).join("")
     : '<tr><td colspan="4" style="text-align:center;color:#aaa;padding:20px;">暂无账号，请添加</td></tr>';
@@ -326,6 +328,28 @@ function genPwd() {
   let pw = "";
   for (let i = 0; i < 10; i++) pw += chars[Math.floor(Math.random() * chars.length)];
   document.getElementById("newPwd").value = pw;
+}
+
+async function resetPwd(account, rowIdx) {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+  let newPw = "";
+  for (let i = 0; i < 10; i++) newPw += chars[Math.floor(Math.random() * chars.length)];
+  if (!confirm(`确定重置「${account}」的密码吗？\n新密码将显示在页面上，请及时复制。`)) return;
+  const r = await fetch("/api/admin/accounts/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: pwd, account, user_password: newPw }),
+  });
+  if (!r.ok) {
+    showAccMsg("重置失败", "#a83224");
+    return;
+  }
+  const cell = document.getElementById("pwd_" + rowIdx);
+  if (cell) {
+    cell.innerHTML = `<code style="background:#fff8e3;padding:3px 8px;border-radius:4px;color:#a83224;font-size:13px;font-weight:700;letter-spacing:1px;">${newPw}</code>
+      <button onclick="copyText('${newPw}')" style="background:#3a8f7a;color:#fff;border:none;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;margin-left:6px;">复制</button>`;
+  }
+  showAccMsg(`✅ 已重置「${account}」密码`, "#3a8f7a");
 }
 
 function showAccMsg(msg, color) {
