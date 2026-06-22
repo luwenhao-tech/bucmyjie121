@@ -51,6 +51,8 @@
     overflow: hidden;
   }
   .side .panel { overflow: hidden; }
+  /* 最后一个面板撑满剩余空间，左右底线对齐 */
+  .side .panel:last-child { flex: 1; overflow-y: auto; }
   .side .panel .quote,
   .side .panel .tags { overflow: hidden; }
   /* 允许换行，自适应宽度 */
