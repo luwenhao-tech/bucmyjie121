@@ -323,6 +323,8 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
             results = rag_search(req.prompt)
             if results:
                 rag_context = format_context_for_prompt(results)
+            else:
+                rag_context = "__NO_RESULTS__"
         except Exception as e:
             print(f"[RAG search error] {e}")
 
