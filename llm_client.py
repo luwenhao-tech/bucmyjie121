@@ -1,5 +1,6 @@
 """LLM 调用封装：基于 OpenAI 兼容协议，默认使用 DeepSeek。
 定制：刘春生教授风格的中药鉴定学 AI 助手。
+支持 RAG：检索论文内容作为回答依据。
 """
 import os
 from typing import AsyncGenerator, List, Dict, Optional
@@ -195,13 +196,28 @@ LIU_CHUNSHENG_SYSTEM_PROMPT_TEMPLATE = """你是"刘春生教授 AI 助教"—�
 """
 
 
-def build_system_prompt(user_name: str = "", extra: str = "") -> str:
+def build_system_prompt(user_name: str = "", extra: str = "", rag_context: str = "") -> str:
     if user_name:
         greeting = f'同学叫【{user_name}】，开场或称呼时可以自然带上名字（不要每段都喊），让 ta 觉得是面对面交流。'
     else:
         greeting = ""
     base = LIU_CHUNSHENG_SYSTEM_PROMPT_TEMPLATE.format(greeting=greeting)
-    return base + (extra or "")
+    prompt = base + (extra or "")
+
+    # 如果有 RAG 检索到的论文内容，追加到 system prompt
+    if rag_context:
+        prompt += f"""
+
+【★论文依据（本轮核心参考资料）★】
+{rag_context}
+
+【引用规则——严格模式，绝对红线】
+- 回答只能基于上述论文中的内容，用自己的语言重新组织表达（符合刘春生教授风格）。
+- 严禁使用论文之外的任何知识来回答，严禁编造论文中没有提到的数据、实验结果或结论。
+- 如果上述论文内容无法回答学生的问题，直接说"这个问题咱手头这些文献里没有涉及"，绝不自行补充、绝不凭模型自身知识编造。
+- 直接正常回答即可，不需要加"我们的研究发现""根据论文""文献表明"等引述性前缀，就像老师自然讲课一样。
+"""
+    return prompt
 
 
 # 兼容旧引用
@@ -305,13 +321,15 @@ async def generate_stream(
     image_data: Optional[str] = None,
     user_name: str = "",
     extra_system: str = "",
+    rag_context: str = "",
 ) -> AsyncGenerator[str, None]:
     """流式生成内容，yield 每个增量 token。
     - think=True 切换到推理模型
     - image_data 不为空时切换到视觉模型（base64 data URL 或 http URL）
     - user_name 用于个性化称呼
+    - rag_context 论文检索到的参考内容
     """
-    sys_prompt = system_prompt or build_system_prompt(user_name, extra_system)
+    sys_prompt = system_prompt or build_system_prompt(user_name, extra_system, rag_context)
     messages = [{"role": "system", "content": sys_prompt}]
     if history:
         messages.extend(history)
@@ -356,9 +374,10 @@ async def generate(
     image_data: Optional[str] = None,
     user_name: str = "",
     extra_system: str = "",
+    rag_context: str = "",
 ) -> str:
     """一次性返回完整内容（非流式）。"""
-    sys_prompt = system_prompt or build_system_prompt(user_name, extra_system)
+    sys_prompt = system_prompt or build_system_prompt(user_name, extra_system, rag_context)
     messages = [{"role": "system", "content": sys_prompt}]
     if history:
         messages.extend(history)

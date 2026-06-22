@@ -6,3 +6,5 @@ venv/
 .DS_Store
 accounts.json
 chat_logs.db
+# RAG 向量数据库（运行时生成，不需要提交）
+chroma_db/

@@ -20,6 +20,14 @@ from pydantic import BaseModel
 
 from llm_client import generate_stream, generate, vision_client, generate_followups, resolve_intent_extra, classify_intent
 
+# RAG 检索引擎（论文知识库）
+try:
+    from rag_engine import search as rag_search, format_context_for_prompt, get_index_stats
+    _rag_available = True
+except ImportError:
+    _rag_available = False
+    print("[INFO] RAG 模块未加载（缺少依赖），将不使用论文检索")
+
 app = FastAPI(title="中药鉴定学 - 刘春生教授 AI 助教")
 
 # CORS：默认收紧到自有域名，可通过 ALLOWED_ORIGINS 环境变量覆盖（逗号分隔）
@@ -308,12 +316,23 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
     if detected_intent:
         prompt_for_log = f"[意图:{detected_intent}] " + prompt_for_log
 
+    # RAG 检索：从论文库中查找相关内容
+    rag_context = ""
+    if _rag_available and req.prompt.strip() and not req.image:
+        try:
+            results = rag_search(req.prompt)
+            if results:
+                rag_context = format_context_for_prompt(results)
+        except Exception as e:
+            print(f"[RAG search error] {e}")
+
     if not req.stream:
         text = await generate(
             req.prompt, history=history_dicts,
             temperature=req.temperature, think=req.think,
             image_data=req.image, user_name=user_name,
             extra_system=intent_extra,
+            rag_context=rag_context,
         )
         text = strip_followup(text)
         log_chat(client_ip, user_agent, user_name, user_id, prompt_for_log, text, req.think, int((time.time() - started) * 1000))
@@ -328,6 +347,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                 temperature=req.temperature, think=req.think,
                 image_data=req.image, user_name=user_name,
                 extra_system=intent_extra,
+                rag_context=rag_context,
             ):
                 full_answer += token
                 # 检查累计文本里是否已经出现了 💬 行的开头：一旦出现，停止往前端流
@@ -355,8 +375,13 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
 
 @app.get("/api/features")
 async def api_features():
-    """前端启动时查询哪些可选功能（如视觉）可用。"""
-    return {"vision": vision_client is not None}
+    """前端启动时查询哪些可选功能（如视觉、RAG）可用。"""
+    rag_stats = get_index_stats() if _rag_available else {"status": "unavailable"}
+    return {
+        "vision": vision_client is not None,
+        "rag": _rag_available and rag_stats.get("total_chunks", 0) > 0,
+        "rag_stats": rag_stats,
+    }
 
 
 class FollowupReq(BaseModel):
