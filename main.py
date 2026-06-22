@@ -317,17 +317,25 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
         prompt_for_log = f"[意图:{detected_intent}] " + prompt_for_log
 
     # RAG 检索：从论文库中查找相关内容
+    # 45 篇论文全部是桑白皮相关，先判断问题是否涉及桑白皮
     rag_context = ""
+    _SANGBAIPI_KEYWORDS = ("桑白皮", "桑皮", "桑根", "桑树", "桑属", "桑科",
+                           "桑根酮", "桑皮苷", "morus", "alba",
+                           "构树皮", "构棘", "刺桑", "柘树")  # 含伪品关键词
     if _rag_available and req.prompt.strip() and not req.image:
-        try:
-            results = rag_search(req.prompt)
-            # 用分数阈值过滤：低分说明检索结果不相关
-            if results and results[0]["score"] >= 28:
-                rag_context = format_context_for_prompt(results)
-            else:
-                rag_context = "__NO_RESULTS__"
-        except Exception as e:
-            print(f"[RAG search error] {e}")
+        query_lower = req.prompt.lower()
+        is_sangbaipi_related = any(kw in query_lower for kw in _SANGBAIPI_KEYWORDS)
+        if is_sangbaipi_related:
+            try:
+                results = rag_search(req.prompt)
+                if results and results[0]["score"] >= 20:
+                    rag_context = format_context_for_prompt(results)
+                else:
+                    rag_context = "__NO_RESULTS__"
+            except Exception as e:
+                print(f"[RAG search error] {e}")
+        else:
+            rag_context = "__NO_RESULTS__"
 
     if not req.stream:
         text = await generate(
