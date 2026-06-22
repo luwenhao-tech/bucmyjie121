@@ -53,10 +53,10 @@
   .side .panel { overflow: hidden; }
   .side .panel .quote,
   .side .panel .tags { overflow: hidden; }
-  /* 行数固定·不允许换行：每条箴言强制单行，超出截断 */
-  .side .panel .quote { white-space: nowrap; }
+  /* 允许换行，自适应宽度 */
+  .side .panel .quote { white-space: normal; word-break: break-all; }
   .side .panel .quote > strong,
-  .side .panel .quote > span { white-space: nowrap; }
+  .side .panel .quote > span { white-space: normal; }
 
   .panel {
     background: #fff;
@@ -129,9 +129,9 @@
     font-size: 13px; line-height: 1.9;
     color: #5a3a14;
     padding: 4px 0;
-    white-space: nowrap;
+    white-space: normal;
     overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-all;
   }
   .quote .mark { color: #a83224; font-size: 18px; font-weight: 700; }
 
