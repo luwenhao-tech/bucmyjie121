@@ -322,25 +322,40 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
     _SANGBAIPI_KEYWORDS = ("桑白皮", "桑皮", "桑根", "桑树", "桑属", "桑科",
                            "桑根酮", "桑皮苷", "morus", "alba",
                            "构树皮", "构棘", "刺桑", "柘树")  # 含伪品关键词
+    # 闲聊/自我认知类问题白名单：问老师本人的，不走 RAG，用正常 prompt 回答
+    _CHAT_WHITELIST = ("你是谁", "您是谁", "你叫什么", "你是什么", "你做什么",
+                       "你教什么", "你是哪", "你好", "您好", "谢谢", "感谢",
+                       "你能做什么", "你能干什么", "介绍一下自己", "介绍自己",
+                       "刘春生", "刘老师", "老师好", "嗨", "hi", "hello",
+                       "在吗", "在不在", "你是老师吗", "你是教授吗",
+                       "再见", "拜拜", "晚安", "早上好", "下午好")
     if _rag_available and req.prompt.strip() and not req.image:
-        query_lower = req.prompt.lower()
-        is_sangbaipi_related = any(kw in query_lower for kw in _SANGBAIPI_KEYWORDS)
-        if is_sangbaipi_related:
-            try:
-                results = rag_search(req.prompt)
-                if results and results[0]["score"] >= 20:
-                    rag_context = format_context_for_prompt(results)
-                else:
-                    rag_context = "__NO_RESULTS__"
-            except Exception as e:
-                print(f"[RAG search error] {e}")
+        query_lower = req.prompt.lower().strip()
+        # 先检查是否是闲聊/自我认知类（不进 RAG，也不拒答）
+        is_chat = any(kw in query_lower for kw in _CHAT_WHITELIST)
+        if is_chat:
+            rag_context = ""  # 正常回答，不拒答也不注入 RAG
         else:
-            rag_context = "__NO_RESULTS__"
+            is_sangbaipi_related = any(kw in query_lower for kw in _SANGBAIPI_KEYWORDS)
+            if is_sangbaipi_related:
+                try:
+                    results = rag_search(req.prompt)
+                    if results and results[0]["score"] >= 20:
+                        rag_context = format_context_for_prompt(results)
+                    else:
+                        rag_context = "__NO_RESULTS__"
+                except Exception as e:
+                    print(f"[RAG search error] {e}")
+            else:
+                rag_context = "__NO_RESULTS__"
+
+    # 拒答场景提高 temperature 让话术有变化
+    actual_temperature = 0.95 if rag_context == "__NO_RESULTS__" else req.temperature
 
     if not req.stream:
         text = await generate(
             req.prompt, history=history_dicts,
-            temperature=req.temperature, think=req.think,
+            temperature=actual_temperature, think=req.think,
             image_data=req.image, user_name=user_name,
             extra_system=intent_extra,
             rag_context=rag_context,
@@ -355,7 +370,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
         try:
             async for token in generate_stream(
                 req.prompt, history=history_dicts,
-                temperature=req.temperature, think=req.think,
+                temperature=actual_temperature, think=req.think,
                 image_data=req.image, user_name=user_name,
                 extra_system=intent_extra,
                 rag_context=rag_context,
