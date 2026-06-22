@@ -476,11 +476,12 @@
   .followup::before { content: "↪ "; color: #a89a6a; }
 
   /* 思考中提示 */
-  .thinking-tip { display: inline-flex; align-items: center; }
+  .thinking-tip { display: inline-flex; align-items: center; line-height: 1.6; }
+  .thinking-tip .dots { display: inline-block; width: 2em; text-align: left; vertical-align: bottom; }
   .thinking-tip .dots::after {
     content: "";
     display: inline-block;
-    width: 1.4em;
+    width: 2em;
     text-align: left;
     animation: thinkDots 1.4s steps(4, end) infinite;
   }
@@ -1961,6 +1962,13 @@ if (!window.__msgActionsBound) {
     document.querySelectorAll(".msg.show-actions").forEach(m => m.classList.remove("show-actions"));
   });
 }
+/* 只在用户已滚动到底部时才自动滚动，避免内容生成时页面跳动 */
+function scrollIfBottom() {
+  const threshold = 80;
+  if (chat.scrollHeight - chat.scrollTop - chat.clientHeight < threshold) {
+    chat.scrollTop = chat.scrollHeight;
+  }
+}
 function addMsg(role, content) {
   const welcome = $("welcome");
   if (welcome) welcome.remove();
@@ -2165,7 +2173,7 @@ async function send() {
             if (firstToken) { bubble.textContent = ""; firstToken = false; }
             full += obj.token;
             bubble.innerHTML = renderRich(full);
-            chat.scrollTop = chat.scrollHeight;
+            scrollIfBottom();
           }
           if (obj.replace_followup) {
             const oldQ = obj.replace_followup.old || "";
@@ -2175,7 +2183,7 @@ async function send() {
               if (idx >= 0) {
                 full = full.slice(0, idx).replace(/\s+$/, "") + "\n\n" + newQ;
                 bubble.innerHTML = renderRich(full);
-                chat.scrollTop = chat.scrollHeight;
+                scrollIfBottom();
               }
             }
           }
