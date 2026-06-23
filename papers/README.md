@@ -14,6 +14,9 @@
 ## 支持的格式
 
 - `.pdf` / `.PDF`
+- `.xlsx` / `.XLSX`（每行一篇论文摘要）
+- `.docx` / `.DOCX`
+- `*_ocr.txt`（PDF 是扫描版时，先 OCR 成同名 `_ocr.txt` 放在此目录）
 
 ## 注意事项
 

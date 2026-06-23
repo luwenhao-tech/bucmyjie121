@@ -57,6 +57,26 @@ def extract_metadata_from_pdf(pdf_path: str) -> Dict[str, str]:
     }
 
 
+# ============ Word (.docx) 解析 ============
+def extract_text_from_docx(docx_path: str) -> str:
+    """从 .docx 提取全部文本（段落 + 表格单元格）"""
+    from docx import Document
+    doc = Document(docx_path)
+    parts = []
+    # 正文段落
+    for para in doc.paragraphs:
+        if para.text.strip():
+            parts.append(para.text)
+    # 表格内容
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                cell_text = cell.text.strip()
+                if cell_text:
+                    parts.append(cell_text)
+    return "\n".join(parts)
+
+
 # ============ Excel 解析 ============
 def extract_papers_from_excel(xlsx_path: str) -> List[Dict[str, str]]:
     import openpyxl
@@ -244,9 +264,10 @@ def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, 
 
     pdf_files = list(papers_path.glob("*.pdf")) + list(papers_path.glob("*.PDF"))
     xlsx_files = list(papers_path.glob("*.xlsx")) + list(papers_path.glob("*.XLSX"))
+    docx_files = list(papers_path.glob("*.docx")) + list(papers_path.glob("*.DOCX"))
     txt_files = list(papers_path.glob("*_ocr.txt"))
 
-    if not pdf_files and not xlsx_files and not txt_files:
+    if not pdf_files and not xlsx_files and not docx_files and not txt_files:
         print(f"[提示] {papers_dir}/ 目录下没有可处理的文件")
         return {}
 
@@ -303,6 +324,32 @@ def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, 
             except Exception as e:
                 print(f"  [错误] {txt_file.name}: {e}")
                 results[txt_file.name] = -1
+
+    # 处理 Word (.docx)
+    if docx_files:
+        print(f"\n{'='*50}")
+        print(f"处理 Word：{len(docx_files)} 个文件")
+        print(f"{'='*50}\n")
+        for docx_file in sorted(docx_files):
+            try:
+                text = extract_text_from_docx(str(docx_file))
+                if not text.strip():
+                    print(f"  [警告] {docx_file.name} 文本为空，跳过")
+                    results[docx_file.name] = 0
+                    continue
+                title = docx_file.stem
+                chunks = chunk_text(text)
+                for chunk in chunks:
+                    all_chunks.append({
+                        "text": chunk,
+                        "title": title,
+                        "filename": docx_file.name,
+                    })
+                print(f"  [完成] {docx_file.name} → {len(chunks)} 个文本块")
+                results[docx_file.name] = len(chunks)
+            except Exception as e:
+                print(f"  [错误] {docx_file.name}: {e}")
+                results[docx_file.name] = -1
 
     # 处理 Excel
     if xlsx_files:
