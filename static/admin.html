@@ -103,8 +103,36 @@
   }
   th { background: #f7faf8; color: #3a8f7a; font-weight: 600; letter-spacing: 1px; }
   td.prompt { max-width: 280px; word-break: break-all; }
-  td.answer { max-width: 420px; word-break: break-all; color: #555; font-size: 12.5px; }
-  td.answer.expanded { white-space: pre-wrap; }
+  td.answer {
+    max-width: 420px; color: #555; font-size: 12.5px;
+    cursor: pointer;
+    /* 折叠态：限制 3 行，显示省略号 */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+    position: relative;
+  }
+  td.answer::after {
+    content: " 〔点击展开〕";
+    color: #3a8f7a; font-size: 11px;
+  }
+  td.answer.expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    white-space: pre-wrap;
+    max-width: 600px;
+    background: #fafaf6;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #e4dfcc;
+  }
+  td.answer.expanded::after {
+    content: " 〔点击收起〕";
+    display: block; margin-top: 6px; text-align: right;
+  }
   .think-tag {
     background: #fff8e3; color: #a83224; border: 1px solid #f2cc6b;
     padding: 1px 6px; border-radius: 8px; font-size: 11px;
@@ -291,7 +319,7 @@ async function loadLogs() {
       <td class="ip">${l.ip || ""}</td>
       <td>${l.think ? '<span class="think-tag">🧠 思考</span>' : ''}</td>
       <td class="prompt">${escapeHtml(l.prompt || "")}</td>
-      <td class="answer" onclick="this.classList.toggle('expanded')">${escapeHtml((l.answer || "").slice(0, 200))}${(l.answer || "").length > 200 ? "..." : ""}</td>
+      <td class="answer" onclick="this.classList.toggle('expanded')">${escapeHtml(l.answer || "")}</td>
       <td class="ts">${l.duration_ms ? (l.duration_ms / 1000).toFixed(1) + "s" : ""}</td>
     </tr>
   `).join("");

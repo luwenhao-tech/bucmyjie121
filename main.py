@@ -457,6 +457,101 @@ async def admin_logs(password: str = "", limit: int = 200, offset: int = 0):
     return {"total": total, "logs": [dict(r) for r in rows]}
 
 
+# ============ 热门关键词候选词表（从 RAG 索引自动提取 + 教学高频术语）============
+# 缓存：第一次调用 admin/stats 时构建，后续直接复用
+_HOT_KW_CANDIDATES: Optional[List[str]] = None
+
+# 教学高频术语（性状鉴别口诀、显微特征），论文标题里不一定出现，单独维护
+_TEACHING_TERMS = [
+    "菊花心", "朱砂点", "起霜", "车轮纹", "鹦哥嘴", "过桥",
+    "狮子盘头", "怀中抱月", "云锦花纹", "金井玉栏", "蚯蚓头",
+    "星点", "珍珠疙瘩", "断面", "纤维性", "粉性",
+    "炮制", "鉴别", "伪品", "正品", "道地",
+]
+
+# 中药材白名单 —— 用于在 RAG 索引文件名里"锚点匹配"出真实涉及的药材
+# 新增药材文档后：在这里加一行该药材名即可（不需要改逻辑）
+_HERB_VOCAB = [
+    # 桑白皮 + 同伪品（当前重点）
+    "桑白皮", "桑皮", "桑根皮", "蜜桑白皮", "炒桑白皮",
+    "构树皮", "构树根皮", "柘树皮", "刺桑皮", "桑根酮", "桑皮苷",
+    # 常见根类
+    "人参", "西洋参", "党参", "太子参", "黄连", "胡黄连", "黄芪", "甘草",
+    "当归", "川芎", "白芍", "赤芍", "丹参", "三七", "天麻", "何首乌",
+    "防风", "白术", "苍术", "黄芩", "柴胡", "前胡", "桔梗", "山药",
+    "白薇", "白前", "白头翁", "白芷", "白茅根", "白鲜皮",
+    "板蓝根", "南板蓝根", "茜草", "紫草", "地黄", "熟地黄", "玄参",
+    "牛膝", "川牛膝", "怀牛膝", "续断", "巴戟天", "麦冬", "天冬",
+    "百合", "玉竹", "黄精", "知母", "贝母", "川贝母", "浙贝母", "土贝母",
+    "天南星", "半夏", "白附子", "附子", "川乌", "草乌",
+    # 茎木叶花果
+    "桂枝", "桑枝", "苏木", "降香", "沉香", "檀香",
+    "金银花", "菊花", "野菊花", "红花", "藏红花", "辛夷", "款冬花",
+    "薄荷", "紫苏叶", "桑叶", "枇杷叶", "艾叶", "侧柏叶",
+    "山楂", "枸杞", "山茱萸", "五味子", "金樱子", "覆盆子",
+    "杏仁", "桃仁", "酸枣仁", "柏子仁", "决明子",
+    # 全草、动物、矿物
+    "鱼腥草", "蒲公英", "马齿苋", "益母草", "茵陈", "金钱草",
+    "鹿茸", "麝香", "牛黄", "蟾酥", "蜂蜜", "阿胶",
+    "石膏", "朱砂", "雄黄", "滑石粉",
+]
+
+
+def _extract_herb_candidates_from_index() -> List[str]:
+    """从 papers_index.json 的 filename 提取出现的"已知药材名"。
+    策略（避免切词噪音）：
+    - 用一份固定的中药材"原料词表"（_HERB_VOCAB）当模式
+    - 扫所有 unique filename，看哪些药材名【作为完整子串】出现过
+    - 返回出现过的子集（按出现的文件数倒序）
+    新增药材：在 _HERB_VOCAB 里加一行即可，无需再改其他代码。
+    """
+    index_path = Path(__file__).parent / "papers_index.json"
+    if not index_path.exists():
+        return []
+    try:
+        with open(index_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        return []
+    chunks = data.get("chunks", []) if isinstance(data, dict) else []
+    if not chunks:
+        return []
+
+    seen_files = set()
+    filenames: List[str] = []
+    for c in chunks:
+        fn = c.get("filename", "")
+        if fn and fn not in seen_files:
+            seen_files.add(fn)
+            filenames.append(fn)
+
+    # 用药材白名单作为锚点匹配
+    df: Dict[str, int] = {}
+    joined = "\n".join(filenames)
+    for herb in _HERB_VOCAB:
+        n = joined.count(herb)
+        if n > 0:
+            df[herb] = n
+    # 按出现次数倒序
+    return [w for w, _ in sorted(df.items(), key=lambda x: -x[1])]
+
+
+def _get_hot_kw_candidates() -> List[str]:
+    """带缓存的候选词获取。"""
+    global _HOT_KW_CANDIDATES
+    if _HOT_KW_CANDIDATES is None:
+        herbs = _extract_herb_candidates_from_index()
+        # 合并教学术语，去重保序
+        seen = set()
+        merged = []
+        for w in herbs + _TEACHING_TERMS:
+            if w not in seen:
+                seen.add(w)
+                merged.append(w)
+        _HOT_KW_CANDIDATES = merged
+    return _HOT_KW_CANDIDATES
+
+
 @app.get("/api/admin/stats")
 async def admin_stats(password: str = ""):
     if not check_admin(password):
@@ -479,11 +574,9 @@ async def admin_stats(password: str = ""):
         c = cur.execute("SELECT COUNT(*) FROM chat_log WHERE ts LIKE ?", (d + "%",)).fetchone()[0]
         daily.append({"date": d[5:], "count": c})
 
-    # 热门关键词（按 prompt 出现的常见药材/术语统计）
-    hot_keywords = ["人参", "黄连", "大黄", "甘草", "当归", "何首乌", "三七", "天麻",
-                    "川芎", "白芍", "黄芪", "防风", "党参", "川贝母", "浙贝母",
-                    "菊花心", "朱砂点", "起霜", "车轮纹", "鹦哥嘴", "过桥",
-                    "狮子盘头", "怀中抱月", "云锦花纹", "金井玉栏", "蚯蚓头", "星点", "珍珠疙瘩"]
+    # 热门关键词：候选词来自 RAG 索引（自动提取）+ 教学高频术语
+    # 新增药材文档时，build_index 后会自动出现在统计里
+    hot_keywords = _get_hot_kw_candidates()
     hot = []
     for kw in hot_keywords:
         c = cur.execute("SELECT COUNT(*) FROM chat_log WHERE prompt LIKE ?", (f"%{kw}%",)).fetchone()[0]
