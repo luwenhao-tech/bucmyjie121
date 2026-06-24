@@ -317,11 +317,11 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
         prompt_for_log = f"[意图:{detected_intent}] " + prompt_for_log
 
     # RAG 检索：从论文库中查找相关内容
-    # 45 篇论文全部是桑白皮相关，先判断问题是否涉及桑白皮
+    # 整站只讲桑白皮，所有非闲聊问题都默认走 RAG。
+    # RAG 内部 score>=20 门槛兜底——无关问题自动触发拒答，关键词白名单是多余闸门。
+    # （历史上用过 _SANGBAIPI_KEYWORDS 显式过滤，但学生不在问题里写"桑白皮"三个字
+    #  就一律走拒答分支，导致"正品断面纤维性怎么区分"这类问题永远拿不到论文资料。）
     rag_context = ""
-    _SANGBAIPI_KEYWORDS = ("桑白皮", "桑皮", "桑根", "桑树", "桑属", "桑科",
-                           "桑根酮", "桑皮苷", "morus", "alba",
-                           "构树皮", "构棘", "刺桑", "柘树")  # 含伪品关键词
     # 闲聊/自我认知类问题白名单：问老师本人的，不走 RAG，用正常 prompt 回答
     _CHAT_WHITELIST = ("你是谁", "您是谁", "你叫什么", "你是什么", "你做什么",
                        "你教什么", "你是哪", "你好", "您好", "谢谢", "感谢",
@@ -331,24 +331,21 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                        "再见", "拜拜", "晚安", "早上好", "下午好")
     if _rag_available and req.prompt.strip() and not req.image:
         query_lower = req.prompt.lower().strip()
-        # 先检查是否是闲聊/自我认知类（不进 RAG，也不拒答）
         is_chat = any(kw in query_lower for kw in _CHAT_WHITELIST)
         if is_chat:
-            rag_context = ""  # 正常回答，不拒答也不注入 RAG
+            rag_context = ""  # 闲聊：不拒答也不注入 RAG
         else:
-            is_sangbaipi_related = any(kw in query_lower for kw in _SANGBAIPI_KEYWORDS)
-            if is_sangbaipi_related:
-                try:
-                    # 深度思考模式 RAG 多检索一些片段，让回答自然变厚
-                    rag_top_k = 10 if req.think else 5
-                    results = rag_search(req.prompt, top_k=rag_top_k)
-                    if results and results[0]["score"] >= 20:
-                        rag_context = format_context_for_prompt(results)
-                    else:
-                        rag_context = "__NO_RESULTS__"
-                except Exception as e:
-                    print(f"[RAG search error] {e}")
-            else:
+            try:
+                # 深度思考模式 RAG 多检索一些片段，让回答自然变厚
+                rag_top_k = 10 if req.think else 5
+                results = rag_search(req.prompt, top_k=rag_top_k)
+                # score>=20 才认为命中；否则触发拒答，避免大模型瞎编
+                if results and results[0]["score"] >= 20:
+                    rag_context = format_context_for_prompt(results)
+                else:
+                    rag_context = "__NO_RESULTS__"
+            except Exception as e:
+                print(f"[RAG search error] {e}")
                 rag_context = "__NO_RESULTS__"
 
     # 拒答场景提高 temperature 让话术有变化
