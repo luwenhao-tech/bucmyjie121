@@ -3,7 +3,7 @@
 支持 RAG：检索论文内容作为回答依据。
 """
 import os
-from typing import AsyncGenerator, List, Dict, Optional
+from typing import AsyncGenerator, List, Dict, Optional, Tuple
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
 
@@ -378,9 +378,11 @@ async def generate_stream(
     user_name: str = "",
     extra_system: str = "",
     rag_context: str = "",
-) -> AsyncGenerator[str, None]:
-    """流式生成内容，yield 每个增量 token。
-    - think=True 切换到推理模型
+) -> AsyncGenerator[Tuple[str, str], None]:
+    """流式生成内容，yield (kind, token) 二元组。
+    - kind="reasoning" 是模型的思维链增量（仅 think 模式下 + reasoner 模型才会有）
+    - kind="content"   是正文增量
+    - think=True 切换到推理模型（deepseek-reasoner），开 CoT
     - image_data 不为空时切换到视觉模型（base64 data URL 或 http URL）
     - user_name 用于个性化称呼
     - rag_context 论文检索到的参考内容
@@ -390,10 +392,10 @@ async def generate_stream(
     if history:
         messages.extend(history)
 
-    # 有图片：用视觉模型 + multimodal content
+    # 有图片：用视觉模型 + multimodal content（视觉模型不支持 reasoning，think 在此降级为 chat）
     if image_data:
         if not vision_client:
-            yield "（视觉功能未启用：请在服务器 .env 中配置 VISION_API_KEY）"
+            yield ("content", "（视觉功能未启用：请在服务器 .env 中配置 VISION_API_KEY）")
             return
         messages.append({
             "role": "user",
@@ -410,14 +412,24 @@ async def generate_stream(
         )
     else:
         messages.append({"role": "user", "content": user_prompt})
-        # think 模式不再切到 deepseek-reasoner —— 实测对讲药任务体感更差，
-        # 且会和 RAG 严格模式冲突。深度差异化交给 prompt + 多检索来体现。
-        kwargs = {"model": MODEL, "messages": messages, "stream": True, "temperature": temperature}
+        # think=True：切到 deepseek-reasoner，吃 CoT。
+        # reasoner 不支持 temperature/top_p（官方明确说明会被忽略），别传，免得有的网关报错。
+        if think:
+            kwargs = {"model": REASONING_MODEL, "messages": messages, "stream": True}
+        else:
+            kwargs = {"model": MODEL, "messages": messages, "stream": True, "temperature": temperature}
         stream = await client.chat.completions.create(**kwargs)
 
     async for chunk in stream:
-        if chunk.choices and chunk.choices[0].delta.content:
-            yield chunk.choices[0].delta.content
+        if not chunk.choices:
+            continue
+        delta = chunk.choices[0].delta
+        # reasoner 会在 delta 上挂 reasoning_content 字段（OpenAI 兼容层透传 DeepSeek 的私有字段）
+        reasoning = getattr(delta, "reasoning_content", None)
+        if reasoning:
+            yield ("reasoning", reasoning)
+        if delta.content:
+            yield ("content", delta.content)
 
 
 async def generate(
@@ -431,7 +443,7 @@ async def generate(
     extra_system: str = "",
     rag_context: str = "",
 ) -> str:
-    """一次性返回完整内容（非流式）。"""
+    """一次性返回完整内容（非流式）。think=True 走 reasoner 但只返回正文，不返回 CoT。"""
     sys_prompt = system_prompt or build_system_prompt(user_name, extra_system, rag_context, think=think)
     messages = [{"role": "system", "content": sys_prompt}]
     if history:
@@ -454,8 +466,11 @@ async def generate(
         )
     else:
         messages.append({"role": "user", "content": user_prompt})
-        # think 模式不再切到 deepseek-reasoner —— 见上面同样位置注释
-        kwargs = {"model": MODEL, "messages": messages, "temperature": temperature}
+        # think=True：切到 reasoner；reasoner 忽略 temperature，不传更稳。
+        if think:
+            kwargs = {"model": REASONING_MODEL, "messages": messages}
+        else:
+            kwargs = {"model": MODEL, "messages": messages, "temperature": temperature}
         resp = await client.chat.completions.create(**kwargs)
     return resp.choices[0].message.content or ""
 

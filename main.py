@@ -469,13 +469,18 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
         full_answer = ""
         emitted_len = 0  # 已经流给前端的 full_answer 前缀长度
         try:
-            async for token in generate_stream(
+            async for kind, token in generate_stream(
                 req.prompt, history=history_dicts,
                 temperature=actual_temperature, think=req.think,
                 image_data=req.image, user_name=user_name,
                 extra_system=intent_extra,
                 rag_context=rag_context,
             ):
+                # reasoning（CoT）单独透传给前端展示，不进正文、不落库
+                if kind == "reasoning":
+                    yield f"data: {json.dumps({'reasoning': token}, ensure_ascii=False)}\n\n"
+                    continue
+                # kind == "content"
                 full_answer += token
                 # 检查累计文本里是否已经出现了 💬 行的开头：一旦出现，停止往前端流
                 idx = full_answer.find("💬")

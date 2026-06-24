@@ -864,6 +864,52 @@
   html.dark .drawer { color: #fff; }
   html.dark .hist-drawer { background: #20232a; }
   html.dark .copy-btn { background: rgba(0,0,0,.3) !important; color: #d8d2c2 !important; border-color: #3a3f45 !important; }
+
+  /* ============ 深度思考：CoT 折叠块 ============ */
+  /* 挂在 .bubble 上方，作为独立"小药签"，让"开了深度思考"和"没开"一眼分得清 */
+  .cot {
+    margin-bottom: 8px;
+    border: 1px dashed #c9b07a;
+    background: #fffbe9;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #6a4a1f;
+    overflow: hidden;
+    max-width: 100%;
+  }
+  .cot-head {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    cursor: pointer; user-select: none;
+    font-weight: 600;
+    letter-spacing: .5px;
+    background: linear-gradient(90deg, #fff4c8, #fffbe9);
+  }
+  .cot-head .cot-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #c98c2a;
+    animation: cotPulse 1.2s ease-in-out infinite;
+  }
+  .cot.done .cot-head .cot-dot { animation: none; background: #8aa37a; }
+  .cot-head .cot-arrow { margin-left: auto; transition: transform .2s; font-size: 11px; opacity: .7; }
+  .cot.collapsed .cot-head .cot-arrow { transform: rotate(-90deg); }
+  .cot-body {
+    padding: 8px 12px 10px;
+    border-top: 1px dashed #e2d2a8;
+    white-space: pre-wrap;
+    line-height: 1.65;
+    color: #7a5a2a;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+  .cot.collapsed .cot-body { display: none; }
+  @keyframes cotPulse {
+    0%, 100% { opacity: .35; transform: scale(.85); }
+    50%      { opacity: 1;   transform: scale(1.15); }
+  }
+  html.dark .cot { background: #2a2418; border-color: #5a4720; color: #d4b97a; }
+  html.dark .cot-head { background: linear-gradient(90deg, #3a2e18, #2a2418); }
+  html.dark .cot-body { color: #c8a85a; border-top-color: #4a3a18; }
   /* 主题切换按钮 */
   .theme-toggle {
     position: fixed; top: 14px; right: 14px; z-index: 9999;
@@ -2153,6 +2199,9 @@ async function send() {
     const decoder = new TextDecoder("utf-8");
     let buf = "";
     let full = "";
+    let cotEl = null;       // 思考过程容器（仅 think 模式 + 模型真的吐了 reasoning 才创建）
+    let cotBodyEl = null;
+    let cotText = "";
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
@@ -2165,8 +2214,41 @@ async function send() {
         if (data === "[DONE]") continue;
         try {
           const obj = JSON.parse(data);
+          // 思考过程（CoT）增量：在气泡上方插入折叠块，单独显示
+          if (obj.reasoning) {
+            if (!cotEl) {
+              // 第一次拿到 reasoning：把"思考中…"提示词替掉，造一个 cot 块
+              if (firstToken) { bubble.textContent = ""; firstToken = false; }
+              cotEl = document.createElement("div");
+              cotEl.className = "cot";
+              cotEl.innerHTML = `
+                <div class="cot-head">
+                  <span class="cot-dot"></span>
+                  <span class="cot-label">老师正在琢磨…</span>
+                  <span class="cot-arrow">▾</span>
+                </div>
+                <div class="cot-body"></div>
+              `;
+              cotBodyEl = cotEl.querySelector(".cot-body");
+              cotEl.querySelector(".cot-head").addEventListener("click", () => {
+                cotEl.classList.toggle("collapsed");
+              });
+              // 插到 bubble 前面（同在 bubble-wrap 内）
+              bubble.parentNode.insertBefore(cotEl, bubble);
+            }
+            cotText += obj.reasoning;
+            cotBodyEl.textContent = cotText;
+            // 思考时也自动滚动到底，避免被新内容顶出视野
+            scrollIfBottom();
+          }
           if (obj.token) {
             if (firstToken) { bubble.textContent = ""; firstToken = false; }
+            // 正文开始：把思考块标记为 done（圆点停止脉冲，提示文案换一下）
+            if (cotEl && !cotEl.classList.contains("done")) {
+              cotEl.classList.add("done");
+              const label = cotEl.querySelector(".cot-label");
+              if (label) label.textContent = "老师的思考过程（点击展开/收起）";
+            }
             full += obj.token;
             bubble.innerHTML = renderRich(full);
             scrollIfBottom();
@@ -2197,6 +2279,12 @@ async function send() {
     }
     // 流式完成后：再渲染一次，保证完整
     bubble.innerHTML = renderRich(full);
+    // 思考块默认折叠起来，让正文成为视觉重心；想看的人自己点开
+    if (cotEl) {
+      cotEl.classList.add("done", "collapsed");
+      const label = cotEl.querySelector(".cot-label");
+      if (label) label.textContent = "老师的思考过程（点击展开）";
+    }
     // 注入"复制 + 追问"操作行（豆包风格，气泡下方）
     if (full.trim()) {
       // 先挂上"复制"行，追问气泡稍后异步填充
