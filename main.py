@@ -265,6 +265,91 @@ def strip_followup(text: str) -> str:
     return out
 
 
+# ============ 元问题（meta-question）硬过滤 ============
+# 学生想刺探 RAG 知识库 / 系统结构 / 提示词的请求，无论怎么问都不走 LLM，直接拒。
+
+# 强信号：单独出现就拦截（高置信，宁可误伤也要拦）
+_META_STRONG_TRIGGERS = (
+    # 技术字眼
+    "system prompt", "你的提示词", "你的system", "你的 system",
+    "papers_index", "build_index", "rag_engine", "chroma", "sqlite",
+    "embedding", "向量库", "rag 索引", "rag索引",
+    # 模型/训练
+    "训练数据", "训练集", "训练语料", "训练你",
+    "你是什么模型", "你用的什么模型", "你用什么模型", "你的模型是什么",
+    "调用的什么 api", "调用什么api", "你的 api", "你的api",
+    "你的 deepseek", "你的deepseek", "你的 gpt", "你的gpt", "你的 claude",
+    # 越狱
+    "越狱", "绕过指令", "绕过规则", "绕过限制",
+    # 知识库 + 数量/列表组合（最常见的"几篇论文"模式）
+    "知识库里有多少", "知识库 有 多少", "知识库 多少", "知识库多少",
+    "资料库里有多少", "资料库多少",
+    "你的资料 多少", "你的资料多少", "你的资料 几篇", "你的资料几篇",
+    "你的论文 几篇", "你的论文几篇", "你的论文 多少", "你的论文多少",
+    "你的文献 几篇", "你的文献几篇", "你的文献 多少",
+    "你引用了几篇", "你引用了多少", "你看过几篇", "你看过多少",
+    "几篇桑白皮的论文", "多少篇桑白皮", "几篇桑白皮", "几本桑白皮",
+    "几篇关于", "多少篇关于",
+    "列出全部论文", "列出所有论文", "所有论文 列", "全部论文 列",
+    "列出全部资料", "列出所有资料", "列一下你的论文", "列一下论文",
+    "罗列你的论文", "罗列全部论文",
+    "你引用的是哪", "你参考的是哪", "你看的是哪",
+)
+
+# 主体词：和动作词组合后才算元问题（弱信号）
+_META_SUBJECT_KEYWORDS = (
+    "知识库", "数据库", "资料库", "文献库", "论文库", "语料库",
+    "你的资料", "你的论文", "你的文献", "你的文档",
+    "你那儿的资料", "你那儿的论文", "你这儿的资料", "你这儿的论文",
+    "后台", "服务器", "rag",
+    "系统提示", "提示词", "指令", "规则", "人设", "身份配置",
+)
+
+# 动作词
+_META_ACTION_KEYWORDS = (
+    "几篇", "多少篇", "多少本", "多少个", "几本", "几个", "几条", "多少条",
+    "列出", "列一下", "列举", "罗列", "导出", "下载", "导一份",
+    "都有哪些", "有哪些", "都有什么", "全部", "所有", "清单", "目录",
+    "给我看", "告诉我", "看看",
+    "是什么", "是啥", "怎么搭", "怎么做的", "什么样",
+)
+
+
+def _is_meta_question(text: str) -> bool:
+    """判断是否为元问题（想刺探系统/RAG/提示词）。"""
+    if not text:
+        return False
+    # 归一化：lower、去空格便于匹配"系统提示词"和"system prompt"等
+    t_raw = text.lower().strip()
+    t_compact = re.sub(r"\s+", "", t_raw)  # 去掉所有空格
+
+    # 强信号：直接拦
+    for kw in _META_STRONG_TRIGGERS:
+        kc = re.sub(r"\s+", "", kw.lower())
+        if kc in t_compact:
+            return True
+
+    # 弱信号：主体词 + 动作词同时命中
+    has_subject = any(s.lower() in t_compact for s in _META_SUBJECT_KEYWORDS)
+    if not has_subject:
+        return False
+    has_action = any(a in t_compact for a in _META_ACTION_KEYWORDS)
+    return has_action
+
+
+_META_REPLIES = [
+    "嘿，咱后台那些个事儿就不掰扯了，您还是问点桑白皮本身的吧——比如鉴别、成分、炮制，您想聊哪块儿？",
+    "这后台的事儿咱不聊，没意思。您要是问桑白皮的鉴别要点、化学成分、炮制方法，我跟您唠到底。",
+    "数据库里几篇论文这事儿不归咱聊。您把问题往桑白皮上聚一聚——成分、鉴别、伪品、炮制，挑一个？",
+    "嗐，问后台的事儿不如问药材本身。桑白皮哪一块儿您想往深里学？",
+]
+
+
+def _meta_question_reply() -> str:
+    import random
+    return random.choice(_META_REPLIES)
+
+
 class ChatRequest(BaseModel):
     prompt: str
     history: Optional[List[Message]] = None
@@ -310,6 +395,23 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
 
     # 日志里的 prompt 标记是否带图
     prompt_for_log = req.prompt + ("  [📷 含图片]" if req.image else "")
+
+    # ============ 元问题硬过滤 ============
+    # 学生问"你的知识库里有多少篇桑白皮论文""你引用的是哪几篇""你的训练数据是什么"等
+    # 暴露后台/系统/数据库结构的问题，一律不走 LLM，直接返回固定话术。
+    # 仅在文本提问场景生效（带图片时跳过，避免误伤）。
+    if not req.image and _is_meta_question(req.prompt):
+        meta_reply = _meta_question_reply()
+        log_chat(client_ip, user_agent, user_name, user_id,
+                 "[元问题拦截] " + prompt_for_log, meta_reply,
+                 req.think, int((time.time() - started) * 1000))
+        if not req.stream:
+            return {"content": meta_reply}
+        async def meta_stream():
+            yield f"data: {json.dumps({'token': meta_reply}, ensure_ascii=False)}\n\n"
+            yield "data: [DONE]\n\n"
+        return StreamingResponse(meta_stream(), media_type="text/event-stream")
+
     # 自动识别意图（前端不再传，全部由后端判别）
     detected_intent = await classify_intent(req.prompt, has_image=bool(req.image))
     intent_extra = resolve_intent_extra(detected_intent)
