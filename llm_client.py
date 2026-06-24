@@ -224,29 +224,16 @@ def build_system_prompt(user_name: str = "", extra: str = "", rag_context: str =
     base = LIU_CHUNSHENG_SYSTEM_PROMPT_TEMPLATE.format(greeting=greeting)
     prompt = base + (extra or "")
 
-    # 深度思考模式：追加专属指令，放开字数、要求多维度深入分析
+    # 深度思考模式：轻量提示 —— 不强制维度数、不强制字数，
+    # 主要靠 main.py 那边 RAG 多检索来自然增厚回答
     if think:
         prompt += """
 
-【★★★ 深度思考模式已开启——本轮回答要有深度、有厚度 ★★★】
-学生开启了"深度思考"，期望获得比普通回答更有含量的深入讲解。请遵循以下规则：
-
-1. 字数放开：普通模式的字数限制本轮不适用。根据问题复杂度自由展开，300-800 字均可，内容到位为准，不必刻意压缩。
-2. 多维度展开：不要只答表面。根据问题性质，从以下维度中挑 3-5 个深入展开：
-   · 本草溯源：这味药最早见于哪本本草？历代怎么记载的？名称演变？
-   · 来源与基原：植物科属种、药用部位、采收加工关键步骤
-   · 性状鉴别深度版：不只说"什么样"，要说"为什么是这样"——组织结构决定外观
-   · 显微特征：粉末/横切面的关键特征，哪几个是鉴别核心
-   · 化学成分：主要活性成分类型、代表性化合物、含量测定指标
-   · 药理作用：现代研究揭示的药理机制，和传统功效的对应关系
-   · 炮制与质量控制：不同炮制方法对成分/药效的影响，药典标准
-   · 伪品鉴别：常见伪品混淆品，关键鉴别点对比
-   · 临床/方剂联系：经典方剂中的应用，配伍意义
-   · DNA 条形码 / 分子鉴定：现代鉴定技术的应用进展
-3. 讲"为什么"而不只是"是什么"：普通模式告诉学生结论，深度模式要讲清楚背后的道理和逻辑链。
-4. 举一反三：适当关联相近药材做对比，帮学生建立知识网络。
-5. 保持刘春生教授的风格不变：北京味儿、打比方、不堆术语。深入不等于枯燥，要讲得透还讲得活。
-6. 鉴别四步法仍然适用：如果是鉴别类问题，仍按望+问的流程走，但"望"的描述可以更细致深入。
+【深度讲解模式】学生希望听得更透一点。在资料覆盖到的范围内：
+- 多讲一点"为什么"，不只是"是什么"。
+- 资料里有的细节（数据、化合物名、对比）可以多展开。
+- 没有资料支撑的内容仍然不能编造（RAG 严格规则不变）。
+- 字数自然为准，资料多就多讲，资料少就老实少讲，不注水。
 """
 
     # 如果有 RAG 检索到的论文内容，追加到 system prompt
@@ -401,10 +388,9 @@ async def generate_stream(
         )
     else:
         messages.append({"role": "user", "content": user_prompt})
-        model = REASONING_MODEL if think else MODEL
-        kwargs = {"model": model, "messages": messages, "stream": True}
-        if not think:
-            kwargs["temperature"] = temperature
+        # think 模式不再切到 deepseek-reasoner —— 实测对讲药任务体感更差，
+        # 且会和 RAG 严格模式冲突。深度差异化交给 prompt + 多检索来体现。
+        kwargs = {"model": MODEL, "messages": messages, "stream": True, "temperature": temperature}
         stream = await client.chat.completions.create(**kwargs)
 
     async for chunk in stream:
@@ -446,10 +432,8 @@ async def generate(
         )
     else:
         messages.append({"role": "user", "content": user_prompt})
-        model = REASONING_MODEL if think else MODEL
-        kwargs = {"model": model, "messages": messages}
-        if not think:
-            kwargs["temperature"] = temperature
+        # think 模式不再切到 deepseek-reasoner —— 见上面同样位置注释
+        kwargs = {"model": MODEL, "messages": messages, "temperature": temperature}
         resp = await client.chat.completions.create(**kwargs)
     return resp.choices[0].message.content or ""
 

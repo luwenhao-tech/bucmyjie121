@@ -459,8 +459,12 @@ def search(query: str, top_k: int = TOP_K) -> List[Dict]:
     return results
 
 
-def format_context_for_prompt(search_results: List[Dict], max_chars: int = 3000) -> str:
-    """将检索结果格式化为可注入 system prompt 的参考文本。"""
+def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000) -> str:
+    """将检索结果格式化为可注入 system prompt 的参考文本。
+
+    max_chars 默认 6000：deepseek 64K context 完全够用，3000 在 top_k=10 时
+    截断太狠会让"深度思考多检索"白费。
+    """
     if not search_results:
         return ""
 

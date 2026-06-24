@@ -339,7 +339,9 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
             is_sangbaipi_related = any(kw in query_lower for kw in _SANGBAIPI_KEYWORDS)
             if is_sangbaipi_related:
                 try:
-                    results = rag_search(req.prompt)
+                    # 深度思考模式 RAG 多检索一些片段，让回答自然变厚
+                    rag_top_k = 10 if req.think else 5
+                    results = rag_search(req.prompt, top_k=rag_top_k)
                     if results and results[0]["score"] >= 20:
                         rag_context = format_context_for_prompt(results)
                     else:
