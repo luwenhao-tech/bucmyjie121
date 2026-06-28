@@ -209,6 +209,96 @@ def tokenize(text: str) -> List[str]:
     return en_words + cn_tokens
 
 
+# ============ 英文 PDF → 中文摘要（供 BM25 中文检索）============
+# 背景：tokenize() 对英文只切 ASCII 单词，对中文按 n-gram。
+# 全英文 PDF 入库后没有任何中文 token，中文 query 完全检索不到。
+# 这里给每篇英文 PDF 生成一段中文摘要写到 sidecar 文件，作为额外 chunk 注入索引，
+# chunk 的 filename 仍归属原 PDF，所以引用/citation 是正确的。
+ZH_SUMMARY_SUFFIX = "_zh.txt"
+ZH_SUMMARY_INPUT_CHARS = 2000  # 喂给 LLM 的英文前缀长度（标题+abstract 通常够了）
+
+ZH_SUMMARY_PROMPT = """你是中医药文献的中英翻译/摘要助手。下面是一篇英文论文的开头部分，请用中文产出一个结构化摘要，专门用于中文关键词检索（BM25），所以中文术语要尽量铺开、同义词都列上。
+
+严格按以下三段输出，每段独占一行，不要加多余解释：
+标题：<论文的中文译名，化合物/药材英文名一并给出中文常用名，例如 Morus alba → 桑（桑白皮）>
+关键词：<8-15 个中文关键词，逗号分隔，覆盖：中药材中文名、化合物中文名、药理活性、研究方法、疾病/靶点>
+摘要：<2-3 句中文，说清研究了什么药材的什么部位、用什么方法、得到了什么主要结论，控制在 200 字以内>
+
+输出总长度控制在 300-500 字。只输出三段内容，不要前后客套、不要 Markdown、不要英文原文。"""
+
+
+def is_english_text(text: str, cjk_ratio_cutoff: float = 0.05) -> bool:
+    """CJK 字符占总非空白字符比 < 5% 视为英文。空文本返回 False。"""
+    if not text or not text.strip():
+        return False
+    cjk = sum(1 for ch in text if '一' <= ch <= '鿿')
+    total = sum(1 for ch in text if not ch.isspace())
+    if total == 0:
+        return False
+    return (cjk / total) < cjk_ratio_cutoff
+
+
+def _zh_summary_path(pdf_path: Path) -> Path:
+    """papers/foo.pdf → papers/foo_zh.txt"""
+    return pdf_path.with_name(pdf_path.stem + ZH_SUMMARY_SUFFIX)
+
+
+async def _call_llm_for_zh_summary(text: str) -> str:
+    """仿 llm_client.classify_intent 的 bare-call 模式，不注入 Liu Chunsheng persona。"""
+    # 局部 import 避免循环依赖在模块加载时触发
+    from llm_client import client as _llm_client, MODEL as _LLM_MODEL
+    resp = await _llm_client.chat.completions.create(
+        model=_LLM_MODEL,
+        messages=[
+            {"role": "system", "content": ZH_SUMMARY_PROMPT},
+            {"role": "user", "content": text[:ZH_SUMMARY_INPUT_CHARS]},
+        ],
+        temperature=0.2,
+        max_tokens=600,
+    )
+    return (resp.choices[0].message.content or "").strip()
+
+
+def get_or_generate_zh_summary(pdf_path: Path, text: str, force: bool = False) -> Optional[str]:
+    """命中缓存 → 读 sidecar；未命中 → 调 LLM → 写 sidecar。失败返回 None。
+
+    注意：内部用 asyncio.run() 调异步 LLM client。仅限 build_index.py CLI 调用，
+    不要在已经在运行 event loop 的异步上下文里调用（会抛 RuntimeError）。
+    main.py 不 import build_index，已确认安全。
+    """
+    import asyncio
+    sidecar = _zh_summary_path(pdf_path)
+
+    # 缓存命中
+    if sidecar.exists() and not force:
+        try:
+            cached = sidecar.read_text(encoding="utf-8").strip()
+            return cached or None
+        except Exception:
+            pass  # 读不出来就当没缓存，重生成
+
+    # force 时先删掉旧缓存
+    if force and sidecar.exists():
+        try:
+            sidecar.unlink()
+        except Exception:
+            pass
+
+    if not text or not text.strip():
+        return None
+
+    try:
+        summary = asyncio.run(_call_llm_for_zh_summary(text))
+        if not summary:
+            return None
+        sidecar.write_text(summary, encoding="utf-8")
+        print(f"  [中文摘要] 生成 → {sidecar.name}")
+        return summary
+    except Exception as e:
+        print(f"  [警告] {pdf_path.name} 中文摘要生成失败：{e}（按英文索引）")
+        return None
+
+
 # ============ 索引数据（内存中）============
 _index_data: Optional[Dict] = None
 
@@ -265,7 +355,8 @@ def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, 
     pdf_files = list(papers_path.glob("*.pdf")) + list(papers_path.glob("*.PDF"))
     xlsx_files = list(papers_path.glob("*.xlsx")) + list(papers_path.glob("*.XLSX"))
     docx_files = list(papers_path.glob("*.docx")) + list(papers_path.glob("*.DOCX"))
-    txt_files = list(papers_path.glob("*_ocr.txt"))
+    # 只收 _ocr.txt；显式排除 _zh.txt（中文摘要 sidecar，已经在 PDF 循环里以原 PDF 名义注入索引）
+    txt_files = [p for p in papers_path.glob("*_ocr.txt") if not p.name.endswith(ZH_SUMMARY_SUFFIX)]
 
     if not pdf_files and not xlsx_files and not docx_files and not txt_files:
         print(f"[提示] {papers_dir}/ 目录下没有可处理的文件")
@@ -287,15 +378,32 @@ def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, 
                     results[pdf_file.name] = 0
                     continue
                 metadata = extract_metadata_from_pdf(str(pdf_file))
+
+                # 英文 PDF：先尝试生成/读取中文摘要，作为第一个 chunk 注入
+                # （filename 仍归属原 PDF，引用正确）
+                zh_chunk = None
+                if is_english_text(text):
+                    zh_summary = get_or_generate_zh_summary(pdf_file, text, force=force)
+                    if zh_summary:
+                        zh_chunk = {
+                            "text": f"【中文摘要】{metadata['title']}\n{zh_summary}",
+                            "title": metadata["title"],
+                            "filename": metadata["filename"],
+                        }
+
                 chunks = chunk_text(text)
+                if zh_chunk:
+                    all_chunks.append(zh_chunk)
                 for chunk in chunks:
                     all_chunks.append({
                         "text": chunk,
                         "title": metadata["title"],
                         "filename": metadata["filename"],
                     })
-                print(f"  [完成] {pdf_file.name} → {len(chunks)} 个文本块")
-                results[pdf_file.name] = len(chunks)
+                total_blocks = len(chunks) + (1 if zh_chunk else 0)
+                extra = " (含中文摘要)" if zh_chunk else ""
+                print(f"  [完成] {pdf_file.name} → {total_blocks} 个文本块{extra}")
+                results[pdf_file.name] = total_blocks
             except Exception as e:
                 print(f"  [错误] {pdf_file.name}: {e}")
                 results[pdf_file.name] = -1
