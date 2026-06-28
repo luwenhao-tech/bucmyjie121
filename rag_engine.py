@@ -421,13 +421,18 @@ def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, 
                     continue
                 chunks = chunk_text(text)
                 title = txt_file.stem.replace("_ocr", "")
+                # 若同目录存在同名 PDF（例如扫描版 PDF 提取失败、改用 OCR 文本），
+                # 把 filename 改写成 PDF 名，让引用链路统一指向 PDF（跟 _zh.txt 的做法一致）
+                companion_pdf = txt_file.with_name(title + ".pdf")
+                display_filename = companion_pdf.name if companion_pdf.exists() else txt_file.name
                 for chunk in chunks:
                     all_chunks.append({
                         "text": chunk,
                         "title": title,
-                        "filename": txt_file.name,
+                        "filename": display_filename,
                     })
-                print(f"  [完成] {txt_file.name} → {len(chunks)} 个文本块")
+                extra = " (归原 PDF)" if display_filename != txt_file.name else ""
+                print(f"  [完成] {txt_file.name} → {len(chunks)} 个文本块{extra}")
                 results[txt_file.name] = len(chunks)
             except Exception as e:
                 print(f"  [错误] {txt_file.name}: {e}")
