@@ -50,11 +50,10 @@
     min-width: 0;
     overflow-y: auto;
   }
-  .side .panel { overflow: hidden; }
-  /* 两侧最后面板都撑满剩余空间，底线自然对齐 */
-  .side .panel:last-child { flex: 1; overflow: auto; }
+  /* 所有面板按内容自然撑高，整列在 .side 内整体滚动 */
+  .side .panel { overflow: visible; }
   .side .panel .quote,
-  .side .panel .tags { overflow: hidden; }
+  .side .panel .tags { overflow: visible; }
   /* 允许换行，自适应宽度 */
   .side .panel .quote { white-space: normal; word-break: break-all; }
   .side .panel .quote > strong,
@@ -89,12 +88,7 @@
   /* 桑白皮速查按钮 */
   .drawers {
     display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
-    max-height: 52vh; overflow-y: auto;
-    padding-right: 4px;
   }
-  .drawers::-webkit-scrollbar { width: 5px; }
-  .drawers::-webkit-scrollbar-thumb { background: #c8d6cf; border-radius: 3px; }
-  .drawers::-webkit-scrollbar-track { background: transparent; }
   .drawer {
     background: linear-gradient(180deg, var(--bucm-green) 0%, var(--bucm-green-dark) 100%);
     color: #fff8e1;
@@ -145,13 +139,7 @@
   /* tag 标签 */
   .tags {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;
-    max-height: 52vh; overflow-y: auto;
-    padding-right: 4px;
-    align-content: start;
   }
-  .tags::-webkit-scrollbar { width: 5px; }
-  .tags::-webkit-scrollbar-thumb { background: #c8d6cf; border-radius: 3px; }
-  .tags::-webkit-scrollbar-track { background: transparent; }
   .tag {
     background: #f5e6c4;
     border: 1px solid #c9a771;
@@ -1029,7 +1017,7 @@
     <!-- 桑白皮要点 -->
     <div class="panel">
       <h3><span class="dot"></span>桑白皮要点</h3>
-      <div class="quote" id="dailyExamBox" style="line-height:1.75;font-size:12.5px;max-height:60vh;overflow-y:auto;padding-right:4px;"></div>
+      <div class="quote" id="dailyExamBox" style="line-height:1.75;font-size:12.5px;"></div>
     </div>
   </aside>
 
@@ -1109,7 +1097,7 @@
     <!-- 桑白皮纲要 -->
     <div class="panel">
       <h3><span class="dot"></span>桑白皮纲要</h3>
-      <div class="quote" id="rhymeBox" style="font-size:12.5px;line-height:1.9;max-height:60vh;overflow-y:auto;padding-right:4px;"></div>
+      <div class="quote" id="rhymeBox" style="font-size:12.5px;line-height:1.9;"></div>
     </div>
 
     <!-- 桑白皮研究 -->
