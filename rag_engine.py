@@ -508,6 +508,156 @@ def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, 
     return results
 
 
+# ============ 中文 query → 英文术语扩展（解决英文 PDF 全文检索盲区）============
+# 背景：英文 PDF 的全文 chunk 在索引里只有英文 token；
+# 用户用纯中文 query 时 BM25 只命中 LLM 生成的中文摘要 chunk（一篇仅 1 个）。
+# 为了让中文 query 也能命中英文原文（Methods/Results/数据），
+# 在 search 之前把中文 query 翻成同义的英文术语集合，与原 query 拼接后再分词。
+QUERY_EXPAND_PROMPT = """你是中医药/天然药物化学文献的中英术语对照助手。
+用户的中文检索词如下，请输出 5-10 个**最有可能出现在英文论文里的对应术语**，逗号分隔，仅一行。
+要求：
+1. 中药材给拉丁学名 + 常用英文（如：桑白皮 → Morus alba, Mori Cortex Radicis, mulberry root bark）
+2. 化合物给英文常用名（如：桑酮 → Morusin；黄酮 → flavonoid, flavone）
+3. 药理/方法给英文术语（如：凋亡 → apoptosis；抗菌 → antibacterial, antimicrobial）
+4. 不要解释、不要中文、不要标点末尾，仅输出术语列表本身
+5. 用户词若已经是英文，原样补几个同义词即可"""
+
+# 进程内缓存：中文 query → 英文术语字符串
+# key 用 hash 控制内存（极少超 1MB）；进程重启即丢失，可接受
+_query_expand_cache: Dict[str, str] = {}
+_QUERY_EXPAND_MAX_LEN = 80   # 超长 query 不扩展（句子级，已包含上下文）
+_QUERY_EXPAND_TIMEOUT = 4.0  # LLM 翻译超时秒数，超时则原样检索
+
+
+def _is_mostly_chinese(text: str, cjk_ratio_cutoff: float = 0.30) -> bool:
+    """CJK 占比 >= 30% 视为"以中文为主"，需要做英文扩展。"""
+    if not text or not text.strip():
+        return False
+    cjk = sum(1 for ch in text if '一' <= ch <= '鿿')
+    non_space = sum(1 for ch in text if not ch.isspace())
+    if non_space == 0:
+        return False
+    return (cjk / non_space) >= cjk_ratio_cutoff
+
+
+async def _expand_query_to_en(query: str) -> str:
+    """中文 query → 英文术语。失败/超时返回空串（调用方退回到原 query）。"""
+    import asyncio
+    cached = _query_expand_cache.get(query)
+    if cached is not None:
+        return cached
+
+    try:
+        from llm_client import client as _llm_client, MODEL as _LLM_MODEL
+        resp = await asyncio.wait_for(
+            _llm_client.chat.completions.create(
+                model=_LLM_MODEL,
+                messages=[
+                    {"role": "system", "content": QUERY_EXPAND_PROMPT},
+                    {"role": "user", "content": query},
+                ],
+                temperature=0.2,
+                max_tokens=120,
+            ),
+            timeout=_QUERY_EXPAND_TIMEOUT,
+        )
+        expansion = (resp.choices[0].message.content or "").strip()
+        # 去掉 LLM 偶尔加的 "答：" / 引号 / 末尾句号
+        expansion = expansion.strip('"\'。.').replace("答：", "").strip()
+        # 限长，避免极端输出污染 BM25
+        if len(expansion) > 300:
+            expansion = expansion[:300]
+        _query_expand_cache[query] = expansion
+        return expansion
+    except Exception as e:
+        print(f"[query expand] 失败：{e}（按原 query 检索）")
+        _query_expand_cache[query] = ""  # 缓存失败结果避免反复重试
+        return ""
+
+
+async def search_async(query: str, top_k: int = TOP_K) -> List[Dict]:
+    """异步检索：先把中文 query 扩展为 中文+英文术语，再走原 BM25 +「英文配额」。
+
+    - 若 query 不是以中文为主，或过长，则跳过扩展直接走原 search()
+    - LLM 失败/超时不影响检索，自动退回原 query
+    - top-k 内强制保留至少 min(2, top_k) 条英文 PDF 的全文 chunk（如果候选池里
+      存在分数 >= EN_QUOTA_MIN_SCORE 的英文 chunk），确保模型能看到英文 PDF 的
+      Methods/Results 段
+    """
+    if not query or not query.strip():
+        return []
+    if len(query) > _QUERY_EXPAND_MAX_LEN or not _is_mostly_chinese(query):
+        return search(query, top_k=top_k)
+
+    expansion = await _expand_query_to_en(query)
+    if not expansion:
+        return search(query, top_k=top_k)
+
+    merged_query = f"{query} {expansion}"
+    # 多召回一些候选（英文 chunk 在 BM25 排序里常常落到 30 名以外）
+    pool_size = max(top_k * 10, 100)
+    candidates = search(merged_query, top_k=pool_size)
+    quota = min(2, top_k)
+    return _enforce_en_quota(candidates, top_k=top_k, min_en_full=quota)
+
+
+# 英文 chunk 想"挤进" top-k，至少要满足这个 BM25 分数。
+# 经验值：top-k 里平均分通常在 50-150 之间，这里设 25 大致是 top-k 中位的 1/3，
+# 避免硬塞 score < 25 的低质 chunk 反而稀释 context。
+EN_QUOTA_MIN_SCORE = 25.0
+
+
+def _is_en_full_chunk(chunk: Dict) -> bool:
+    """判断 chunk 是不是「英文 PDF 的全文片段」。
+
+    标准（基于文件名最稳定，不会被段首公式/Figure 误导）：
+    1. 不是 LLM 生成的中文摘要 chunk（开头不是【中文摘要】）
+    2. 文件名里几乎不含中文（CJK 占比 < 20%）—— 这能精准锁定英文 PDF
+    """
+    text = chunk.get("text", "")
+    if not text or text.startswith("【中文摘要】"):
+        return False
+    filename = chunk.get("filename", "")
+    if not filename:
+        return False
+    cjk = sum(1 for ch in filename if '一' <= ch <= '鿿')
+    total = len(filename)
+    if total == 0:
+        return False
+    return (cjk / total) < 0.20
+
+
+def _enforce_en_quota(candidates: List[Dict], top_k: int, min_en_full: int = 2) -> List[Dict]:
+    """在按 BM25 分数排好序的候选里，强制保留至少 min_en_full 条英文 PDF 的全文 chunk。
+
+    实现：先按分数填 top-k；若英文 full chunk 不足 min_en_full，从尾部把
+    最弱的非英文 chunk 换成后续候选中分数最高的英文 chunk。
+    只有英文 chunk 自身 score >= EN_QUOTA_MIN_SCORE 才会被插入，避免拉低质量。
+    """
+    if not candidates:
+        return []
+    selected = candidates[:top_k]
+    en_in_selected = [c for c in selected if _is_en_full_chunk(c)]
+    if len(en_in_selected) >= min_en_full:
+        return selected
+
+    need = min_en_full - len(en_in_selected)
+    # 候选池里还没被选中的英文 chunk（按分数已排序），且通过质量阈值
+    extra_en = [c for c in candidates[top_k:]
+                if _is_en_full_chunk(c) and c["score"] >= EN_QUOTA_MIN_SCORE][:need]
+    if not extra_en:
+        return selected
+
+    non_en_indices = [i for i, c in enumerate(selected) if not _is_en_full_chunk(c)]
+    for en_chunk in extra_en:
+        if not non_en_indices:
+            break
+        replace_idx = non_en_indices.pop()
+        selected[replace_idx] = en_chunk
+    selected.sort(key=lambda x: x["score"], reverse=True)
+    return selected
+
+
 # ============ BM25 检索 ============
 def search(query: str, top_k: int = TOP_K) -> List[Dict]:
     """BM25 关键词检索，内存友好。"""

@@ -22,7 +22,7 @@ from llm_client import generate_stream, generate, vision_client, generate_follow
 
 # RAG 检索引擎（论文知识库）
 try:
-    from rag_engine import search as rag_search, format_context_for_prompt, get_index_stats
+    from rag_engine import search as rag_search, search_async as rag_search_async, format_context_for_prompt, get_index_stats
     _rag_available = True
 except ImportError:
     _rag_available = False
@@ -440,7 +440,8 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
             try:
                 # 深度思考模式 RAG 多检索一些片段，让回答自然变厚
                 rag_top_k = 10 if req.think else 5
-                results = rag_search(req.prompt, top_k=rag_top_k)
+                # 中文 query 自动扩展为「中文+英文术语」，命中英文 PDF 的全文 chunk
+                results = await rag_search_async(req.prompt, top_k=rag_top_k)
                 # score>=20 才认为命中；否则触发拒答，避免大模型瞎编
                 if results and results[0]["score"] >= 20:
                     rag_context = format_context_for_prompt(results)
