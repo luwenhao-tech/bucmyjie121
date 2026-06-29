@@ -576,29 +576,111 @@ async def _expand_query_to_en(query: str) -> str:
 
 
 async def search_async(query: str, top_k: int = TOP_K) -> List[Dict]:
-    """异步检索：先把中文 query 扩展为 中文+英文术语，再走原 BM25 +「英文配额」。
+    """异步检索：先把中文 query 扩展为 中文+英文术语，再走原 BM25 +「英文配额」+「相关性裁判」。
 
     - 若 query 不是以中文为主，或过长，则跳过扩展直接走原 search()
     - LLM 失败/超时不影响检索，自动退回原 query
     - top-k 内强制保留至少 min(2, top_k) 条英文 PDF 的全文 chunk（如果候选池里
       存在分数 >= EN_QUOTA_MIN_SCORE 的英文 chunk），确保模型能看到英文 PDF 的
       Methods/Results 段
+    - 最后过一道 LLM 相关性裁判：BM25 分数高但内容跑题（例如问"市场现状"
+      命中的全是化学成分论文）→ 返回 [] 触发拒答，避免模型硬拼
     """
     if not query or not query.strip():
         return []
     if len(query) > _QUERY_EXPAND_MAX_LEN or not _is_mostly_chinese(query):
-        return search(query, top_k=top_k)
+        results = search(query, top_k=top_k)
+    else:
+        expansion = await _expand_query_to_en(query)
+        if expansion:
+            merged_query = f"{query} {expansion}"
+            pool_size = max(top_k * 10, 100)
+            candidates = search(merged_query, top_k=pool_size)
+            quota = min(2, top_k)
+            results = _enforce_en_quota(candidates, top_k=top_k, min_en_full=quota)
+        else:
+            results = search(query, top_k=top_k)
 
-    expansion = await _expand_query_to_en(query)
-    if not expansion:
-        return search(query, top_k=top_k)
+    if not results:
+        return results
 
-    merged_query = f"{query} {expansion}"
-    # 多召回一些候选（英文 chunk 在 BM25 排序里常常落到 30 名以外）
-    pool_size = max(top_k * 10, 100)
-    candidates = search(merged_query, top_k=pool_size)
-    quota = min(2, top_k)
-    return _enforce_en_quota(candidates, top_k=top_k, min_en_full=quota)
+    # 相关性裁判：仅当 query 较短（关键词式）且不是闲聊式时检查，
+    # 句子级长 query 一般歧义小、命中也更精准，省一次 LLM 调用
+    if await _is_retrieval_irrelevant(query, results):
+        return []
+
+    return results
+
+
+# ============ 相关性裁判（防止 BM25 高分但内容跑题）============
+RELEVANCE_JUDGE_PROMPT = """你是中医药文献检索质量审核员。判断检索到的资料是否**有可能**回答用户问题。
+
+判定原则（宽松判）：
+- 只要资料中能找到与用户问题主题**直接相关**的信息（哪怕只是片段或表格数据），就 → YES
+- 资料只是「沾了同样的关键词」但通篇讨论**完全不同的主题**才 → NO
+  例如：
+  · 用户问"市场现状/价格/产销"，资料全是化学成分/HPLC 检测 → NO
+  · 用户问"某药材的真菌毒素污染"，资料是通用中药材真菌毒素检测方法综述、未涉及该药材 → NO
+  · 用户问"产地加工/采收"，资料全是本草考证、产地分布 → 可考虑 NO
+  · 用户问"性状/产地差异"，资料是不同产地的成分含量数据或品质评价 → 算 YES（成分差异属于性状差异的延伸）
+  · 用户问"栽培 vs 野生"，资料里出现了两类来源的对比数据 → 算 YES
+
+宁可放过，不要错杀。只输出一个英文单词：YES 或 NO。"""
+
+_RELEVANCE_TIMEOUT = 3.0
+_RELEVANCE_MAX_QUERY_LEN = 40   # query 超过此长度（句子级）跳过裁判
+_RELEVANCE_JUDGE_TOP_N = 5      # 喂给裁判的 chunk 数（比 top-3 多看一些以减少误杀）
+_RELEVANCE_SNIPPET_CHARS = 300  # 每条 chunk 的节选长度
+_RELEVANCE_CACHE: Dict[str, bool] = {}
+
+
+async def _is_retrieval_irrelevant(query: str, results: List[Dict]) -> bool:
+    """True = 资料跑题应拒答；False = 资料对题继续走 RAG。
+    失败/超时 fail-open，按"对题"处理，绝不阻塞正常回答。
+    """
+    import asyncio
+    # 长 query 跳过：句子级问题 BM25 命中误差小，省一次 LLM 调用
+    if len(query) > _RELEVANCE_MAX_QUERY_LEN:
+        return False
+
+    # 缓存 key：query + top-N filename，避免同一题反复判
+    cache_key = query + "||" + "|".join(
+        r.get("filename", "")[:50] for r in results[:_RELEVANCE_JUDGE_TOP_N]
+    )
+    if cache_key in _RELEVANCE_CACHE:
+        return _RELEVANCE_CACHE[cache_key]
+
+    # 构造裁判输入：title + 前 N 字
+    snippets = []
+    for i, r in enumerate(results[:_RELEVANCE_JUDGE_TOP_N], 1):
+        title = r.get("title") or r.get("filename", "")[:60]
+        text = r.get("text", "")[:_RELEVANCE_SNIPPET_CHARS].replace("\n", " ")
+        snippets.append(f"【{i}】标题：{title}\n节选：{text}")
+    user_msg = f"问题：{query}\n\n检索到的资料：\n" + "\n\n".join(snippets)
+
+    try:
+        from llm_client import client as _llm_client, MODEL as _LLM_MODEL
+        resp = await asyncio.wait_for(
+            _llm_client.chat.completions.create(
+                model=_LLM_MODEL,
+                messages=[
+                    {"role": "system", "content": RELEVANCE_JUDGE_PROMPT},
+                    {"role": "user", "content": user_msg},
+                ],
+                temperature=0.0,
+                max_tokens=4,
+            ),
+            timeout=_RELEVANCE_TIMEOUT,
+        )
+        verdict = (resp.choices[0].message.content or "").strip().upper()
+        irrelevant = verdict.startswith("NO")
+        _RELEVANCE_CACHE[cache_key] = irrelevant
+        if irrelevant:
+            print(f"[relevance judge] 跑题拒答：{query!r}")
+        return irrelevant
+    except Exception as e:
+        print(f"[relevance judge] 失败 fail-open：{e}")
+        return False  # 失败时不拦截
 
 
 # 英文 chunk 想"挤进" top-k，至少要满足这个 BM25 分数。
@@ -743,7 +825,18 @@ def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000)
     if not parts:
         return ""
 
-    header = "以下是从刘春生教授团队发表的论文中检索到的相关内容，回答时必须以这些内容为依据，不得编造论文中没有的信息：\n\n"
+    header = (
+        "以下是从刘春生教授团队发表的论文中检索到的相关内容，回答时必须以这些内容为依据，不得编造论文中没有的信息。\n\n"
+        "【关键纪律】检索系统按关键词重叠度排序，**沾关键词 ≠ 真正回答了用户的问题**。请你在动笔之前，\n"
+        "先判断以下参考资料是否**直接**论述了用户所问的话题：\n"
+        "  · 用户问『市场现状/价格/产销』而资料只讲化学成分、质量控制 → 属于跑题；\n"
+        "  · 用户问『某药材的真菌毒素』而资料只是中药材通用真菌毒素综述、未具体研究该药材 → 属于跑题；\n"
+        "  · 用户问『某具体加工步骤』而资料只讲产地分布、本草考证 → 属于跑题。\n"
+        "遇到上述情况，请明确告诉用户：『目前团队收录的论文中暂时没有直接研究"
+        "[用户问题主题] 的文献，但相关文献中提到了 …』，再把参考资料里**真实存在**的内容\n"
+        "客观转述，**严禁**为了把答案写满而把相关但不切题的内容硬说成"
+        "对用户问题的回答。\n\n"
+    )
     return header + "\n".join(parts)
 
 
