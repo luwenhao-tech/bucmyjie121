@@ -206,7 +206,41 @@ def tokenize(text: str) -> List[str]:
         # 也加入单字（但权重低，靠频率自然调节）
         for ch in seg:
             cn_tokens.append(ch)
-    return en_words + cn_tokens
+    # 数字/年份：文件名和正文里出现的 "2025""2020""2351" 这类年份/编号也保留
+    num_tokens = re.findall(r'\d{2,}', text)
+    return en_words + cn_tokens + num_tokens
+
+
+# ============ chunk 打分用的 token 空间 ============
+# 只用 chunk.text 打分会漏掉「关键词只在文件名/标题里」的场景：
+# 例如《2025版中国药典—桑白皮.docx》正文全是【性状】【鉴别】条文——
+# 「2025」「药典」这些词只在文件名里出现——用户问「2025 版药典桑白皮」
+# 时该 chunk 完全命不上，会被其他老论文挤掉。
+#
+# 修法：把 filename + title 一并 tokenize，与正文 token 合并后一起参与
+# BM25 打分。filename token 复制若干次以软加权，让文件名里的关键词
+# 有明显竞争力，但不至于完全主导排序、把内容不匹配的旧文件顶上来。
+# build_index 的 doc_freq 和 search 的每 chunk tf 都走同一个 helper 保证一致。
+FILENAME_META_BOOST = 3   # 文件名 / 标题 token 复制的次数（软加权系数）
+
+
+def _chunk_tokens(chunk: Dict) -> List[str]:
+    """chunk 打分用的 token 列表：正文 + filename + title（后两者软加权）。"""
+    tokens = tokenize(chunk.get("text", ""))
+    meta_parts = []
+    filename = chunk.get("filename", "")
+    if filename:
+        # 去掉扩展名，避免 "pdf""docx" 等通用后缀污染 doc_freq
+        stem = re.sub(r"\.(pdf|PDF|docx|DOCX|xlsx|XLSX|txt)$", "", filename)
+        meta_parts.append(stem)
+    title = chunk.get("title", "")
+    if title and title not in meta_parts:
+        meta_parts.append(title)
+    if meta_parts:
+        meta_tokens = tokenize(" ".join(meta_parts))
+        for _ in range(FILENAME_META_BOOST):
+            tokens.extend(meta_tokens)
+    return tokens
 
 
 # ============ 英文 PDF → 中文摘要（供 BM25 中文检索）============
@@ -486,10 +520,10 @@ def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, 
                 print(f"  [错误] {xlsx_file.name}: {e}")
                 results[xlsx_file.name] = -1
 
-    # 计算文档频率（IDF 用）
+    # 计算文档频率（IDF 用）—— 统一用 _chunk_tokens，让 filename/title 也计入
     doc_freq: Dict[str, int] = Counter()
     for chunk in all_chunks:
-        tokens = set(tokenize(chunk["text"]))
+        tokens = set(_chunk_tokens(chunk))
         for token in tokens:
             doc_freq[token] += 1
 
@@ -609,7 +643,76 @@ async def search_async(query: str, top_k: int = TOP_K) -> List[Dict]:
     if await _is_retrieval_irrelevant(query, results):
         return []
 
+    # 官方权威文件优先：query 明显在问药典/团标时，强制 pin 相关权威文件
+    results = _enforce_authoritative_pin(query, results, top_k=top_k)
+
     return results
+
+
+# ============ 官方权威文件 pin（药典 / 团标优先）============
+# 用户明确要求：只要提到"药典"，一律优先 2025 版药典条文；
+# 提到"团体标准 / 保健食品"时优先团标 PDF。
+# 光靠 BM25 排序不稳（xlsx 里堆积大量"药典"字样容易霸榜），
+# 这里直接按文件名硬 pin：命中即置顶。
+AUTHORITATIVE_FILES = {
+    # (query 触发关键词元组, 目标文件名前缀)
+    "pharmacopoeia_2025": (
+        ("药典", "中国药典", "2025 版", "2025版", "2025 年版", "2025年版", "pharmacopoeia"),
+        ("2025版中国药典—桑白皮.docx", "2025版中国药典—2351 真菌毒素测定法.docx"),
+    ),
+    "health_food_standard": (
+        ("团体标准", "团标", "保健食品", "T/CNHFA"),
+        ("保健食品用原料桑白皮团体标准.pdf",),
+    ),
+}
+
+
+def _query_hits_authoritative(query: str) -> List[str]:
+    """返回本次 query 命中的权威文件名列表（按定义顺序）。"""
+    q_lower = query.lower()
+    hits: List[str] = []
+    for _, (keywords, files) in AUTHORITATIVE_FILES.items():
+        if any(kw.lower() in q_lower for kw in keywords):
+            for f in files:
+                if f not in hits:
+                    hits.append(f)
+    return hits
+
+
+def _enforce_authoritative_pin(query: str, results: List[Dict], top_k: int) -> List[Dict]:
+    """query 命中权威触发词时，把对应权威文件的 chunk pin 到 top-k 前排。
+
+    - 从当前 results 里挑最多 2 条属于权威文件的 chunk 移到最前（保留原分数排序）
+    - 如果当前 results 里根本没有权威文件的 chunk，重新拉一次原始 search（大池），
+      把权威文件的最高分 chunk 顶进来
+    - 只做"前 2 位保底"，避免所有 top-k 都被权威文件霸占、把其他相关论文全挤掉
+    """
+    if not results:
+        return results
+    target_files = _query_hits_authoritative(query)
+    if not target_files:
+        return results
+
+    target_set = set(target_files)
+    pinned = [r for r in results if r.get("filename") in target_set]
+    others = [r for r in results if r.get("filename") not in target_set]
+
+    # 已经有至少 1 条权威 chunk 进 top-k：把它们置顶即可
+    if pinned:
+        pinned.sort(key=lambda r: r.get("score", 0), reverse=True)
+        return (pinned + others)[:top_k]
+
+    # 没有权威 chunk 进 top-k：从大池里捞
+    pool = search(query, top_k=200)
+    pool_pinned = [r for r in pool if r.get("filename") in target_set]
+    if not pool_pinned:
+        return results
+    pool_pinned.sort(key=lambda r: r.get("score", 0), reverse=True)
+    # 顶入前 2 位（不足则有几条顶几条），其余保留原 results
+    lead = pool_pinned[:min(2, top_k)]
+    lead_ids = {(r.get("filename"), r.get("chunk_index")) for r in lead}
+    tail = [r for r in results if (r.get("filename"), r.get("chunk_index")) not in lead_ids]
+    return (lead + tail)[:top_k]
 
 
 # ============ 相关性裁判（防止 BM25 高分但内容跑题）============
@@ -767,8 +870,11 @@ def search(query: str, top_k: int = TOP_K) -> List[Dict]:
     scores = []
     for i, chunk in enumerate(chunks):
         doc_text = chunk["text"]
+        # 打分 token 空间：正文 + filename + title（后两者软加权），
+        # 与 build_index 阶段的 doc_freq 计算保持一致
+        doc_tokens = _chunk_tokens(chunk)
+        # doc_len 依旧用正文字符数，避免文件名极短时被 BM25 长度归一因子放大
         doc_len = len(doc_text)
-        doc_tokens = tokenize(doc_text)
         tf_counter = Counter(doc_tokens)
 
         score = 0.0
