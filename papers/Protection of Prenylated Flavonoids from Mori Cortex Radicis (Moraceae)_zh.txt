@@ -1,3 +1,3 @@
 标题：桑白皮（Mori Cortex Radicis）中异戊烯基黄酮类化合物对一氧化氮诱导的神经母细胞瘤SH-SY5Y细胞死亡的保护作用
-关键词：桑白皮，桑根皮，异戊烯基黄酮，异戊烯基黄酮醇，异戊烯基二氢黄酮，桑酮，桑根酮，神经保护，一氧化氮，硝基化应激，SH-SY5Y细胞，MTT法，细胞活力
-摘要：从桑白皮（桑根皮，Mori Cortex Radicis）的甲醇提取物中分离得到7个异戊烯基黄酮类化合物（licoflavone C、cyclomulberrin、neocyclomorusin、sanggenon I、morusin、kuwanon U、kuwanon E）和3个2-芳基苯并呋喃类化合物（moracin P、moracin O、mulberrofuran Q）。通过MTT还原法检测发现，其中6个异戊烯基黄酮（化合物2-7）能剂量依赖性地保护神经母细胞瘤SH-SY5Y细胞免受硝普钠诱导的一氧化氮介导的细胞死亡，且C-3位异戊烯基黄酮（如cyclomulberrin、neocyclomorusin、morusin）的保护作用强于异戊烯基二氢黄酮（如sanggenon I、kuwanon U、kuwanon E），而缺乏C-3异戊烯基的黄酮和2-芳基苯并呋喃类化合物无保护作用。
+关键词：桑白皮，桑根皮，异戊烯基黄酮，异戊烯基黄酮醇，异戊烯基二氢黄酮，桑酮，桑黄酮，神经保护，一氧化氮，硝基氧化应激，SH-SY5Y细胞，MTT法
+摘要：从桑白皮（桑根皮）甲醇提取物中分离得到7个异戊烯基黄酮类化合物（licoflavone C、cyclomulberrin、neocyclomorusin、sanggenon I、morusin、kuwanon U、kuwanon E）和3个2-芳基苯并呋喃类化合物（moracin P、moracin O、mulberrofuran Q），采用MTT还原法评估其对硝普钠诱导的SH-SY5Y神经母细胞瘤细胞死亡的保护作用。结果显示，C-3位异戊烯基黄酮（cyclomulberrin、neocyclomorusin、morusin）和异戊烯基二氢黄酮（sanggenon I、kuwanon U、kuwanon E）呈剂量依赖性增强细胞活力，而缺乏C-3异戊烯基的licoflavone C及2-芳基苯并呋喃类化合物无保护作用，表明部分异戊烯基黄酮类成分可能通过抑制硝基氧化应激介导的细胞死亡发挥神经保护作用。

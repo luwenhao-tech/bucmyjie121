@@ -77,6 +77,38 @@ def extract_text_from_docx(docx_path: str) -> str:
     return "\n".join(parts)
 
 
+# ============ PowerPoint (.pptx) 解析 ============
+def extract_text_from_pptx(pptx_path: str) -> str:
+    """从 .pptx 提取全部文本（每张幻灯片的文本框 + 表格单元格 + 备注）"""
+    from pptx import Presentation
+    prs = Presentation(pptx_path)
+    parts = []
+    for slide_idx, slide in enumerate(prs.slides, 1):
+        slide_parts = [f"[幻灯片 {slide_idx}]"]
+        for shape in slide.shapes:
+            # 文本框
+            if shape.has_text_frame:
+                for para in shape.text_frame.paragraphs:
+                    txt = "".join(run.text for run in para.runs).strip()
+                    if txt:
+                        slide_parts.append(txt)
+            # 表格
+            if shape.has_table:
+                for row in shape.table.rows:
+                    for cell in row.cells:
+                        cell_text = cell.text.strip()
+                        if cell_text:
+                            slide_parts.append(cell_text)
+        # 演讲者备注
+        if slide.has_notes_slide:
+            notes = slide.notes_slide.notes_text_frame.text.strip() if slide.notes_slide.notes_text_frame else ""
+            if notes:
+                slide_parts.append(f"[备注] {notes}")
+        if len(slide_parts) > 1:
+            parts.append("\n".join(slide_parts))
+    return "\n\n".join(parts)
+
+
 # ============ Excel 解析 ============
 def extract_papers_from_excel(xlsx_path: str) -> List[Dict[str, str]]:
     import openpyxl
@@ -231,7 +263,7 @@ def _chunk_tokens(chunk: Dict) -> List[str]:
     filename = chunk.get("filename", "")
     if filename:
         # 去掉扩展名，避免 "pdf""docx" 等通用后缀污染 doc_freq
-        stem = re.sub(r"\.(pdf|PDF|docx|DOCX|xlsx|XLSX|txt)$", "", filename)
+        stem = re.sub(r"\.(pdf|PDF|docx|DOCX|xlsx|XLSX|pptx|PPTX|txt)$", "", filename)
         meta_parts.append(stem)
     title = chunk.get("title", "")
     if title and title not in meta_parts:
@@ -389,10 +421,11 @@ def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, 
     pdf_files = list(papers_path.glob("*.pdf")) + list(papers_path.glob("*.PDF"))
     xlsx_files = list(papers_path.glob("*.xlsx")) + list(papers_path.glob("*.XLSX"))
     docx_files = list(papers_path.glob("*.docx")) + list(papers_path.glob("*.DOCX"))
+    pptx_files = list(papers_path.glob("*.pptx")) + list(papers_path.glob("*.PPTX"))
     # 只收 _ocr.txt；显式排除 _zh.txt（中文摘要 sidecar，已经在 PDF 循环里以原 PDF 名义注入索引）
     txt_files = [p for p in papers_path.glob("*_ocr.txt") if not p.name.endswith(ZH_SUMMARY_SUFFIX)]
 
-    if not pdf_files and not xlsx_files and not docx_files and not txt_files:
+    if not pdf_files and not xlsx_files and not docx_files and not pptx_files and not txt_files:
         print(f"[提示] {papers_dir}/ 目录下没有可处理的文件")
         return {}
 
@@ -497,6 +530,32 @@ def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, 
             except Exception as e:
                 print(f"  [错误] {docx_file.name}: {e}")
                 results[docx_file.name] = -1
+
+    # 处理 PowerPoint (.pptx)
+    if pptx_files:
+        print(f"\n{'='*50}")
+        print(f"处理 PowerPoint：{len(pptx_files)} 个文件")
+        print(f"{'='*50}\n")
+        for pptx_file in sorted(pptx_files):
+            try:
+                text = extract_text_from_pptx(str(pptx_file))
+                if not text.strip():
+                    print(f"  [警告] {pptx_file.name} 文本为空，跳过")
+                    results[pptx_file.name] = 0
+                    continue
+                title = pptx_file.stem
+                chunks = chunk_text(text)
+                for chunk in chunks:
+                    all_chunks.append({
+                        "text": chunk,
+                        "title": title,
+                        "filename": pptx_file.name,
+                    })
+                print(f"  [完成] {pptx_file.name} → {len(chunks)} 个文本块")
+                results[pptx_file.name] = len(chunks)
+            except Exception as e:
+                print(f"  [错误] {pptx_file.name}: {e}")
+                results[pptx_file.name] = -1
 
     # 处理 Excel
     if xlsx_files:
