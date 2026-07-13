@@ -445,10 +445,37 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
             rag_context = ""  # 闲聊：不拒答也不注入 RAG
         else:
             try:
-                # 深度思考模式 RAG 多检索一些片段，让回答自然变厚
-                rag_top_k = 10 if req.think else 5
+                # 审稿模式：top_k 拉高，且强制关键词二次召回（药典/含量测定/HPLC）
+                # 目的是让"数值核验"步骤有肉可核，不再大面积"本项跳过"。
+                if is_audit:
+                    rag_top_k = 15
+                else:
+                    rag_top_k = 10 if req.think else 5
                 # 中文 query 自动扩展为「中文+英文术语」，命中英文 PDF 的全文 chunk
                 results = await rag_search_async(req.prompt, top_k=rag_top_k)
+
+                # 审稿模式：追加固定关键词召回，合并去重
+                if is_audit:
+                    forced_queries = [
+                        "桑白皮 含量测定 药典",
+                        "桑白皮 HPLC mg/g",
+                        "桑白皮 氧化白藜芦醇 桑根酮",
+                    ]
+                    seen_ids = {(r.get("filename"), (r.get("text") or "")[:50]) for r in results}
+                    for fq in forced_queries:
+                        try:
+                            extra = await rag_search_async(fq, top_k=5)
+                        except Exception:
+                            continue
+                        for r in extra:
+                            key = (r.get("filename"), (r.get("text") or "")[:50])
+                            if key in seen_ids:
+                                continue
+                            if r.get("score", 0) < 10:  # 关键词召回门槛稍放宽
+                                continue
+                            seen_ids.add(key)
+                            results.append(r)
+
                 # score>=20 才认为命中；否则触发拒答，避免大模型瞎编
                 if results and results[0]["score"] >= 20:
                     rag_context = format_context_for_prompt(results)
