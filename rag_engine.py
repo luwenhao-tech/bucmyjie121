@@ -974,14 +974,31 @@ def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000)
 
     max_chars 默认 6000：deepseek 64K context 完全够用，3000 在 top_k=10 时
     截断太狠会让"深度思考多检索"白费。
+
+    按 filename 聚合：同一篇论文的多个 chunk 合并为一条【参考X】，最多保留
+    命中最高的 3 段，避免同一 filename 被列成"参考1/参考3/参考6"多个条目。
     """
     if not search_results:
         return ""
 
+    # 按 filename 分组，保持首次出现顺序（=最高分先出现）
+    grouped: Dict[str, Dict] = {}
+    order: List[str] = []
+    for item in search_results:
+        fn = item.get("filename") or item.get("title") or "unknown"
+        if fn not in grouped:
+            grouped[fn] = {"title": item.get("title") or fn, "chunks": []}
+            order.append(fn)
+        if len(grouped[fn]["chunks"]) < 3:  # 每篇最多 3 段
+            grouped[fn]["chunks"].append(item.get("text", ""))
+
     parts = []
     total_len = 0
-    for i, item in enumerate(search_results, 1):
-        entry = f"【参考{i}】（来源：{item['title']}）\n{item['text']}\n"
+    for i, fn in enumerate(order, 1):
+        g = grouped[fn]
+        merged_text = "\n---\n".join(g["chunks"])
+        hit_note = f"（共命中 {len(g['chunks'])} 段）" if len(g["chunks"]) > 1 else ""
+        entry = f"【参考{i}】（来源：{g['title']}）{hit_note}\n{merged_text}\n"
         if total_len + len(entry) > max_chars:
             break
         parts.append(entry)
