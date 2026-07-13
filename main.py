@@ -360,6 +360,7 @@ class ChatRequest(BaseModel):
     user_name: Optional[str] = None
     user_id: Optional[str] = None
     intent: Optional[str] = None  # identify | concept | exam | compare
+    mode: Optional[str] = None  # "audit" = 审稿模式（三重核验）；默认讲课
 
 
 @app.post("/api/chat")
@@ -413,8 +414,14 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
         return StreamingResponse(meta_stream(), media_type="text/event-stream")
 
     # 自动识别意图（前端不再传，全部由后端判别）
-    detected_intent = await classify_intent(req.prompt, has_image=bool(req.image))
-    intent_extra = resolve_intent_extra(detected_intent)
+    # 审稿模式不分意图，走固定五步核验流程
+    is_audit = (req.mode == "audit")
+    if is_audit:
+        detected_intent = "audit"
+        intent_extra = ""
+    else:
+        detected_intent = await classify_intent(req.prompt, has_image=bool(req.image))
+        intent_extra = resolve_intent_extra(detected_intent)
     if detected_intent:
         prompt_for_log = f"[意图:{detected_intent}] " + prompt_for_log
 
@@ -461,6 +468,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
             image_data=req.image, user_name=user_name,
             extra_system=intent_extra,
             rag_context=rag_context,
+            mode=req.mode or "",
         )
         text = strip_followup(text)
         log_chat(client_ip, user_agent, user_name, user_id, prompt_for_log, text, req.think, int((time.time() - started) * 1000))
@@ -476,6 +484,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                 image_data=req.image, user_name=user_name,
                 extra_system=intent_extra,
                 rag_context=rag_context,
+                mode=req.mode or "",
             ):
                 # reasoning（CoT）单独透传给前端展示，不进正文、不落库
                 if kind == "reasoning":

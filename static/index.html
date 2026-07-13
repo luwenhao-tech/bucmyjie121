@@ -1071,6 +1071,7 @@
       <input type="file" id="imgInput" accept="image/jpeg,image/png,image/webp" style="display:none;" />
       <button id="imgBtn" type="button" title="上传药材图片，AI 帮您鉴别" style="background:#fff;color:#a83224;border:1.5px solid #a83224;border-radius:20px;padding:0 12px;font-size:15px;font-family:inherit;cursor:pointer;height:42px;flex-shrink:0;white-space:nowrap;">📷</button>
       <button id="thinkToggle" type="button" title="开启后用推理模型，回答更深入但稍慢" style="background:#fff;color:#3a8f7a;border:1.5px solid #3a8f7a;border-radius:20px;padding:0 12px;font-size:13px;font-family:inherit;cursor:pointer;letter-spacing:1px;height:42px;flex-shrink:0;white-space:nowrap;">深度思考</button>
+      <button id="auditToggle" type="button" title="开启后走文献审稿模式：文献分类→数值核验→方法学审查→可靠性判定→修正答案" style="background:#fff;color:#a83224;border:1.5px solid #a83224;border-radius:20px;padding:0 12px;font-size:13px;font-family:inherit;cursor:pointer;letter-spacing:1px;height:42px;flex-shrink:0;white-space:nowrap;">🔍 审稿</button>
       <button id="send">发送</button>
       <button id="clear" class="clear">清空</button>
     </div>
@@ -1813,6 +1814,26 @@ if (thinkBtn) {
   });
 }
 
+/* ============ 审稿模式开关 ============ */
+let auditMode = false;
+const auditBtn = $("auditToggle");
+if (auditBtn) {
+  auditBtn.addEventListener("click", () => {
+    auditMode = !auditMode;
+    if (auditMode) {
+      auditBtn.style.background = "#a83224";
+      auditBtn.style.color = "#fff";
+      auditBtn.style.boxShadow = "0 2px 8px rgba(168,50,36,0.35)";
+      auditBtn.textContent = "🔍 审稿·开";
+    } else {
+      auditBtn.style.background = "#fff";
+      auditBtn.style.color = "#a83224";
+      auditBtn.style.boxShadow = "none";
+      auditBtn.textContent = "🔍 审稿";
+    }
+  });
+}
+
 /* ============ 历史记录管理 ============ */
 const HIST_KEY = "tcm_chat_sessions_v1";
 let currentSessionId = null;
@@ -2231,6 +2252,7 @@ async function send() {
       },
       body: JSON.stringify({
         prompt, history, stream: true, think: thinkMode, image,
+        mode: auditMode ? "audit" : "",
         user_name: localStorage.getItem("tcm_user_name") || "",
         user_id: localStorage.getItem("tcm_user_id") || "",
       }),
