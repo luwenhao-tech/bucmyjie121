@@ -494,6 +494,16 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                 full_answer += token
                 # 检查累计文本里是否已经出现了 💬 行的开头：一旦出现，停止往前端流
                 idx = full_answer.find("💬")
+                # 审稿模式复读截断：DeepSeek 长回答末端偶尔会把整份六步报告从头复读。
+                # 检测"### 一、文献分类"出现第二次即立刻截断，把重复部分丢弃。
+                # 只在审稿模式生效，不影响讲课模式。
+                if req.mode == "audit":
+                    audit_marker = "### 一、文献分类"
+                    first = full_answer.find(audit_marker)
+                    if first != -1:
+                        second = full_answer.find(audit_marker, first + len(audit_marker))
+                        if second != -1 and (idx == -1 or second < idx):
+                            idx = second
                 if idx == -1:
                     safe_until = len(full_answer)
                 else:
@@ -502,7 +512,18 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                     delta = full_answer[emitted_len:safe_until]
                     emitted_len = safe_until
                     yield f"data: {json.dumps({'token': delta}, ensure_ascii=False)}\n\n"
-                # 出现了 💬 之后的内容直接丢弃，不再下发
+                # 出现了 💬 或复读起点之后的内容直接丢弃，不再下发
+            # 审稿模式：截掉复读尾巴 + 追加固定收尾
+            if req.mode == "audit":
+                audit_marker = "### 一、文献分类"
+                first = full_answer.find(audit_marker)
+                if first != -1:
+                    second = full_answer.find(audit_marker, first + len(audit_marker))
+                    if second != -1:
+                        full_answer = full_answer[:second].rstrip()
+                        tail = "\n\n—— 本轮核查报告完 ——"
+                        yield f"data: {json.dumps({'token': tail}, ensure_ascii=False)}\n\n"
+                        full_answer += tail
             # 流结束：剥掉 💬 行后落库
             full_answer = strip_followup(full_answer)
             yield "data: [DONE]\n\n"
