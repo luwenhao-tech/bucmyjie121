@@ -33,7 +33,7 @@
   /* 整体三栏布局：左侧 + 中间主区 + 右侧 */
   .layout {
     display: grid;
-    grid-template-columns: 1fr minmax(0, 960px) 1fr;
+    grid-template-columns: minmax(220px, 1fr) minmax(0, 960px) minmax(220px, 1fr);
     grid-template-rows: minmax(0, 1fr);
     gap: 18px;
     padding: 18px;
@@ -583,7 +583,7 @@
   .drawer-trigger { display: none; }
   .drawer-mask { display: none; }
 
-  @media (max-width: 1080px) {
+  @media (max-width: 1400px) {
     body { overflow: hidden; }
     .layout {
       grid-template-columns: 1fr;
@@ -791,7 +791,7 @@
   /* ============ 移动端横屏适配 ============ */
   /* 用 dvh 替代 vh：iOS Safari 地址栏伸缩时高度自适应 */
   @supports (height: 100dvh) {
-    @media (max-width: 1280px) {
+    @media (max-width: 1400px) {
       .layout { height: 100dvh; }
       .main { height: 100dvh; }
     }
