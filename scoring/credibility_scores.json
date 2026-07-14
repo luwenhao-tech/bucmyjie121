@@ -1,0 +1,3130 @@
+{
+  "2025版中国药典—桑白皮.docx": {
+    "doc_kind": "药典",
+    "study_type_score": 1.0,
+    "journal_tier_score": 1.0,
+    "methodology_score": 1.0,
+    "recency_score": 1.0,
+    "consensus_score": 1.0,
+    "meta": {
+      "title_cn": "2025版中国药典—桑白皮",
+      "journal": "中国药典",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "E",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "官方药典，所有维度满分",
+    "filename": "2025版中国药典—桑白皮.docx",
+    "credibility": 1.0,
+    "tier": "A"
+  },
+  "保健食品用原料桑白皮团体标准.pdf": {
+    "doc_kind": "团标",
+    "study_type_score": 1.0,
+    "journal_tier_score": 1.0,
+    "methodology_score": 1.0,
+    "recency_score": 1.0,
+    "consensus_score": 1.0,
+    "meta": {
+      "title_cn": "保健食品用原料桑白皮团体标准",
+      "journal": "中国营养保健食品协会团体标准",
+      "year": 2024,
+      "language": "zh"
+    },
+    "checklist_used": "E",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "团体标准，所有维度满分",
+    "filename": "保健食品用原料桑白皮团体标准.pdf",
+    "credibility": 1.0,
+    "tier": "A"
+  },
+  "Chemical constituents from the root bark of Morus alba.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.75,
+    "methodology_score": 0.7,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑（桑白皮）根皮中的化学成分及其化学分类学意义",
+      "journal": "Biochemical Systematics and Ecology",
+      "year": 2023,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "生物学重复n≥3",
+      "机制讨论"
+    ],
+    "checklist_miss": [
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "统计方法"
+    ],
+    "notes": "原始化学成分分离研究，方法学完整但缺少药理活性实验，无阴阳性对照和统计方法，期刊为Q2，时效性好",
+    "filename": "Chemical constituents from the root bark of Morus alba.pdf",
+    "credibility": 0.748,
+    "tier": "B"
+  },
+  "HPLC法同时测定不同基原崖桑皮和桑白皮中7种活性成分含量_黎海灵.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.6,
+    "methodology_score": 0.9,
+    "recency_score": 1.0,
+    "consensus_score": 0.8,
+    "meta": {
+      "title_cn": "HPLC法同时测定不同基原崖桑皮和桑白皮中7种活性成分含量",
+      "journal": "中国药房",
+      "year": 2021,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "方法学完整，样本量58批，所有checklist项均满足；期刊为北大核心，但非顶级，故journal_tier_score为0.60",
+    "filename": "HPLC法同时测定不同基原崖桑皮和桑白皮中7种活性成分含量_黎海灵.pdf",
+    "credibility": 0.77,
+    "tier": "B"
+  },
+  "42份桑树种质资源表型及叶片营养品质的分析_廖源源.pdf": {
+    "doc_kind": "农学品质原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.6,
+    "methodology_score": 0.8,
+    "recency_score": 1.0,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "42份桑树种质资源表型及叶片营养品质的分析",
+      "journal": "中国农学通报",
+      "year": 2026,
+      "language": "zh"
+    },
+    "checklist_used": "C",
+    "checklist_hits": [
+      "样本来源(品种/产地/采集时间)",
+      "样本量≥30",
+      "表型指标定义清晰",
+      "测定方法标准化",
+      "重复次数≥3",
+      "统计方法(方差分析/主成分/聚类)",
+      "数据可视化",
+      "结论有生态或育种意义"
+    ],
+    "checklist_miss": [],
+    "notes": "农学品质原始研究，样本量42份≥30，表型与营养指标测定方法标准化，统计方法完整，结论有育种意义；期刊为北大核心，时效性高，共识度良好。",
+    "filename": "42份桑树种质资源表型及叶片营养品质的分析_廖源源.pdf",
+    "credibility": 0.74,
+    "tier": "B"
+  },
+  "市场现状.docx": {
+    "doc_kind": "市场分析",
+    "study_type_score": 0.4,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮行情走低 未来行情何去何从？",
+      "journal": "天地网讯",
+      "year": 2026,
+      "language": "zh"
+    },
+    "checklist_used": "F",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "市场分析类文献，非学术研究，数据来源为商家访谈与市场观察，缺乏系统方法论，期刊为普通资讯平台，时效性好但证据等级低",
+    "filename": "市场现状.docx",
+    "credibility": 0.53,
+    "tier": "C"
+  },
+  "桑产品加工技术及市场行情_丁立威.pdf": {
+    "doc_kind": "市场分析",
+    "study_type_score": 0.4,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.4,
+    "recency_score": 0.6,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑产品加工技术及市场行情",
+      "journal": "特种经济动植物",
+      "year": 2009,
+      "language": "zh"
+    },
+    "checklist_used": "F",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "市场分析/科普类文献，非原始研究，期刊为普通期刊，时效性较差（2009年），方法学无严格实验设计，共识度一般",
+    "filename": "桑产品加工技术及市场行情_丁立威.pdf",
+    "credibility": 0.45,
+    "tier": "C"
+  },
+  "桑白皮的本草考证_成胜荣.pdf": {
+    "doc_kind": "本草考证",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.7,
+    "recency_score": 1.0,
+    "consensus_score": 0.8,
+    "meta": {
+      "title_cn": "桑白皮的本草考证",
+      "journal": "中国野生植物资源",
+      "year": 2021,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "本草考证类文献，期刊为普通期刊，方法学按信息深度给0.70，时效性≤5年给1.0，共识度与药典一致给0.8",
+    "filename": "桑白皮的本草考证_成胜荣.pdf",
+    "credibility": 0.673,
+    "tier": "B"
+  },
+  "桑白皮化学成分、药理作用研究进展及其质量标志物预测_张嘉欣.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.75,
+    "methodology_score": 0.65,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮化学成分、药理作用研究进展及其质量标志物预测",
+      "journal": "中草药",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，非系统综述或Meta分析；期刊为中草药(CSCD核心)，方法学按综述信息深度给0.65，时效性2025年满分，共识度因无明确结论对比给0.6",
+    "filename": "桑白皮化学成分、药理作用研究进展及其质量标志物预测_张嘉欣.pdf",
+    "credibility": 0.677,
+    "tier": "B"
+  },
+  "LC-MS_MS在中药真菌毒素检测中的应用进展_许婧.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "LC-MS/MS在中药真菌毒素检测中的应用进展",
+      "journal": "分析测试学报",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，非原始研究；期刊为中文核心但非顶级，按普通期刊判0.55；方法学按综述信息深度给0.6；时效性2025年满分；共识度无法判断给0.6",
+    "filename": "LC-MS_MS在中药真菌毒素检测中的应用进展_许婧.pdf",
+    "credibility": 0.617,
+    "tier": "B"
+  },
+  "2025版中国药典—2351 真菌毒素测定法.docx": {
+    "doc_kind": "药典",
+    "study_type_score": 1.0,
+    "journal_tier_score": 1.0,
+    "methodology_score": 1.0,
+    "recency_score": 1.0,
+    "consensus_score": 1.0,
+    "meta": {
+      "title_cn": "2351 真菌毒素测定法",
+      "journal": "中国药典",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "E",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "官方药典标准，所有维度满分",
+    "filename": "2025版中国药典—2351 真菌毒素测定法.docx",
+    "credibility": 1.0,
+    "tier": "A"
+  },
+  "Benzofuran Derivatives from Cortex Mori Radicis and Their Cholinesterase-Inhibitory Activity.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.7,
+    "methodology_score": 0.8,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮中的苯并呋喃衍生物及其胆碱酯酶抑制活性",
+      "journal": "Molecules",
+      "year": 2024,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法"
+    ],
+    "checklist_miss": [
+      "动物细胞来源与伦理",
+      "机制讨论"
+    ],
+    "notes": "原始实验，Molecules为Q2/Q3期刊，方法学完整但缺少细胞来源伦理和机制讨论，共识度一般",
+    "filename": "Benzofuran Derivatives from Cortex Mori Radicis and Their Cholinesterase-Inhibitory Activity.pdf",
+    "credibility": 0.755,
+    "tier": "B"
+  },
+  "Bioactive Benzofuran Derivatives from Cortex Mori Radicis, and Their Neuroprotective and Analgesic Activities Mediated by mGluR1.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.7,
+    "methodology_score": 0.85,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮中具有mGluR1介导的神经保护和镇痛活性的苯并呋喃类衍生物",
+      "journal": "Molecules",
+      "year": 2017,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "checklist_miss": [],
+    "notes": "原始实验文献，Molecules为Q2/Q3期刊，时效性较低（2017年），共识度中等",
+    "filename": "Bioactive Benzofuran Derivatives from Cortex Mori Radicis, and Their Neuroprotective and Analgesic Activities Mediated by mGluR1.pdf",
+    "credibility": 0.675,
+    "tier": "B"
+  },
+  "Bioguided isolation, identification and bioactivity evaluation of anti-MRSA .pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.85,
+    "journal_tier_score": 0.85,
+    "methodology_score": 0.85,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑（桑白皮）抗耐甲氧西林金黄色葡萄球菌（MRSA）活性成分的生物活性导向分离、鉴定与评价",
+      "journal": "Journal of Ethnopharmacology",
+      "year": 2021,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "checklist_miss": [],
+    "notes": "SCI Q1期刊，原始药理研究，方法学完整，时效性好，共识度因结论新颖但未与药典直接对比给0.6",
+    "filename": "Bioguided isolation, identification and bioactivity evaluation of anti-MRSA .pdf",
+    "credibility": 0.848,
+    "tier": "B"
+  },
+  "Discovery and characterization of the flavonoids in Cortex Mori Radicis as .pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.85,
+    "journal_tier_score": 0.85,
+    "methodology_score": 0.85,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮中黄酮类化合物作为天然肠道硝基还原酶抑制剂的发现与表征",
+      "journal": "Chemico-Biological Interactions",
+      "year": 2022,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "checklist_miss": [
+      "动物细胞来源与伦理"
+    ],
+    "notes": "原始研究论文，方法学完整，但缺少动物细胞来源与伦理说明，共识度因无法判断主流一致性给0.6",
+    "filename": "Discovery and characterization of the flavonoids in Cortex Mori Radicis as .pdf",
+    "credibility": 0.848,
+    "tier": "B"
+  },
+  "Fungal Growth and Mycotoxins Production Types, Toxicities, Control Strategies, and Detoxification.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "真菌生长与霉菌毒素产生：类型、毒性、控制策略及脱毒",
+      "journal": "未知（书籍章节）",
+      "year": 2021,
+      "language": "en"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "书籍章节综述，非期刊论文，期刊层级按普通期刊处理；方法学按综述类给中等分；时效性好；共识度无法判断给0.6",
+    "filename": "Fungal Growth and Mycotoxins Production Types, Toxicities, Control Strategies, and Detoxification.pdf",
+    "credibility": 0.56,
+    "tier": "C"
+  },
+  "Isolation and identification of neuroprotective compoundsfrom Morus alba L. root bark against NMDA-induced retinal degeneration.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.65,
+    "methodology_score": 0.8,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑（桑白皮）根皮中抗NMDA诱导视网膜变性的神经保护化合物的分离与鉴定",
+      "journal": "Natural Product Research",
+      "year": 2026,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "checklist_miss": [
+      "动物细胞来源与伦理"
+    ],
+    "notes": "原始实验文献，期刊Natural Product Research为SCI Q3，时效性满分，方法学完整但缺少动物细胞来源与伦理说明，共识度因无直接药典或主流对照给0.6",
+    "filename": "Isolation and identification of neuroprotective compoundsfrom Morus alba L. root bark against NMDA-induced retinal degeneration.pdf",
+    "credibility": 0.742,
+    "tier": "B"
+  },
+  "Isolation,characterization and biological activities of phenolics from the.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.85,
+    "methodology_score": 0.85,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑（桑白皮）根皮中酚类化合物的分离、表征及生物活性研究",
+      "journal": "未明确指定，但根据作者单位及文献内容推测为SCI期刊",
+      "year": 2024,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "checklist_miss": [],
+    "notes": "原始实验文献，方法学完整，含分离、结构鉴定及活性测试，但期刊未明确给出，按SCI Q1推测给分，共识度因无法判断主流一致性给0.6",
+    "filename": "Isolation,characterization and biological activities of phenolics from the.pdf",
+    "credibility": 0.802,
+    "tier": "B"
+  },
+  "Isoprenylated Flavonoids and 2-Arylbenzofurans from the Root Bark of Morus alba L. and Their Cytotoxic Activity against HGC27 Cancer Cells.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.7,
+    "methodology_score": 0.8,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑（桑白皮）根皮中的异戊烯基黄酮类与2-芳基苯并呋喃类化合物及其对HGC27胃癌细胞的细胞毒活性",
+      "journal": "Molecules",
+      "year": 2024,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法"
+    ],
+    "checklist_miss": [
+      "动物细胞来源与伦理",
+      "机制讨论"
+    ],
+    "notes": "Molecules为Q2/Q3期刊，按表外规则给0.70；方法学完整，但缺少伦理声明和机制讨论，扣分",
+    "filename": "Isoprenylated Flavonoids and 2-Arylbenzofurans from the Root Bark of Morus alba L. and Their Cytotoxic Activity against HGC27 Cancer Cells.pdf",
+    "credibility": 0.755,
+    "tier": "B"
+  },
+  "Morusin induces apoptosis and autophagy.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.85,
+    "journal_tier_score": 0.85,
+    "methodology_score": 0.85,
+    "recency_score": 0.8,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "桑根酮通过JNK、ERK和PI3K/Akt信号通路诱导人肺癌细胞凋亡和自噬",
+      "journal": "Chemico-Biological Interactions",
+      "year": 2020,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "checklist_miss": [],
+    "notes": "SCI原始药理研究，方法学完整，期刊Q1，时效性良好，共识度较高",
+    "filename": "Morusin induces apoptosis and autophagy.pdf",
+    "credibility": 0.828,
+    "tier": "B"
+  },
+  "Occurrence and Characterization of Fungi and Mycotoxins in Contaminated Medicinal Herbs.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.7,
+    "methodology_score": 0.8,
+    "recency_score": 0.6,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "污染中药材中真菌和真菌毒素的发生与特征分析",
+      "journal": "Toxins",
+      "year": 2020,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "checklist_miss": [
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "机制讨论"
+    ],
+    "notes": "原始实验研究，期刊Toxins为SCI Q2，时效性略低（2020年），方法学较完整但缺少动物实验和机制讨论",
+    "filename": "Occurrence and Characterization of Fungi and Mycotoxins in Contaminated Medicinal Herbs.pdf",
+    "credibility": 0.705,
+    "tier": "B"
+  },
+  "Occurrence and analysis of mycotoxins in domestic Chinese herbal medicines.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.65,
+    "methodology_score": 0.6,
+    "recency_score": 0.8,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "国内中药材中真菌毒素（霉菌毒素）的发生与分析",
+      "journal": "Mycology",
+      "year": 2020,
+      "language": "en"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，非系统综述或Meta分析；期刊Mycology为SCI Q3，按表外规则给0.65；方法学按综述类给0.6（信息深度中等）；时效性2020年距2026年6年，给0.8；共识度与主流一致，给0.7",
+    "filename": "Occurrence and analysis of mycotoxins in domestic Chinese herbal medicines.pdf",
+    "credibility": 0.622,
+    "tier": "B"
+  },
+  "Protection of Prenylated Flavonoids from Mori Cortex Radicis (Moraceae).pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.75,
+    "methodology_score": 0.7,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮中异戊烯基黄酮类化合物对一氧化氮诱导的神经母细胞瘤SH-SY5Y细胞死亡的保护作用",
+      "journal": "Archives of Pharmacal Research",
+      "year": 2012,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法"
+    ],
+    "checklist_miss": [
+      "动物细胞来源与伦理",
+      "机制讨论"
+    ],
+    "notes": "原始药理实验，方法学较完整但缺伦理声明和机制讨论；期刊为SCI Q2，时效性差（2012年），共识度一般",
+    "filename": "Protection of Prenylated Flavonoids from Mori Cortex Radicis (Moraceae).pdf",
+    "credibility": 0.657,
+    "tier": "B"
+  },
+  "Quantitative Comparison of the Marker Compounds in Different Medicinal Parts of Morus alba L. Using High-Performance Liquid Chromatography-Diode Array Detector with.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.7,
+    "methodology_score": 0.8,
+    "recency_score": 0.8,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑不同药用部位标志化合物的定量比较：高效液相色谱-二极管阵列检测器结合化学计量学分析",
+      "journal": "Molecules",
+      "year": 2020,
+      "language": "en"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "HPLC-DAD定量方法完整，样本量充足（57个），方法学验证全面，但期刊Molecules为Q2/Q3，时效性略降（2020年），共识度因非药典标准方法给0.6",
+    "filename": "Quantitative Comparison of the Marker Compounds in Different Medicinal Parts of Morus alba L. Using High-Performance Liquid Chromatography-Diode Array Detector with.pdf",
+    "credibility": 0.725,
+    "tier": "B"
+  },
+  "Recent Advances on the Chemical CompositionPharmacological Properties and Produ.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.85,
+    "methodology_score": 0.65,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑（桑白皮）化学成分、药理活性及产品开发研究进展",
+      "journal": "Phytochemical Analysis",
+      "year": 2025,
+      "language": "en"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，非系统综述或Meta分析，study_type_score按综述0.5；期刊为SCI Q1，journal_tier_score给0.85；综述类methodology_score按信息深度给0.65；2025年发表，recency_score满分；共识度无法判断给0.6",
+    "filename": "Recent Advances on the Chemical CompositionPharmacological Properties and Produ.pdf",
+    "credibility": 0.702,
+    "tier": "B"
+  },
+  "Study on chemical composition, anti-inflammatory activity and quality control of the branch bark of Morus alba L..pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.85,
+    "methodology_score": 0.8,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑（桑白皮）枝条皮化学成分、抗炎活性及质量控制研究",
+      "journal": "Journal of Ethnopharmacology",
+      "year": 2025,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "checklist_miss": [],
+    "notes": "原始实验文献，含化学成分分离与抗炎活性评价，方法学完整，期刊为SCI Q1，时效性高，共识度因结论与主流一致但未明确引用药典标准给0.6",
+    "filename": "Study on chemical composition, anti-inflammatory activity and quality control of the branch bark of Morus alba L..pdf",
+    "credibility": 0.792,
+    "tier": "B"
+  },
+  "Three New Isoprenylated Flavonoids from the Root Bark of Morus alba.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.7,
+    "methodology_score": 0.7,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮根皮中三个新的异戊烯基黄酮类化合物",
+      "journal": "Molecules",
+      "year": 2016,
+      "language": "en"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "生物学重复n≥3"
+    ],
+    "checklist_miss": [
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "统计方法",
+      "机制讨论"
+    ],
+    "notes": "原始化学成分分离鉴定论文，方法学完整但缺乏药理活性实验，时效性较差（2016年），期刊Molecules为Q2/Q3，共识度一般",
+    "filename": "Three New Isoprenylated Flavonoids from the Root Bark of Morus alba.pdf",
+    "credibility": 0.645,
+    "tier": "B"
+  },
+  "UPLC-MS_MS法同时测定桑白皮中11种成分的含量_王苗.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.7,
+    "methodology_score": 0.9,
+    "recency_score": 1.0,
+    "consensus_score": 0.8,
+    "meta": {
+      "title_cn": "UPLC-MS/MS法同时测定桑白皮中11种成分的含量",
+      "journal": "中成药",
+      "year": 2024,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "方法学完整，样本18批，所有checklist项均满足，journal_tier按北大核心给0.70",
+    "filename": "UPLC-MS_MS法同时测定桑白皮中11种成分的含量_王苗.pdf",
+    "credibility": 0.795,
+    "tier": "B"
+  },
+  "“内外兼修”的桑白皮_丁兆平.pdf": {
+    "doc_kind": "科普",
+    "study_type_score": 0.4,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "内外兼修的桑白皮",
+      "journal": "家庭中医药",
+      "year": 2018,
+      "language": "zh"
+    },
+    "checklist_used": "F",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "科普类文章，非学术研究，无原始实验或系统综述，期刊为普通科普期刊，方法学不适用标准checklist，按信息深度给0.5",
+    "filename": "“内外兼修”的桑白皮_丁兆平.pdf",
+    "credibility": 0.53,
+    "tier": "C"
+  },
+  "不同产地桑白皮中7种成分的含量测定及化学计量学评价_魏敏.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.65,
+    "methodology_score": 0.9,
+    "recency_score": 0.8,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "不同产地桑白皮中7种成分的含量测定及化学计量学评价",
+      "journal": "中药材",
+      "year": 2020,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "方法学完整，符合质量评价原始文献A类checklist全部10项，期刊为北大核心但非顶级，时效性5-10年，共识度因药典未规定含量测定项而略保守",
+    "filename": "不同产地桑白皮中7种成分的含量测定及化学计量学评价_魏敏.pdf",
+    "credibility": 0.732,
+    "tier": "B"
+  },
+  "不同产地桑白皮饮片中桑皮苷A质量分数的测定_远俊洋.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.8,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "不同产地桑白皮饮片中桑皮苷A质量分数的测定",
+      "journal": "生物加工过程",
+      "year": 2026,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "原始实验类，方法学完整，期刊为普通期刊，时效性高，共识度一般",
+    "filename": "不同产地桑白皮饮片中桑皮苷A质量分数的测定_远俊洋.pdf",
+    "credibility": 0.718,
+    "tier": "B"
+  },
+  "不同栽培年限桑白皮药材的品质比较研究_徐扬.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.8,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "不同栽培年限桑白皮药材的品质比较研究",
+      "journal": "时珍国医国药",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "原始实验类，方法学完整（HPLC指纹图谱+多成分含量+响应面优化+化学计量学），期刊为普通期刊（时珍国医国药），时效性高（2025年），共识度因结论与主流一致但无直接药典引用给0.6",
+    "filename": "不同栽培年限桑白皮药材的品质比较研究_徐扬.pdf",
+    "credibility": 0.718,
+    "tier": "B"
+  },
+  "中药材中真菌毒素的检测与脱毒研究进展_徐晓艳.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.75,
+    "methodology_score": 0.65,
+    "recency_score": 1.0,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "中药材中真菌毒素的检测与脱毒研究进展",
+      "journal": "中草药",
+      "year": 2024,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，非系统综述，信息综合较全面但缺乏独立见解，期刊层级高，时效性好，共识度较高",
+    "filename": "中药材中真菌毒素的检测与脱毒研究进展_徐晓艳.pdf",
+    "credibility": 0.688,
+    "tier": "B"
+  },
+  "中药材中黄曲霉毒素及赭曲霉毒素A污染的研究进展_刘蕊.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.55,
+    "recency_score": 0.8,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "中药材中黄曲霉毒素及赭曲霉毒素A污染的研究进展",
+      "journal": "中国药物警戒",
+      "year": 2020,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，非原始研究；期刊为普通期刊，非核心；方法学按综述信息深度给0.55；时效性5-10年；共识度无法判断给0.6",
+    "filename": "中药材中黄曲霉毒素及赭曲霉毒素A污染的研究进展_刘蕊.pdf",
+    "credibility": 0.577,
+    "tier": "C"
+  },
+  "中药材桑白皮、构树根皮药效差异的物质基础_李娜.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.7,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "中药材桑白皮、构树根皮药效差异的物质基础",
+      "journal": "未知期刊（疑似普通期刊或学位论文相关）",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "线性范围",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "对照品来源与纯度",
+      "系统适用性(理论塔板数/分离度)",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "notes": "原始实验（UPLC-MS/MS代谢组学），但期刊信息缺失（按普通期刊0.55），方法学缺少对照品来源、系统适用性、精密度、重复性、加样回收率等关键验证项，共识度因无明确结论对比给0.6",
+    "filename": "中药材桑白皮、构树根皮药效差异的物质基础_李娜.pdf",
+    "credibility": 0.698,
+    "tier": "B"
+  },
+  "中药材桑白皮与构树根皮药效成分差异分析_李娜.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.7,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "中药材桑白皮与构树根皮药效成分差异分析",
+      "journal": "蚕业科学",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "原始实验，方法学完整，期刊为普通期刊，时效性高，共识度中等",
+    "filename": "中药材桑白皮与构树根皮药效成分差异分析_李娜.pdf",
+    "credibility": 0.698,
+    "tier": "B"
+  },
+  "中药桑枝和桑白皮的品种、品质与药效的研究_杨文宇.pdf": {
+    "doc_kind": "学位",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "中药桑枝和桑白皮的品种、品质与药效的研究",
+      "journal": "学位论文",
+      "year": 2008,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [
+      "品种考证详实",
+      "品质研究方法多样（GC-MS、UV指纹、薄层色谱、SVM）",
+      "药效实验设计（镇咳祛痰、免疫、抗氧化、胰岛素受体模型）",
+      "虚拟筛选方法创新"
+    ],
+    "checklist_miss": [
+      "样本量未明确",
+      "重复性/统计方法描述不足",
+      "部分实验细节缺失"
+    ],
+    "notes": "博士学位论文，品种考证与品质研究方法较系统，但发表年份较早（2008），时效性低；非期刊发表，journal_tier按学位论文默认0.55；方法学完整度中等，有创新但细节不足",
+    "filename": "中药桑枝和桑白皮的品种、品质与药效的研究_杨文宇.pdf",
+    "credibility": 0.552,
+    "tier": "C"
+  },
+  "中药桑白皮及其伪品的鉴定_康玉龙.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "中药桑白皮及其伪品的鉴定",
+      "journal": "西北药学杂志",
+      "year": 1994,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "本草考证类文献，但发表于1994年，时效性低；期刊为普通期刊，层级较低；方法学为性状与显微比较，信息深度一般，无独立见解或引证详实，故给0.5",
+    "filename": "中药桑白皮及其伪品的鉴定_康玉龙.pdf",
+    "credibility": 0.53,
+    "tier": "C"
+  },
+  "中药桑白皮导数光谱鉴别的研究_李洪娟.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "中药桑白皮导数光谱鉴别的研究",
+      "journal": "中医药学报",
+      "year": 2011,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)"
+    ],
+    "checklist_miss": [
+      "对照品来源与纯度",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "notes": "普刊，方法学不完整，缺少对照品、系统适用性、精密度、重复性、回收率等关键验证，样本仅1批，时效性差",
+    "filename": "中药桑白皮导数光谱鉴别的研究_李洪娟.pdf",
+    "credibility": 0.53,
+    "tier": "C"
+  },
+  "中药桑白皮的化学成分Ⅰ～Ⅱ_竺叶青.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.5,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "中药桑白皮的化学成分Ⅰ～Ⅱ",
+      "journal": "未知",
+      "year": 1984,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "文献为1984年综述，期刊无法判断，时效性差，方法学按综述信息深度给0.5，共识度默认0.6",
+    "filename": "中药桑白皮的化学成分Ⅰ～Ⅱ_竺叶青.pdf",
+    "credibility": 0.507,
+    "tier": "C"
+  },
+  "亳州桑白皮本草考证_白华.pdf": {
+    "doc_kind": "本草考证",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.65,
+    "recency_score": 1.0,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "亳州桑白皮本草考证",
+      "journal": "第十八届全国药学史暨本草学术研讨会学术论文集",
+      "year": 2015,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "会议论文集，非正式期刊，journal_tier_score按普通期刊0.40；本草考证类methodology_score按信息深度给0.65，引证较详实但缺乏独立见解；recency_score按>10年给0.6，但本草考证不降权给1.0；consensus_score与药典及主流一致给0.7",
+    "filename": "亳州桑白皮本草考证_白华.pdf",
+    "credibility": 0.615,
+    "tier": "B"
+  },
+  "从桑白皮中提取药物成分桑根酮C及质量分析_郑尚永.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.45,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "从桑白皮中提取药物成分桑根酮C及质量分析",
+      "journal": "四川蚕业",
+      "year": 2008,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "提取分离流程"
+    ],
+    "checklist_miss": [
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "notes": "普刊，方法学不完整，缺少对照品、色谱条件、方法学验证等关键信息，时效性差",
+    "filename": "从桑白皮中提取药物成分桑根酮C及质量分析_郑尚永.pdf",
+    "credibility": 0.52,
+    "tier": "C"
+  },
+  "华瑞公司桑产品加工业务竞争战略研究_吴哲.pdf": {
+    "doc_kind": "学位",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.4,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "华瑞公司桑产品加工业务竞争战略研究",
+      "journal": "兰州大学硕士学位论文",
+      "year": 2024,
+      "language": "zh"
+    },
+    "checklist_used": "F",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "学位论文，非原始实验或药典标准，属市场/产业分析类，方法学按数据来源与分析深度给0.4，期刊层级按学位论文规则给0.55，时效性高，共识度无法判断给0.6",
+    "filename": "华瑞公司桑产品加工业务竞争战略研究_吴哲.pdf",
+    "credibility": 0.593,
+    "tier": "C"
+  },
+  "受黄曲霉污染的植物类中药饮片霉菌菌群特征分析_孙荣嵘.pdf": {
+    "doc_kind": "中文核心原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.7,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "受黄曲霉污染的植物类中药饮片霉菌菌群特征分析",
+      "journal": "药学研究",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "C",
+    "checklist_hits": [
+      "样本来源(品种/产地/采集时间)",
+      "样本量≥30",
+      "表型指标定义清晰",
+      "测定方法标准化",
+      "重复次数≥3",
+      "统计方法(方差分析/主成分/聚类)",
+      "数据可视化",
+      "结论有生态或育种意义"
+    ],
+    "checklist_miss": [],
+    "notes": "原始实验，方法学完整，但期刊为普通期刊，共识度一般",
+    "filename": "受黄曲霉污染的植物类中药饮片霉菌菌群特征分析_孙荣嵘.pdf",
+    "credibility": 0.698,
+    "tier": "B"
+  },
+  "国内桑属中药鉴定学序列比对结果.docx": {
+    "doc_kind": "中文核心原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "国内桑属中药鉴定学序列比对结果",
+      "journal": "未知",
+      "year": 2026,
+      "language": "zh"
+    },
+    "checklist_used": "C",
+    "checklist_hits": [
+      "样本来源(品种/产地/采集时间)",
+      "测定方法标准化",
+      "统计方法(方差分析/主成分/聚类)",
+      "数据可视化"
+    ],
+    "checklist_miss": [
+      "样本量≥30",
+      "表型指标定义清晰",
+      "重复次数≥3",
+      "结论有生态或育种意义"
+    ],
+    "notes": "方法学完整度中等：样本来源明确但未报告样本量，缺乏重复次数和统计检验细节；期刊层级按普通期刊判0.55；共识度因结论与主流一致但缺乏外部验证给0.6",
+    "filename": "国内桑属中药鉴定学序列比对结果.docx",
+    "credibility": 0.677,
+    "tier": "B"
+  },
+  "国内桑属植物学序列比对结果.docx": {
+    "doc_kind": "农学品质原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 0.6,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "国内桑属植物学序列比对结果",
+      "journal": "未知（文档文件）",
+      "year": 2020,
+      "language": "zh"
+    },
+    "checklist_used": "C",
+    "checklist_hits": [
+      "样本来源(品种/产地/采集时间)",
+      "测定方法标准化",
+      "统计方法(方差分析/主成分/聚类)",
+      "数据可视化"
+    ],
+    "checklist_miss": [
+      "样本量≥30",
+      "表型指标定义清晰",
+      "重复次数≥3",
+      "结论有生态或育种意义"
+    ],
+    "notes": "文档为内部报告，无正式期刊发表；方法学上使用了DNAMAN和MEGA7.0，但样本量、重复次数、统计方法细节不足；时效性按2020年出版计，距今6年，属5-10年区间；共识度因结论与主流DNA条形码研究一致，但缺乏外部验证",
+    "filename": "国内桑属植物学序列比对结果.docx",
+    "credibility": 0.617,
+    "tier": "B"
+  },
+  "国内桑属物种DNA序列数据清洗与分析报告 (1).pptx": {
+    "doc_kind": "学位",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "国内桑属物种DNA序列数据清洗与分析报告",
+      "journal": "学位论文/汇报PPT",
+      "year": 2026,
+      "language": "zh"
+    },
+    "checklist_used": "C",
+    "checklist_hits": [
+      "样本来源(品种/产地/采集时间)",
+      "样本量≥30",
+      "测定方法标准化",
+      "统计方法(方差分析/主成分/聚类)",
+      "数据可视化"
+    ],
+    "checklist_miss": [
+      "表型指标定义清晰",
+      "重复次数≥3",
+      "结论有生态或育种意义"
+    ],
+    "notes": "学位论文/汇报PPT，非正式期刊发表；方法学较完整但缺少重复次数和表型指标明确定义，共识度中等",
+    "filename": "国内桑属物种DNA序列数据清洗与分析报告 (1).pptx",
+    "credibility": 0.643,
+    "tier": "B"
+  },
+  "基于HPLC指纹图谱、主成分分析和聚类分析的炒桑白皮质量研究_赵凯.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.5,
+    "methodology_score": 0.7,
+    "recency_score": 0.8,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "基于HPLC指纹图谱、主成分分析和聚类分析的炒桑白皮质量研究",
+      "journal": "现代中药研究与实践",
+      "year": 2020,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "期刊为普通期刊，时效性较好，方法学完整，共识度一般",
+    "filename": "基于HPLC指纹图谱、主成分分析和聚类分析的炒桑白皮质量研究_赵凯.pdf",
+    "credibility": 0.655,
+    "tier": "B"
+  },
+  "基于~1H-NMR指纹图谱的四批市售桑白皮药材质量分析_王亚男.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.7,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "基于~1H-NMR指纹图谱的四批市售桑白皮药材质量分析",
+      "journal": "沈阳药科大学学报",
+      "year": 2017,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "notes": "期刊为普通期刊，时效性较差（2017年），方法学部分缺少线性范围、精密度、重复性、加样回收率和RSD报告等关键验证指标",
+    "filename": "基于~1H-NMR指纹图谱的四批市售桑白皮药材质量分析_王亚男.pdf",
+    "credibility": 0.608,
+    "tier": "B"
+  },
+  "基于《桑白皮及其混伪品的DNA条形码鉴定研究》对国内桑属物种ITS2序列数据清洗.docx": {
+    "doc_kind": "其他",
+    "study_type_score": 0.3,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.4,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "基于《桑白皮及其混伪品的DNA条形码鉴定研究》对国内桑属物种ITS2序列数据清洗",
+      "journal": "未提供",
+      "year": 2026,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "非正式发表文献，无期刊信息，属数据清洗分析报告，方法学简单，未提供完整实验细节，共识度无法判断给0.6",
+    "filename": "基于《桑白皮及其混伪品的DNA条形码鉴定研究》对国内桑属物种ITS2序列数据清洗.docx",
+    "credibility": 0.518,
+    "tier": "C"
+  },
+  "基于化学成分的桑白皮品质评价研究_郑甜碧.pdf": {
+    "doc_kind": "学位",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.85,
+    "recency_score": 0.8,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "基于化学成分的桑白皮品质评价研究",
+      "journal": "江苏大学硕士学位论文",
+      "year": 2020,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "学位论文，方法学完整（HPLC-MS定性+定量、指纹图谱、多批样本），但文献类型为学位论文，期刊层级按学位论文0.55，时效性5-10年，共识度因学位论文未发表无法确认主流共识",
+    "filename": "基于化学成分的桑白皮品质评价研究_郑甜碧.pdf",
+    "credibility": 0.653,
+    "tier": "B"
+  },
+  "基于指纹图谱和多成分含量测定结合化学模式识别的桑白皮粗皮与内皮的质量差异研究_钱延瑞.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.75,
+    "methodology_score": 0.8,
+    "recency_score": 1.0,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "基于指纹图谱和多成分含量测定结合化学模式识别的桑白皮粗皮与内皮的质量差异研究",
+      "journal": "中国中药杂志",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "网络首发论文，方法学完整，符合质量评价原始研究标准，期刊为CSCD核心，时效性极佳，共识度因网络首发暂未广泛引用而略降",
+    "filename": "基于指纹图谱和多成分含量测定结合化学模式识别的桑白皮粗皮与内皮的质量差异研究_钱延瑞.pdf",
+    "credibility": 0.777,
+    "tier": "B"
+  },
+  "基于熵权-TOPSIS对不同产地桑白皮药材的品质评价_张美琴.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.65,
+    "methodology_score": 0.8,
+    "recency_score": 1.0,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "基于熵权-TOPSIS对不同产地桑白皮药材的品质评价",
+      "journal": "中国实验方剂学杂志",
+      "year": 2023,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "HPLC指纹图谱与多成分含量测定方法学验证完整，样本覆盖多产地，熵权-TOPSIS综合评价方法新颖，但期刊为北大核心非顶级，故journal_tier_score略低",
+    "filename": "基于熵权-TOPSIS对不同产地桑白皮药材的品质评价_张美琴.pdf",
+    "credibility": 0.752,
+    "tier": "B"
+  },
+  "川、黔产桑白皮的品种调查_李振国.pdf": {
+    "doc_kind": "本草考证",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "川、黔产桑白皮的品种调查",
+      "journal": "中药材",
+      "year": 1991,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "本草考证类文献，引证详实有独立见解，但期刊层级较低（普通期刊），时效性差（>20年），共识度一般",
+    "filename": "川、黔产桑白皮的品种调查_李振国.pdf",
+    "credibility": 0.552,
+    "tier": "C"
+  },
+  "常见中药龙眼、滑石粉、桑白皮的真伪鉴别_来春潮.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.4,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.4,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "常见中药龙眼、滑石粉、桑白皮的真伪鉴别",
+      "journal": "中药园地",
+      "year": 1999,
+      "language": "zh"
+    },
+    "checklist_used": "F",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "普刊市场分析类文章，无系统实验方法，时效性差，期刊层级低，仅作经验性鉴别描述",
+    "filename": "常见中药龙眼、滑石粉、桑白皮的真伪鉴别_来春潮.pdf",
+    "credibility": 0.42,
+    "tier": "C"
+  },
+  "我省桑白皮及其伪品鉴别_王冬官.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "我省桑白皮及其伪品鉴别",
+      "journal": "福建中医药",
+      "year": 1996,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "普刊原始鉴别研究，方法学为形态与显微描述，无定量数据，时效性差，期刊层级低",
+    "filename": "我省桑白皮及其伪品鉴别_王冬官.pdf",
+    "credibility": 0.485,
+    "tier": "C"
+  },
+  "桑属药用植物特征.docx": {
+    "doc_kind": "本草考证",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑属药用植物特征",
+      "journal": "未知",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "本草考证类文献，引证详实有独立见解，但来源不明（非正式期刊或标准），journal_tier按无法判断给0.55，methodology按信息深度给0.65",
+    "filename": "桑属药用植物特征.docx",
+    "credibility": 0.643,
+    "tier": "B"
+  },
+  "桑源药材的历史沿革及现代研究进展_刘有志.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.7,
+    "methodology_score": 0.65,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑源药材的历史沿革及现代研究进展",
+      "journal": "中成药",
+      "year": 2023,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，非系统综述或Meta分析；期刊为中成药（北大核心），方法学按综述信息深度给0.65；时效性佳（2023年）；共识度无法明确判断给0.6",
+    "filename": "桑源药材的历史沿革及现代研究进展_刘有志.pdf",
+    "credibility": 0.665,
+    "tier": "B"
+  },
+  "桑白皮.xlsx": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.65,
+    "methodology_score": 0.8,
+    "recency_score": 1.0,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "不同产地桑白皮中7种成分的含量测定及化学计量学评价",
+      "journal": "中国实验方剂学杂志",
+      "year": 2023,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "系统适用性(理论塔板数/分离度)"
+    ],
+    "notes": "HPLC多成分定量方法学完整，仅缺系统适用性描述，期刊为北大核心，时效性好，共识度较高",
+    "filename": "桑白皮.xlsx",
+    "credibility": 0.752,
+    "tier": "B"
+  },
+  "桑白皮DNA条形码分析研究_刘宸浩.pdf": {
+    "doc_kind": "中文核心原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.7,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮DNA条形码分析研究",
+      "journal": "天津药学",
+      "year": 2026,
+      "language": "zh"
+    },
+    "checklist_used": "C",
+    "checklist_hits": [
+      "样本来源(品种/产地/采集时间)",
+      "样本量≥30",
+      "测定方法标准化",
+      "统计方法(方差分析/主成分/聚类)",
+      "数据可视化",
+      "结论有生态或育种意义"
+    ],
+    "checklist_miss": [
+      "重复次数≥3",
+      "表型指标定义清晰"
+    ],
+    "notes": "期刊为普通期刊，方法学完整但缺少重复次数和表型指标明确定义，共识度中等",
+    "filename": "桑白皮DNA条形码分析研究_刘宸浩.pdf",
+    "credibility": 0.698,
+    "tier": "B"
+  },
+  "桑白皮、炒桑白皮及其标准汤剂的质量评价方法及质量传递规律研究_郝丽霞.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.75,
+    "methodology_score": 0.9,
+    "recency_score": 1.0,
+    "consensus_score": 0.8,
+    "meta": {
+      "title_cn": "桑白皮、炒桑白皮及其标准汤剂的质量评价方法及质量传递规律研究",
+      "journal": "中国中药杂志",
+      "year": 2022,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "原始实验类，方法学完整，样本15批，所有checklist项均满足，期刊为中国中药杂志(CSCD核心)，时效性好，结论与主流一致",
+    "filename": "桑白皮、炒桑白皮及其标准汤剂的质量评价方法及质量传递规律研究_郝丽霞.pdf",
+    "credibility": 0.808,
+    "tier": "B"
+  },
+  "桑白皮不去粗皮与去粗皮指纹图谱及色度值的比较研究_刘佩仪.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.78,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮不去粗皮与去粗皮指纹图谱及色度值的比较研究",
+      "journal": "时珍国医国药",
+      "year": 2024,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "原始实验，UPLC指纹图谱方法学完整，但期刊为普通期刊，共识度一般",
+    "filename": "桑白皮不去粗皮与去粗皮指纹图谱及色度值的比较研究_刘佩仪.pdf",
+    "credibility": 0.714,
+    "tier": "B"
+  },
+  "桑白皮与伪品构树柘树的薄层层析鉴别_张敏娟.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮与伪品构树柘树的薄层层析鉴别",
+      "journal": "时珍国医国药",
+      "year": 2002,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "notes": "原始实验但发表于普通期刊，方法学缺少系统适用性、线性、精密度等关键验证指标，时效性差（2002年），共识度一般",
+    "filename": "桑白皮与伪品构树柘树的薄层层析鉴别_张敏娟.pdf",
+    "credibility": 0.588,
+    "tier": "C"
+  },
+  "桑白皮与易混淆品种红外光谱指纹谱的分析_孙静芸 (1).pdf": {
+    "doc_kind": "中文核心原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.75,
+    "methodology_score": 0.7,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮与易混淆品种红外光谱指纹谱的分析",
+      "journal": "中草药",
+      "year": 2002,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "对照品来源与纯度",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "notes": "原始实验，期刊为中草药（CSCD核心），但方法学仅报告了样品来源和红外光谱条件，缺少对照品信息、系统适用性、线性、精密度、重复性、回收率等关键验证指标，时效性差（2002年），共识度一般",
+    "filename": "桑白皮与易混淆品种红外光谱指纹谱的分析_孙静芸 (1).pdf",
+    "credibility": 0.657,
+    "tier": "B"
+  },
+  "桑白皮与蜜桑白皮及其相近品种的鉴别研究_任婧昱.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.55,
+    "recency_score": 0.6,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮与蜜桑白皮及其相近品种的鉴别研究",
+      "journal": "黑龙江中医药",
+      "year": 2015,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件部分(展开剂/波长)",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "色谱条件完整(柱/流动相/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "notes": "普刊，方法学完整度低，缺少系统适用性、精密度、重复性等关键验证指标，时效性一般",
+    "filename": "桑白皮与蜜桑白皮及其相近品种的鉴别研究_任婧昱.pdf",
+    "credibility": 0.57,
+    "tier": "C"
+  },
+  "桑白皮中21种无机元素的测定及其质量评价_王苗.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.9,
+    "recency_score": 1.0,
+    "consensus_score": 0.8,
+    "meta": {
+      "title_cn": "桑白皮中21种无机元素的测定及其质量评价",
+      "journal": "中国无机分析化学",
+      "year": 2024,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "方法学完整，样本17批，线性、精密度、回收率均达标；期刊为中文普刊，非核心，journal_tier_score偏低",
+    "filename": "桑白皮中21种无机元素的测定及其质量评价_王苗.pdf",
+    "credibility": 0.758,
+    "tier": "B"
+  },
+  "桑白皮中3个主要成分的分离与鉴定_魏华.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.7,
+    "recency_score": 0.6,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮中3个主要成分的分离与鉴定",
+      "journal": "中国中药杂志",
+      "year": 2014,
+      "language": "zh"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "纯度检测(HPLC>99%)"
+    ],
+    "checklist_miss": [
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "notes": "原始化学成分分离鉴定论文，方法学完整但缺少药理活性验证和统计方法，期刊为CSCD核心但非SCI，时效性超过10年",
+    "filename": "桑白皮中3个主要成分的分离与鉴定_魏华.pdf",
+    "credibility": 0.637,
+    "tier": "B"
+  },
+  "桑白皮伪品刺桑皮的生药鉴定_李振国.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮伪品刺桑皮的生药鉴定",
+      "journal": "中药材",
+      "year": 1994,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "对照品来源与纯度",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "notes": "1994年发表，时效性低；期刊为《中药材》属北大核心但当年为普通期刊；方法学仅薄层层析和紫外光谱，缺定量验证指标",
+    "filename": "桑白皮伪品刺桑皮的生药鉴定_李振国.pdf",
+    "credibility": 0.588,
+    "tier": "C"
+  },
+  "桑白皮伪品构树皮的生药鉴定_李振国.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮伪品构树皮的生药鉴定",
+      "journal": "中药材",
+      "year": 1997,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "对照品来源与纯度",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "notes": "期刊为《中药材》属北大核心但1997年刊，时效性差；方法学仅薄层鉴别，缺定量分析关键验证项；共识度一般，属早期鉴别研究",
+    "filename": "桑白皮伪品构树皮的生药鉴定_李振国.pdf",
+    "credibility": 0.588,
+    "tier": "C"
+  },
+  "桑白皮化学成分及其抗菌活性研究_古越涛.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.7,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮化学成分及其抗菌活性研究",
+      "journal": "中南药学",
+      "year": 2026,
+      "language": "zh"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "生物学重复n≥3",
+      "统计方法"
+    ],
+    "checklist_miss": [
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "机制讨论"
+    ],
+    "notes": "期刊为中文普刊，journal_tier_score较低；方法学基本完整但缺少剂量-效应关系和机制讨论；共识度因抗菌活性结论与已知文献一致但无药典直接支持给0.6",
+    "filename": "桑白皮化学成分及其抗菌活性研究_古越涛.pdf",
+    "credibility": 0.66,
+    "tier": "B"
+  },
+  "桑白皮化学成分的分离与鉴定_张国刚.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮化学成分的分离与鉴定",
+      "journal": "中国药物化学杂志",
+      "year": 2005,
+      "language": "zh"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)"
+    ],
+    "checklist_miss": [
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "notes": "原始化学成分分离论文，方法学仅覆盖提取分离和结构鉴定，缺乏药理活性实验和统计方法，时效性差（2005年），期刊为中文普刊，共识度一般",
+    "filename": "桑白皮化学成分的分离与鉴定_张国刚.pdf",
+    "credibility": 0.588,
+    "tier": "C"
+  },
+  "桑白皮化学成分的分离鉴定及桑根酮C壳聚糖印迹聚合物的研究_干泓侠.pdf": {
+    "doc_kind": "学位",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮化学成分的分离鉴定及桑根酮C壳聚糖印迹聚合物的研究",
+      "journal": "西南民族大学硕士学位论文",
+      "year": 2023,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "系统适用性(理论塔板数/分离度)"
+    ],
+    "notes": "学位论文，study_type按学位论文0.55；期刊层级按学位论文0.55；方法学完整度较高，HPLC指纹图谱及定量方法学验证较全，仅缺系统适用性；时效性2023年满分；共识度无法判断给0.6",
+    "filename": "桑白皮化学成分的分离鉴定及桑根酮C壳聚糖印迹聚合物的研究_干泓侠.pdf",
+    "credibility": 0.643,
+    "tier": "B"
+  },
+  "桑白皮化学成分的研究_桂春华.pdf": {
+    "doc_kind": "学位",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮化学成分的研究",
+      "journal": "学位论文",
+      "year": 2008,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "checklist_miss": [
+      "系统适用性(理论塔板数/分离度)",
+      "样本≥3批"
+    ],
+    "notes": "学位论文，年份较早(2008)，时效性低；方法学较完整但缺系统适用性和多批次样本；期刊层级按学位论文默认0.55",
+    "filename": "桑白皮化学成分的研究_桂春华.pdf",
+    "credibility": 0.552,
+    "tier": "C"
+  },
+  "桑白皮化学成分的研究_郑兆广.pdf": {
+    "doc_kind": "SCI原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮化学成分的研究",
+      "journal": "天然产物研究与开发",
+      "year": 2011,
+      "language": "zh"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)"
+    ],
+    "checklist_miss": [
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "notes": "原始化学成分分离研究，期刊为中文核心但非顶级，方法学仅覆盖提取分离和结构鉴定，缺乏药理活性验证和统计方法，时效性差（2011年），共识度中等",
+    "filename": "桑白皮化学成分的研究_郑兆广.pdf",
+    "credibility": 0.588,
+    "tier": "C"
+  },
+  "桑白皮化学成分研究_张尧.pdf": {
+    "doc_kind": "中文核心原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.65,
+    "methodology_score": 0.7,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮化学成分研究",
+      "journal": "中药材",
+      "year": 2013,
+      "language": "zh"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "生物学重复n≥3"
+    ],
+    "checklist_miss": [
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "统计方法",
+      "机制讨论"
+    ],
+    "notes": "原始化学成分分离研究，方法学完整度中等，缺少药理活性验证和统计方法；期刊为北大核心，时效性较差（2013年），共识度一般",
+    "filename": "桑白皮化学成分研究_张尧.pdf",
+    "credibility": 0.633,
+    "tier": "B"
+  },
+  "桑白皮及其伪品肥皂荚的鉴别_刘龙先.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮及其伪品肥皂荚的鉴别",
+      "journal": "江西中医",
+      "year": 1994,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "文献为1994年普刊鉴别类短文，方法学简单，仅描述性状特征，无系统实验数据，时效性差，期刊层级低。",
+    "filename": "桑白皮及其伪品肥皂荚的鉴别_刘龙先.pdf",
+    "credibility": 0.53,
+    "tier": "C"
+  },
+  "桑白皮及其混伪品的DNA条形码鉴定研究_熊永兴.pdf": {
+    "doc_kind": "中文核心原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.75,
+    "methodology_score": 0.7,
+    "recency_score": 0.4,
+    "consensus_score": 0.8,
+    "meta": {
+      "title_cn": "桑白皮及其混伪品的DNA条形码鉴定研究",
+      "journal": "世界科学技术—中医药现代化",
+      "year": 2013,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "PCR条件完整(引物/程序)",
+      "系统适用性(电泳/测序)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)"
+    ],
+    "notes": "DNA条形码鉴定研究，方法学完整但样本量偏少（27份），发表年份较早（2013），时效性扣分；期刊为CSCD核心，得分0.75",
+    "filename": "桑白皮及其混伪品的DNA条形码鉴定研究_熊永兴.pdf",
+    "credibility": 0.677,
+    "tier": "B"
+  },
+  "桑白皮及其混淆品的紫外光谱鉴别_潘志西.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮及其混淆品的紫外光谱鉴别",
+      "journal": "药物流行病学杂志",
+      "year": 1994,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)"
+    ],
+    "checklist_miss": [
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "notes": "紫外光谱鉴别方法，样品来源明确但未报告对照品纯度、系统适用性、精密度、重复性等关键方法学验证指标，样本量不足3批，期刊为普通期刊，年份较早",
+    "filename": "桑白皮及其混淆品的紫外光谱鉴别_潘志西.pdf",
+    "credibility": 0.53,
+    "tier": "C"
+  },
+  "桑白皮基原物种的DNA条形码鉴定研究_沈烈行.pdf": {
+    "doc_kind": "中文核心原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮基原物种的DNA条形码鉴定研究",
+      "journal": "中医药信息",
+      "year": 2023,
+      "language": "zh"
+    },
+    "checklist_used": "C",
+    "checklist_hits": [
+      "样本来源(品种/产地/采集时间)",
+      "样本量≥30",
+      "测定方法标准化",
+      "统计方法(方差分析/主成分/聚类)",
+      "数据可视化"
+    ],
+    "checklist_miss": [
+      "表型指标定义清晰",
+      "重复次数≥3",
+      "结论有生态或育种意义"
+    ],
+    "notes": "期刊为普通期刊，方法学上样本量10个不足30，缺少重复次数和生态意义结论，共识度一般",
+    "filename": "桑白皮基原物种的DNA条形码鉴定研究_沈烈行.pdf",
+    "credibility": 0.688,
+    "tier": "B"
+  },
+  "桑白皮性能功效的本草考证_冯志毅.pdf": {
+    "doc_kind": "本草考证",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 0.6,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "桑白皮性能功效的本草考证",
+      "journal": "世界科学技术—中医药现代化",
+      "year": 2015,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "本草考证类文献，引证详实有独立见解，但期刊为普通期刊，时效性一般（2015年），共识度较高",
+    "filename": "桑白皮性能功效的本草考证_冯志毅.pdf",
+    "credibility": 0.592,
+    "tier": "C"
+  },
+  "桑白皮混淆品——构棘根皮的生药学鉴定_隋长惠.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.55,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮混淆品——构棘根皮的生药学鉴定",
+      "journal": "沈阳药科大学学报",
+      "year": 1997,
+      "language": "zh"
+    },
+    "checklist_used": "C",
+    "checklist_hits": [
+      "样本来源(品种/产地/采集时间)",
+      "表型指标定义清晰",
+      "测定方法标准化",
+      "重复次数≥3",
+      "结论有生态或育种意义"
+    ],
+    "checklist_miss": [
+      "样本量≥30",
+      "统计方法(方差分析/主成分/聚类)",
+      "数据可视化"
+    ],
+    "notes": "原始生药学鉴定，方法学基本完整但样本量不足、无统计分析和可视化，期刊为普通学报，时效性差",
+    "filename": "桑白皮混淆品——构棘根皮的生药学鉴定_隋长惠.pdf",
+    "credibility": 0.54,
+    "tier": "C"
+  },
+  "桑白皮生熟应用及炮炙历史沿革探讨_李群.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 0.6,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "桑白皮生熟应用及炮炙历史沿革探讨",
+      "journal": "中成药",
+      "year": 2013,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "综述类文献，引证详实、有独立见解，但期刊层级为普通期刊，时效性一般（2013年），故各维度评分中等",
+    "filename": "桑白皮生熟应用及炮炙历史沿革探讨_李群.pdf",
+    "credibility": 0.577,
+    "tier": "C"
+  },
+  "桑白皮的化学、药理与药代动力学研究进展_李墨灵.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.55,
+    "recency_score": 0.8,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的化学、药理与药代动力学研究进展",
+      "journal": "西部中医药",
+      "year": 2017,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，期刊为普通核心但非顶级，方法学按综述信息深度给0.55，时效性5-10年，共识度无法判断给0.6",
+    "filename": "桑白皮的化学、药理与药代动力学研究进展_李墨灵.pdf",
+    "credibility": 0.577,
+    "tier": "C"
+  },
+  "桑白皮的化学成分及生物活性研究_田琳琳.pdf": {
+    "doc_kind": "学位",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.7,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的化学成分及生物活性研究",
+      "journal": "济南大学硕士学位论文",
+      "year": 2023,
+      "language": "zh"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "checklist_miss": [
+      "动物细胞来源与伦理"
+    ],
+    "notes": "学位论文，期刊层级按学位论文0.55；方法学完整度较高，有提取分离、结构鉴定、活性实验及分子对接，但缺少动物细胞伦理说明；时效性2023年满分；共识度无法判断给0.6",
+    "filename": "桑白皮的化学成分及生物活性研究_田琳琳.pdf",
+    "credibility": 0.653,
+    "tier": "B"
+  },
+  "桑白皮的化学成分研究和质量控制方法研究_黎琼红.pdf": {
+    "doc_kind": "学位",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.75,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的化学成分研究和质量控制方法研究",
+      "journal": "沈阳药科大学硕士学位论文",
+      "year": 2005,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "系统适用性(理论塔板数/分离度)"
+    ],
+    "notes": "学位论文，方法学较完整（指纹图谱+含量测定），但时效性差（2005年），期刊层级按学位论文0.55，共识度无法判断给0.6",
+    "filename": "桑白皮的化学成分研究和质量控制方法研究_黎琼红.pdf",
+    "credibility": 0.573,
+    "tier": "C"
+  },
+  "桑白皮的炮制与真伪鉴别_崔国静.pdf": {
+    "doc_kind": "科普",
+    "study_type_score": 0.4,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的炮制与真伪鉴别",
+      "journal": "首都医药",
+      "year": 2009,
+      "language": "zh"
+    },
+    "checklist_used": "F",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "科普类文章，非原始研究，期刊为普通期刊，时效性差，方法学不适用标准checklist，按信息深度给分",
+    "filename": "桑白皮的炮制与真伪鉴别_崔国静.pdf",
+    "credibility": 0.44,
+    "tier": "C"
+  },
+  "桑白皮的炮制历史沿革、药理作用及临床应用研究进展_田辉.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的炮制历史沿革、药理作用及临床应用研究进展",
+      "journal": "时珍国医国药",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，期刊为普通期刊，方法学按综述信息深度给0.6，时效性高，共识度无法判断给0.6",
+    "filename": "桑白皮的炮制历史沿革、药理作用及临床应用研究进展_田辉.pdf",
+    "credibility": 0.617,
+    "tier": "B"
+  },
+  "桑白皮的理化鉴别_盛平钦.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.45,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的理化鉴别",
+      "journal": "江西中医学院学报",
+      "year": 1995,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "notes": "普刊增刊，方法学仅描述简单显色反应，无HPLC等定量方法，样本仅3批，无对照品、精密度、回收率等关键指标，时效性差（1995年）",
+    "filename": "桑白皮的理化鉴别_盛平钦.pdf",
+    "credibility": 0.475,
+    "tier": "C"
+  },
+  "桑白皮的薄层色谱鉴别方法研究_吴素香.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的薄层色谱鉴别方法研究",
+      "journal": "中草药",
+      "year": 2002,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "notes": "原始实验，但发表于2002年，时效性低；期刊为中文核心但非顶级；方法学缺少系统适用性、线性、精密度等关键验证指标",
+    "filename": "桑白皮的薄层色谱鉴别方法研究_吴素香.pdf",
+    "credibility": 0.588,
+    "tier": "C"
+  },
+  "桑白皮的采收与加工.pdf": {
+    "doc_kind": "科普",
+    "study_type_score": 0.4,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.4,
+    "recency_score": 0.6,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的采收与加工",
+      "journal": "未知（疑似普通期刊或内部资料）",
+      "year": 2000,
+      "language": "zh"
+    },
+    "checklist_used": "F",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "文献主体为柞蚕品种介绍，桑白皮内容仅占极小篇幅且为简单采收加工描述，无实验数据、无方法学细节，属于科普或产业信息类，证据等级低。",
+    "filename": "桑白皮的采收与加工.pdf",
+    "credibility": 0.45,
+    "tier": "C"
+  },
+  "桑白皮的鉴别及蜜炙炮制对其主要成分桑根酮C含量的影响_郑尚永.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的鉴别及蜜炙炮制对其主要成分桑根酮C含量的影响",
+      "journal": "四川蚕业",
+      "year": 2009,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "notes": "期刊为普通期刊《四川蚕业》，方法学上仅做了初步理化鉴别和光谱分析，缺乏含量测定所需的完整色谱条件、精密度、重复性等关键指标，样本量不足，时效性差（2009年）",
+    "filename": "桑白皮的鉴别及蜜炙炮制对其主要成分桑根酮C含量的影响_郑尚永.pdf",
+    "credibility": 0.53,
+    "tier": "C"
+  },
+  "桑白皮的鉴别要点_祝之友.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.5,
+    "recency_score": 0.6,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的鉴别要点",
+      "journal": "中国中医药现代远程教育",
+      "year": 2017,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，期刊为普通期刊，方法学按信息深度给0.5，时效性10-20年，共识度无法判断给0.6",
+    "filename": "桑白皮的鉴别要点_祝之友.pdf",
+    "credibility": 0.5,
+    "tier": "C"
+  },
+  "桑白皮研究进展及其质量标志物预测分析_周双玲.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮研究进展及其质量标志物预测分析",
+      "journal": "中华中医药学刊",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，非系统综述或Meta；期刊为普通中文核心但非顶级，按表外规则给0.55；方法学按综述信息深度给0.65；时效性极好；共识度无法判断给0.6",
+    "filename": "桑白皮研究进展及其质量标志物预测分析_周双玲.pdf",
+    "credibility": 0.627,
+    "tier": "B"
+  },
+  "桑白皮药材的品质检测及质量标准_刘一涵.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.8,
+    "recency_score": 0.8,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "桑白皮药材的品质检测及质量标准",
+      "journal": "吉首大学学报（自然科学版）",
+      "year": 2019,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "方法学完整，样本量大（85批），但期刊为普通大学学报，非核心，影响journal_tier_score",
+    "filename": "桑白皮药材的品质检测及质量标准_刘一涵.pdf",
+    "credibility": 0.698,
+    "tier": "B"
+  },
+  "桑白皮药材的质量标准研究_段志涛.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.65,
+    "methodology_score": 0.8,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮药材的质量标准研究",
+      "journal": "中药材",
+      "year": 2013,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "系统适用性(理论塔板数/分离度)"
+    ],
+    "notes": "原始实验，期刊为北大核心但非顶级，方法学较完整但缺系统适用性，年份超过10年时效性低，共识度一般",
+    "filename": "桑白皮药材的质量标准研究_段志涛.pdf",
+    "credibility": 0.653,
+    "tier": "B"
+  },
+  "桑白皮药材质量控制研究_徐世义.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮药材质量控制研究",
+      "journal": "中药材",
+      "year": 2006,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "checklist_miss": [
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "样本≥3批"
+    ],
+    "notes": "紫外分光光度法，非HPLC，缺少色谱条件；样本仅1批；期刊为普通期刊；年份较早（2006），时效性低",
+    "filename": "桑白皮药材质量控制研究_徐世义.pdf",
+    "credibility": 0.588,
+    "tier": "C"
+  },
+  "桑白皮采收与加工技术_韩学俭.pdf": {
+    "doc_kind": "科普",
+    "study_type_score": 0.4,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.4,
+    "recency_score": 0.6,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮采收与加工技术",
+      "journal": "未知（普通期刊或科普类）",
+      "year": 2000,
+      "language": "zh"
+    },
+    "checklist_used": "F",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "文献为科普性技术介绍，非原始研究或标准，无方法学细节，期刊层级低，时效性一般，共识度中等",
+    "filename": "桑白皮采收与加工技术_韩学俭.pdf",
+    "credibility": 0.45,
+    "tier": "C"
+  },
+  "桑白皮鉴别.pptx": {
+    "doc_kind": "其他",
+    "study_type_score": 0.4,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.4,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑白皮的鉴定和质量",
+      "journal": "PPT演示文稿",
+      "year": 2025,
+      "language": "zh"
+    },
+    "checklist_used": "F",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "PPT演示文稿，非正式学术文献，无期刊发表，方法学不适用，按市场/产业分析/科普类给分，时效性按当前年份满分，共识度默认0.6",
+    "filename": "桑白皮鉴别.pptx",
+    "credibility": 0.51,
+    "tier": "C"
+  },
+  "桑的药用历史和功效_肖霞.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.55,
+    "recency_score": 0.6,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "桑的药用历史和功效",
+      "journal": "四川蚕业",
+      "year": 2007,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，期刊为普通期刊，年份较久，方法学按本草考证类给分，引证较详但无独立见解",
+    "filename": "桑的药用历史和功效_肖霞.pdf",
+    "credibility": 0.52,
+    "tier": "C"
+  },
+  "桑种质资源ITS序列与系统进化分析_陈仁芳.pdf": {
+    "doc_kind": "农学品质原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.6,
+    "methodology_score": 0.7,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "桑种质资源ITS序列与系统进化分析",
+      "journal": "中国农业科学",
+      "year": 2010,
+      "language": "zh"
+    },
+    "checklist_used": "C",
+    "checklist_hits": [
+      "样本来源(品种/产地/采集时间)",
+      "样本量≥30",
+      "测定方法标准化",
+      "统计方法(方差分析/主成分/聚类)",
+      "数据可视化",
+      "结论有生态或育种意义"
+    ],
+    "checklist_miss": [
+      "表型指标定义清晰",
+      "重复次数≥3"
+    ],
+    "notes": "样本量73份，方法学较完整，但缺少重复次数说明，且发表年份较早（2010），时效性扣分",
+    "filename": "桑种质资源ITS序列与系统进化分析_陈仁芳.pdf",
+    "credibility": 0.62,
+    "tier": "B"
+  },
+  "正品桑白皮的红外光谱鉴别法_孙静芸.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.6,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "正品桑白皮的红外光谱鉴别法",
+      "journal": "中国现代应用药学",
+      "year": 2001,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "对照品来源与纯度",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告"
+    ],
+    "notes": "期刊为普通期刊，时效性差（2001年），方法学缺少对照品、精密度、重复性等关键验证，共识度一般",
+    "filename": "正品桑白皮的红外光谱鉴别法_孙静芸.pdf",
+    "credibility": 0.588,
+    "tier": "C"
+  },
+  "江西市售桑白皮的质量情况分析与评价_付彩群.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.7,
+    "recency_score": 0.8,
+    "consensus_score": 0.7,
+    "meta": {
+      "title_cn": "江西市售桑白皮的质量情况分析与评价",
+      "journal": "药物研究",
+      "year": 2020,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [],
+    "notes": "按药典标准检验，方法学完整，但期刊为普通期刊，时效性中等，共识度较高",
+    "filename": "江西市售桑白皮的质量情况分析与评价_付彩群.pdf",
+    "credibility": 0.677,
+    "tier": "B"
+  },
+  "浙江桑白皮及其混淆品的鉴别_罗国海.pdf": {
+    "doc_kind": "普刊原始",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.55,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "浙江桑白皮及其混淆品的鉴别",
+      "journal": "中药通报",
+      "year": 1985,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "本草考证类文献，引证详实有独立见解，但期刊为普通期刊，年份超过20年，时效性低",
+    "filename": "浙江桑白皮及其混淆品的鉴别_罗国海.pdf",
+    "credibility": 0.495,
+    "tier": "C"
+  },
+  "湖南桑白皮的原植物调查与鉴定_杨德泉.pdf": {
+    "doc_kind": "本草考证",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.65,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "湖南桑白皮的原植物调查与鉴定",
+      "journal": "中药材",
+      "year": 1992,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "本草考证类文献，引证详实有独立见解，但期刊为普通期刊，年份过久，时效性低",
+    "filename": "湖南桑白皮的原植物调查与鉴定_杨德泉.pdf",
+    "credibility": 0.552,
+    "tier": "C"
+  },
+  "紫外法测定华桑、鸡桑、桑、蒙桑中芦丁的含量_王雪萍.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.7,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "紫外法测定华桑、鸡桑、桑、蒙桑中芦丁的含量",
+      "journal": "中国医药导报",
+      "year": 2008,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "对照品来源与纯度",
+      "色谱条件完整(波长)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "样品来源(产地/批号)",
+      "系统适用性(理论塔板数/分离度)",
+      "柱/流动相/柱温/流速/进样量(紫外法不适用，但未说明)"
+    ],
+    "notes": "期刊为普通期刊，时效性差（2008年），样品来源信息缺失，紫外法方法学较完整但缺少系统适用性描述",
+    "filename": "紫外法测定华桑、鸡桑、桑、蒙桑中芦丁的含量_王雪萍.pdf",
+    "credibility": 0.57,
+    "tier": "C"
+  },
+  "经典名方中桑白皮的本草考证_李玉丽.pdf": {
+    "doc_kind": "本草考证",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.65,
+    "methodology_score": 0.7,
+    "recency_score": 1.0,
+    "consensus_score": 0.8,
+    "meta": {
+      "title_cn": "经典名方中桑白皮的本草考证",
+      "journal": "中国实验方剂学杂志",
+      "year": 2020,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [
+      "引证详实",
+      "有独立见解",
+      "涵盖基原、产地、炮制等历史演变"
+    ],
+    "checklist_miss": [],
+    "notes": "本草考证类文献，study_type按规则给0.55；期刊为北大核心，journal_tier_score给0.65；方法学按信息深度给0.70；出版年份2020距2026在5年内，recency_score为1.0；结论与药典主流一致，共识度给0.8",
+    "filename": "经典名方中桑白皮的本草考证_李玉丽.pdf",
+    "credibility": 0.698,
+    "tier": "B"
+  },
+  "经典名方中桑类药材的本草考证_杜文敏.pdf": {
+    "doc_kind": "本草考证",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.65,
+    "methodology_score": 0.7,
+    "recency_score": 1.0,
+    "consensus_score": 0.8,
+    "meta": {
+      "title_cn": "经典名方中桑类药材的本草考证",
+      "journal": "中国实验方剂学杂志",
+      "year": 2022,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "本草考证类文献，study_type按规则给0.55；期刊为北大核心，按表外规则给0.65；方法学按信息深度给0.70（引证详实、有独立见解）；时效性2022年≤5年给1.0；共识度与药典主流一致给0.8",
+    "filename": "经典名方中桑类药材的本草考证_杜文敏.pdf",
+    "credibility": 0.698,
+    "tier": "B"
+  },
+  "肉苁蓉、桑白皮、透骨草、鹿茸等15类中药材的品种和质量研究_蔡少青.pdf": {
+    "doc_kind": "综述",
+    "study_type_score": 0.5,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.55,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "肉苁蓉、桑白皮、透骨草、鹿茸等15类中药材的品种和质量研究",
+      "journal": "医学研究通讯",
+      "year": 1997,
+      "language": "zh"
+    },
+    "checklist_used": "D",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "一般综述，期刊为普通期刊，出版年份超过20年，时效性低，方法学按综述信息深度给0.55",
+    "filename": "肉苁蓉、桑白皮、透骨草、鹿茸等15类中药材的品种和质量研究_蔡少青.pdf",
+    "credibility": 0.48,
+    "tier": "C"
+  },
+  "高效液相色谱法结合支持向量机鉴别桑白皮_杨文宇.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.4,
+    "methodology_score": 0.6,
+    "recency_score": 0.4,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "高效液相色谱法结合支持向量机鉴别桑白皮",
+      "journal": "成都医学院学报",
+      "year": 2011,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "系统适用性(理论塔板数/分离度)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "对照品来源与纯度"
+    ],
+    "notes": "期刊为普通期刊，时效性差（2011年），方法学较完整但缺对照品信息，共识度中等",
+    "filename": "高效液相色谱法结合支持向量机鉴别桑白皮_杨文宇.pdf",
+    "credibility": 0.55,
+    "tier": "C"
+  },
+  "鸡桑、华桑化学成分及生物活性研究_张庆建.pdf": {
+    "doc_kind": "学位",
+    "study_type_score": 0.55,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.75,
+    "recency_score": 0.6,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "鸡桑、华桑化学成分及生物活性研究",
+      "journal": "中国协和医科大学博士研究生学位论文",
+      "year": 2007,
+      "language": "zh"
+    },
+    "checklist_used": "B",
+    "checklist_hits": [
+      "提取分离流程",
+      "结构鉴定手段(NMR/MS)",
+      "阴阳性对照",
+      "动物细胞来源与伦理",
+      "剂量-效应关系",
+      "生物学重复n≥3",
+      "统计方法",
+      "机制讨论"
+    ],
+    "checklist_miss": [],
+    "notes": "学位论文，文献类型得分较低；期刊层级按学位论文默认0.55；方法学完整度高，符合药理原始研究checklist；出版年份2007，距今19年，时效性扣分；共识度无法判断给0.6",
+    "filename": "鸡桑、华桑化学成分及生物活性研究_张庆建.pdf",
+    "credibility": 0.603,
+    "tier": "B"
+  },
+  "鸡桑、华桑和桑的根皮中7种核苷类成分的含量测定_黎海灵.pdf": {
+    "doc_kind": "质量评价原始",
+    "study_type_score": 0.7,
+    "journal_tier_score": 0.55,
+    "methodology_score": 0.9,
+    "recency_score": 1.0,
+    "consensus_score": 0.6,
+    "meta": {
+      "title_cn": "鸡桑、华桑和桑的根皮中7种核苷类成分的含量测定",
+      "journal": "食品工业科技",
+      "year": 2021,
+      "language": "zh"
+    },
+    "checklist_used": "A",
+    "checklist_hits": [
+      "样品来源(产地/批号)",
+      "对照品来源与纯度",
+      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
+      "线性范围",
+      "精密度",
+      "重复性",
+      "加样回收率",
+      "RSD报告",
+      "样本≥3批"
+    ],
+    "checklist_miss": [
+      "系统适用性(理论塔板数/分离度)"
+    ],
+    "notes": "期刊为普通中文核心（食品工业科技），非药学核心，journal_tier_score偏低；方法学完整，仅缺系统适用性指标；时效性好；共识度中等，结论与主流一致但无药典直接支持",
+    "filename": "鸡桑、华桑和桑的根皮中7种核苷类成分的含量测定_黎海灵.pdf",
+    "credibility": 0.738,
+    "tier": "B"
+  }
+}

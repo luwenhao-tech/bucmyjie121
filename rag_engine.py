@@ -365,6 +365,65 @@ def get_or_generate_zh_summary(pdf_path: Path, text: str, force: bool = False) -
         return None
 
 
+# ============ 可信度评分（按 filename 索引）============
+# credibility_scores.json 由 scoring/score_prompt.py 生成
+# 结构：{filename: {"credibility": 0.77, "tier": "B", "doc_kind": "...", ...}}
+CREDIBILITY_FILE = "scoring/credibility_scores.json"
+# A/B/C 分档阈值（跟 scoring/schema.md 的 tier_of 保持一致，A 门槛已下调到 0.80）
+CRED_A_THRESHOLD = 0.80
+CRED_B_THRESHOLD = 0.60
+# BM25 分数与可信度融合：final = bm25 * (BASE + (1-BASE) * credibility)
+# BASE=0.4 意味着 credibility=0 的文献仍能拿到原分的 40%（不至于完全消失），
+# credibility=1 的文献拿满 100%。低质文献被明显降权但不会被完全过滤。
+CRED_WEIGHT_BASE = 0.4
+
+_credibility_data: Optional[Dict[str, Dict]] = None
+
+
+def load_credibility() -> Dict[str, Dict]:
+    """加载 filename → 打分记录 的映射。文件不存在时返回空 dict（等价于全部无加权）。"""
+    global _credibility_data
+    if _credibility_data is not None:
+        return _credibility_data
+    path = Path(__file__).parent / CREDIBILITY_FILE
+    if not path.exists():
+        _credibility_data = {}
+        return _credibility_data
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+        # 只保留有 credibility 字段的（跳过打分失败的 error 记录）
+        _credibility_data = {
+            fn: rec for fn, rec in raw.items()
+            if isinstance(rec, dict) and "credibility" in rec
+        }
+        print(f"[可信度] 加载 {len(_credibility_data)} 条评分（{CREDIBILITY_FILE}）")
+    except Exception as e:
+        print(f"[可信度] 加载失败：{e}，按无加权模式运行")
+        _credibility_data = {}
+    return _credibility_data
+
+
+def _cred_of(filename: str) -> float:
+    """未打分文件返回 0.6（B 类中位数，中性默认，避免新增文件被完全屏蔽）。"""
+    rec = load_credibility().get(filename)
+    if rec is None:
+        return 0.6
+    return float(rec.get("credibility", 0.6))
+
+
+def _tier_of_score(cred: float) -> str:
+    """按当前阈值分档，跟 search 时的加权和分层配额保持一致。"""
+    if cred >= CRED_A_THRESHOLD:
+        return "A"
+    if cred >= CRED_B_THRESHOLD:
+        return "B"
+    return "C"
+
+
+def _tier_of_filename(filename: str) -> str:
+    return _tier_of_score(_cred_of(filename))
+
+
 # ============ 索引数据（内存中）============
 _index_data: Optional[Dict] = None
 
@@ -682,7 +741,11 @@ async def search_async(query: str, top_k: int = TOP_K) -> List[Dict]:
     if not query or not query.strip():
         return []
     if len(query) > _QUERY_EXPAND_MAX_LEN or not _is_mostly_chinese(query):
-        results = search(query, top_k=top_k)
+        # 走原始 search 也要保证配额：拉大池子后强制分层
+        pool_size = max(top_k * 10, 100)
+        candidates = search(query, top_k=pool_size)
+        results = _enforce_en_quota(candidates, top_k=top_k, min_en_full=min(2, top_k))
+        results = _enforce_tier_quota(candidates, top_k=top_k)
     else:
         expansion = await _expand_query_to_en(query)
         if expansion:
@@ -691,8 +754,12 @@ async def search_async(query: str, top_k: int = TOP_K) -> List[Dict]:
             candidates = search(merged_query, top_k=pool_size)
             quota = min(2, top_k)
             results = _enforce_en_quota(candidates, top_k=top_k, min_en_full=quota)
+            # 在英文配额基础上再做分层配额；用同一 candidates 池
+            results = _enforce_tier_quota(candidates, top_k=top_k)
         else:
-            results = search(query, top_k=top_k)
+            pool_size = max(top_k * 10, 100)
+            candidates = search(query, top_k=pool_size)
+            results = _enforce_tier_quota(candidates, top_k=top_k)
 
     if not results:
         return results
@@ -902,6 +969,70 @@ def _enforce_en_quota(candidates: List[Dict], top_k: int, min_en_full: int = 2) 
     return selected
 
 
+# ============ 证据分层配额（A 类必召 + C 类封顶）============
+# 目标：top-k 里至少含 min_a 条 A 类文献（若候选池里存在），C 类不超过 max_c
+# —— 这是"方法学审查框架"的核心：让高证据等级文献稳定进入上下文
+CRED_MIN_A_IN_TOPK = 1   # top-k 至少保留 1 条 A 类
+CRED_MAX_C_IN_TOPK = 2   # top-k 最多容纳 2 条 C 类，避免低质文献占用配额
+
+
+def _enforce_tier_quota(
+    candidates: List[Dict],
+    top_k: int,
+    min_a: int = CRED_MIN_A_IN_TOPK,
+    max_c: int = CRED_MAX_C_IN_TOPK,
+) -> List[Dict]:
+    """强制配额：至少 min_a 条 A 类进 top-k；C 类最多 max_c 条。
+
+    - candidates 已按 final_score 从高到低排好
+    - A 类不足时，从候选池后半段找最高分 A 类补上（前提：BM25 命中，说明确实相关）
+    - C 类超额时，把超出的 C 类挤出 top-k，让位给候选池里下一位非 C 类
+    - 若 query 本身命中的 A 类文献 BM25 为 0（完全跑题），不强塞（避免答非所问）
+    """
+    if not candidates or top_k <= 0:
+        return candidates[:top_k]
+
+    selected = candidates[:top_k]
+    a_in_selected = [c for c in selected if c.get("tier") == "A"]
+    c_in_selected = [c for c in selected if c.get("tier") == "C"]
+
+    # ---- 1) A 类不足：从池子里补 ----
+    if len(a_in_selected) < min_a:
+        need = min_a - len(a_in_selected)
+        # 候选池后半段里分数最高的 A 类（且要求 BM25 > 0，避免硬塞跑题内容）
+        extra_a = [c for c in candidates[top_k:]
+                   if c.get("tier") == "A" and c.get("bm25", 0) > 0][:need]
+        if extra_a:
+            # 从 selected 尾部替换最弱的非 A 项
+            non_a_idx = [i for i, c in enumerate(selected) if c.get("tier") != "A"]
+            for a_chunk in extra_a:
+                if not non_a_idx:
+                    break
+                replace_i = non_a_idx.pop()  # pop 最后一个 = 分数最低
+                selected[replace_i] = a_chunk
+
+    # ---- 2) C 类超额：挤出多余 C 类 ----
+    c_indices = [i for i, c in enumerate(selected) if c.get("tier") == "C"]
+    if len(c_indices) > max_c:
+        # 保留分数最高的 max_c 个 C 类，其余替换成候选池里下一个非 C 类
+        c_sorted = sorted(c_indices, key=lambda i: selected[i]["score"], reverse=True)
+        keep_c = set(c_sorted[:max_c])
+        drop_c_indices = [i for i in c_indices if i not in keep_c]
+
+        # 候选池后段的非 C 类补位
+        used_ids = {(c.get("filename"), c.get("chunk_index")) for c in selected}
+        backfill = [c for c in candidates[top_k:]
+                    if c.get("tier") != "C" and (c.get("filename"), c.get("chunk_index")) not in used_ids]
+        for drop_i in drop_c_indices:
+            if not backfill:
+                break
+            selected[drop_i] = backfill.pop(0)
+
+    # 重新按 score 排序输出
+    selected.sort(key=lambda x: x["score"], reverse=True)
+    return selected
+
+
 # ============ BM25 检索 ============
 def search(query: str, top_k: int = TOP_K) -> List[Dict]:
     """BM25 关键词检索，内存友好。"""
@@ -925,7 +1056,7 @@ def search(query: str, top_k: int = TOP_K) -> List[Dict]:
     if not query_tokens:
         return []
 
-    # 计算每个文档的 BM25 分数
+    # 计算每个文档的 BM25 分数，融合可信度加权
     scores = []
     for i, chunk in enumerate(chunks):
         doc_text = chunk["text"]
@@ -936,7 +1067,7 @@ def search(query: str, top_k: int = TOP_K) -> List[Dict]:
         doc_len = len(doc_text)
         tf_counter = Counter(doc_tokens)
 
-        score = 0.0
+        bm25 = 0.0
         for token in query_tokens:
             if token not in tf_counter:
                 continue
@@ -948,21 +1079,27 @@ def search(query: str, top_k: int = TOP_K) -> List[Dict]:
             idf = math.log((total_docs - df + 0.5) / (df + 0.5) + 1)
             # TF 归一化
             tf_norm = (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * doc_len / avg_dl))
-            score += idf * tf_norm
+            bm25 += idf * tf_norm
 
-        if score > 0:
-            scores.append((score, i))
+        if bm25 > 0:
+            # 可信度加权：final = bm25 * (BASE + (1-BASE) * credibility)
+            cred = _cred_of(chunk.get("filename", ""))
+            final = bm25 * (CRED_WEIGHT_BASE + (1 - CRED_WEIGHT_BASE) * cred)
+            scores.append((final, bm25, cred, i))
 
-    # 排序取 top_k
+    # 排序取 top_k（按加权后 final 排）
     scores.sort(reverse=True)
     results = []
-    for score, idx in scores[:top_k]:
+    for final, bm25, cred, idx in scores[:top_k]:
         chunk = chunks[idx]
         results.append({
             "text": chunk["text"],
             "title": chunk.get("title", "未知"),
             "filename": chunk.get("filename", ""),
-            "score": round(score, 4),
+            "score": round(final, 4),        # 供后续排序/裁判用的实际得分
+            "bm25": round(bm25, 4),          # 保留原始 BM25 供 debug
+            "credibility": round(cred, 3),
+            "tier": _tier_of_score(cred),
             "chunk_index": idx,
         })
 
@@ -987,7 +1124,16 @@ def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000)
     for item in search_results:
         fn = item.get("filename") or item.get("title") or "unknown"
         if fn not in grouped:
-            grouped[fn] = {"title": item.get("title") or fn, "chunks": []}
+            # 优先从 search result 里带的 tier（已按当前阈值算好），兜底用 filename 反查
+            tier = item.get("tier") or _tier_of_filename(fn)
+            cred_rec = load_credibility().get(fn, {}) or {}
+            grouped[fn] = {
+                "title": item.get("title") or fn,
+                "chunks": [],
+                "tier": tier,
+                "credibility": item.get("credibility", cred_rec.get("credibility", "?")),
+                "doc_kind": cred_rec.get("doc_kind", "未标注"),
+            }
             order.append(fn)
         if len(grouped[fn]["chunks"]) < 3:  # 每篇最多 3 段
             grouped[fn]["chunks"].append(item.get("text", ""))
@@ -998,7 +1144,9 @@ def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000)
         g = grouped[fn]
         merged_text = "\n---\n".join(g["chunks"])
         hit_note = f"（共命中 {len(g['chunks'])} 段）" if len(g["chunks"]) > 1 else ""
-        entry = f"【参考{i}】（来源：{g['title']}）{hit_note}\n{merged_text}\n"
+        cred_str = g["credibility"] if isinstance(g["credibility"], str) else f"{g['credibility']:.2f}"
+        tier_tag = f"[{g['tier']}类·{g['doc_kind']}·可信度{cred_str}]"
+        entry = f"【参考{i}】{tier_tag}（来源：{g['title']}）{hit_note}\n{merged_text}\n"
         if total_len + len(entry) > max_chars:
             break
         parts.append(entry)
@@ -1010,6 +1158,14 @@ def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000)
     header = (
         "以下是从知识库中收录的公开研究文献（涵盖历年桑白皮相关论文、《中国药典》条文、团体标准等）"
         "中检索到的相关内容。回答时必须以这些内容为依据，不得编造资料中没有的信息。\n\n"
+        "【证据分层说明——本次回答的引用规则】\n"
+        "- 每条【参考N】都标注了证据等级：**A 类**（药典/团标/SCI 顶级原始研究，可信度 ≥ 0.80）、"
+        "**B 类**（核心期刊原始实验、方法学基本完整的综述，0.60–0.80）、**C 类**（普刊/科普/市场/老文献，< 0.60）。\n"
+        "- **优先采纳 A 类证据**作为结论主干；B 类作为方法学细节与佐证；C 类**仅在 A/B 类都未涉及时**"
+        "作为补充线索使用，且必须明确标注『该结论仅见于 C 类文献，尚待高等级证据验证』。\n"
+        "- 若 A 类与 B/C 类结论冲突，**以 A 类为准**，同时以中性语言呈现 B/C 类的不同报道供参考。\n"
+        "- 回答中每处关键数据/结论后，请用简短括注标明来源等级，如"
+        "『（据《中国药典》2025 版，A 类）』『（相关 SCI 研究，B 类）』；无需完整点作者/年份的夹注。\n\n"
         "【定位说明——写作口吻硬规则】\n"
         "- 这些文献是**已公开发表的现有研究**，不是当前老师或团队产出的成果。\n"
         "- 讲述时一律以**第三人称、客观转述**的方式行文，例如：『现有研究表明……』"
