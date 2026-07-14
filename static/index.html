@@ -583,7 +583,7 @@
   .drawer-trigger { display: none; }
   .drawer-mask { display: none; }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1080px) {
     body { overflow: hidden; }
     .layout {
       grid-template-columns: 1fr;
@@ -791,7 +791,7 @@
   /* ============ 移动端横屏适配 ============ */
   /* 用 dvh 替代 vh：iOS Safari 地址栏伸缩时高度自适应 */
   @supports (height: 100dvh) {
-    @media (max-width: 1024px) {
+    @media (max-width: 1280px) {
       .layout { height: 100dvh; }
       .main { height: 100dvh; }
     }
@@ -823,8 +823,8 @@
     body { overflow: hidden !important; }
   }
 
-  /* 平板横屏（真平板：宽 769-1024 且 高 ≥ 600）：可以恢复三栏 */
-  @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) and (min-height: 600px) {
+  /* 平板横屏（真平板：宽 1081-1280 且 高 ≥ 600）：可以恢复三栏 */
+  @media (min-width: 1081px) and (max-width: 1280px) and (orientation: landscape) and (min-height: 600px) and (pointer: coarse) {
     .layout {
       grid-template-columns: 200px minmax(0, 1fr) 200px;
       gap: 10px; padding: 10px;
@@ -833,8 +833,8 @@
     .side .panel h3 { font-size: 12px; }
   }
 
-  /* 平板竖屏（>768 且 ≤1024，高>宽）：保持抽屉模式（继承 768 断点） */
-  @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+  /* 平板竖屏（>1080 且 ≤1280，高>宽）：保持抽屉模式（继承 1080 断点） */
+  @media (min-width: 1081px) and (max-width: 1280px) and (orientation: portrait) {
     .layout { grid-template-columns: 1fr; padding: 0; gap: 0; height: 100dvh; }
     body { overflow: hidden; }
     .main { border-radius: 0 !important; height: 100dvh; }
