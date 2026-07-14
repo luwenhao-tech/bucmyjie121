@@ -644,29 +644,19 @@
     }
     .drawer-mask.show { opacity: 1; pointer-events: auto; }
 
-    /* header 给两侧按钮留位 */
-    .main header {
-      padding: 8px 50px !important;
-      text-align: center;
-      flex-wrap: wrap !important;
-      gap: 4px !important;
-      justify-content: center !important;
-    }
-    .main header > * { min-width: 0; }
-    h1 { font-size: 15px !important; justify-content: center; flex-wrap: wrap; gap: 6px !important; width: 100%; margin-bottom: 4px !important; }
-    h1 > span:first-child { width: 26px !important; height: 26px !important; font-size: 15px !important; }
-    .sub { display: none !important; }
-    /* header 两行：①药+标题 ②4 个按钮 */
+    /* header：单行 nowrap，标题左、按钮右，永不换行 */
     .main header {
       display: flex !important;
       flex-direction: row !important;
-      flex-wrap: wrap !important;
-      align-items: flex-start !important;
-      justify-content: center !important;
-      gap: 8px !important;
-      padding: 20px 56px 10px !important;     /* 顶部 20px，标题向下移一点 */
+      flex-wrap: nowrap !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 6px !important;
+      padding: 10px 56px !important;   /* 左右留 ☰/📖 位 */
       position: relative;
+      overflow: hidden;
     }
+    .main header > * { min-width: 0; flex-shrink: 0; }
     /* ☰ / 📖 强制正圆 */
     .drawer-trigger {
       width: 36px !important;
@@ -674,79 +664,67 @@
       min-width: 36px !important;
       padding: 0 !important;
       border-radius: 50% !important;
-      top: 12px !important;
+      top: 50% !important;
+      transform: translateY(-50%);
       aspect-ratio: 1 / 1 !important;
       flex-shrink: 0 !important;
     }
     .drawer-trigger-left  { left: 10px !important; }
     .drawer-trigger-right { right: 10px !important; }
-    /* 在 h1 后插入一个 100% 宽的换行符，强制把后面元素挤到下一行 */
-    .main header h1::after {
-      content: "";
-      display: block;
-      width: 100%;
-      flex-basis: 100%;
-      height: 0;
-      order: 0;
-    }
-    /* 让 h1 之后的兄弟全部换行 */
-    .main header > h1 { flex-basis: 100% !important; }
-    .main header > h1 ~ * { order: 2; }
+
+    /* 标题：单行 nowrap，允许被压缩 */
     h1 {
       display: flex !important;
       flex-direction: row !important;
       align-items: center !important;
-      justify-content: center !important;
-      gap: 8px !important;
-      width: 100% !important;
+      gap: 6px !important;
       margin: 0 !important;
       padding: 0 !important;
-      font-size: 16px !important;
+      font-size: 15px !important;
       flex-wrap: nowrap !important;
-      order: 1;
-      line-height: 1 !important;             /* 顶端紧贴 padding-top */
+      flex-shrink: 1 !important;
+      min-width: 0 !important;
+      overflow: hidden;
+      line-height: 1 !important;
     }
     h1 > span:first-child {
-      width: 28px !important; height: 28px !important;
-      font-size: 15px !important;
+      width: 26px !important; height: 26px !important;
+      font-size: 14px !important;
+      flex-shrink: 0 !important;
     }
     h1 > span:nth-child(2) {
       flex-direction: row !important;
-      gap: 0 !important;                   /* 去掉 span 间距 */
-      letter-spacing: 4px !important;
-      word-spacing: 0 !important;
+      gap: 2px !important;
+      letter-spacing: 1px !important;
       white-space: nowrap !important;
     }
-    /* 内层"春生""说药"两个 span 也强制 4px 字距，包括最后一字 */
     h1 > span:nth-child(2) > span {
-      letter-spacing: 4px !important;
-      padding-right: 4px !important;        /* 让"春生"末尾"生"和"说"之间也有 4px */
+      letter-spacing: 1px !important;
+      padding-right: 0 !important;
       display: inline-block !important;
     }
-    h1 > span:nth-child(2) > span:last-child {
-      padding-right: 0 !important;          /* 最后一字不加 */
-      letter-spacing: 4px !important;
-    }
     .sub { display: none !important; }
-    /* 第二行：4 个按钮横排平分一行，显示图标+文字 */
+
+    /* 按钮行：图标 only，永不换行，靠右紧凑排列 */
     #userChip {
-      order: 99;
       margin: 0 !important;
-      padding: 4px 10px !important;
-      font-size: 11.5px !important;
-      border-radius: 16px !important;
+      padding: 3px 8px !important;
+      font-size: 11px !important;
+      border-radius: 14px !important;
       flex: 0 0 auto !important;
     }
     .hist-btn {
       flex: 0 0 auto !important;
       max-width: none !important;
-      height: 24px !important;
-      padding: 0 7px !important;
-      font-size: 10px !important;
-      letter-spacing: 0.5px !important;
+      height: 30px !important;
+      min-width: 30px !important;
+      width: 30px !important;
+      padding: 0 !important;
+      font-size: 14px !important;
+      letter-spacing: 0 !important;
       margin: 0 !important;
-      gap: 2px !important;
-      border-radius: 15px !important;
+      gap: 0 !important;
+      border-radius: 50% !important;
       background: rgba(255, 248, 227, 0.95) !important;
       border: 1.5px solid rgba(255, 217, 122, 0.85) !important;
       color: #6b4a24 !important;
@@ -755,9 +733,26 @@
       align-items: center !important;
       justify-content: center !important;
       white-space: nowrap !important;
+      overflow: hidden !important;
+      text-indent: -999px !important;   /* 隐藏文字 */
       transition: transform .15s !important;
+      position: relative !important;
     }
-    .hist-btn:active { transform: scale(.95); }
+    /* 用 ::before 显示图标 */
+    .hist-btn::before {
+      text-indent: 0;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+    #newChatBtn::before { content: "✨"; }
+    #themeBtn::before   { content: "🎨"; }
+    #paperBtn::before   { content: "📚"; }
+    #histBtn::before    { content: "📜"; }
+    .hist-btn:active { transform: scale(.92); }
     #newChatBtn {
       background: linear-gradient(135deg, #ffd97a, #f2cc6b) !important;
       border-color: #d4a838 !important;
@@ -765,9 +760,43 @@
       box-shadow: 0 3px 8px rgba(212,168,56,.35) !important;
     }
 
+    /* 输入栏：也保证单行 nowrap，textarea 弹性收缩，按钮固定不换行 */
+    .inputbar {
+      flex-wrap: nowrap !important;
+      gap: 6px !important;
+      padding: 8px !important;
+      padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+      overflow-x: auto;
+    }
+    .inputbar textarea {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      font-size: 16px !important;
+    }
+    .inputbar button {
+      flex-shrink: 0 !important;
+      white-space: nowrap !important;
+    }
+    /* 输入栏按钮：图标化，节省宽度 */
+    #thinkToggle, #auditToggle {
+      width: 42px !important;
+      padding: 0 !important;
+      text-indent: -999px !important;
+      overflow: hidden !important;
+      position: relative !important;
+    }
+    #thinkToggle::before, #auditToggle::before {
+      text-indent: 0;
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    #thinkToggle::before { content: "🧠"; }
+    #auditToggle::before { content: "🔍"; }
+    #send { padding: 0 14px !important; }
+    #clear { padding: 0 10px !important; }
+
     .bubble { max-width: 92% !important; font-size: 14px !important; }
-    .inputbar { padding-bottom: max(12px, env(safe-area-inset-bottom)) !important; }
-    textarea { font-size: 16px !important; }
     .followup { font-size: 12px !important; padding: 4px 10px !important; }
   }
   @media (max-width: 480px) {
