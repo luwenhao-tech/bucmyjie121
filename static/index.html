@@ -1948,6 +1948,11 @@ function renderRich(s) {
   const cleaned = (s || "").replace(ACTION_RE, "").replace(/\n{3,}/g, "\n\n");
   return escapeHtml(cleaned)
     .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+    // 单星号斜体：*text* → <em>text</em>（拉丁学名 *Morus alba* 等）
+    // 必须在 ** 之后，且要求两端紧贴非空白字符，避免误伤裸星号
+    .replace(/(^|[^*\w])\*([^*\s][^*\n]*?[^*\s]|[^*\s])\*(?!\*)/g, '$1<em>$2</em>')
+    // 下划线斜体：_text_ → <em>text</em>（避免误伤 file_name 之类的下划线连接）
+    .replace(/(^|[^\w_])_([^_\s][^_\n]*?[^_\s]|[^_\s])_(?!\w)/g, '$1<em>$2</em>')
     .replace(/「([^」\n]+)」/g, '<strong>$1</strong>')
     .replace(/【([^】\n]+)】/g, '<span class="kw-title">【$1】</span>')
     .replace(/《([^》\n]+)》/g, '<span class="kw-book">《$1》</span>');
