@@ -564,6 +564,8 @@
   .quick span:hover { background: #f5e6c4; border-color: #a83224; }
 
   em, i, cite, dfn, address, var { font-style: normal; }
+  /* 例外：气泡内 renderRich 生成的 <em> 用于拉丁学名，必须斜体 */
+  .bubble em { font-style: italic; font-family: "Times New Roman", "Nimbus Roman", "Liberation Serif", Georgia, serif; }
 
   /* 意图分流芯片 */
   .intent-chip {
