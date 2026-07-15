@@ -790,6 +790,19 @@ AUTHORITATIVE_FILES = {
         ("团体标准", "团标", "保健食品", "T/CNHFA"),
         ("保健食品用原料桑白皮团体标准.pdf",),
     ),
+    # 桑属分子鉴定：郑铭志的序列清洗结论覆盖/推翻了原论文
+    # （原论文声称 ITS2 可鉴别桑属近缘种，清洗后发现分不开鸡桑/华桑等）
+    # 一旦 query 涉及分子鉴定，必须让清洗报告独占前排，否则模型会被
+    # 熊永兴/沈烈行/刘宸浩等原论文的旧结论带偏。
+    "mulberry_molecular_id": (
+        ("ITS", "ITS2", "DNA条形码", "DNA 条形码", "条形码", "分子鉴定", "分子鉴别",
+         "序列", "psbA", "matK", "rbcL",
+         "鸡桑", "华桑", "蒙桑", "构树", "柘树", "桑属", "近缘种"),
+        ("国内桑属物种DNA序列数据清洗与分析报告 (1).pptx",
+         "基于《桑白皮及其混伪品的DNA条形码鉴定研究》对国内桑属物种ITS2序列数据清洗.docx",
+         "国内桑属植物学序列比对结果.docx",
+         "国内桑属中药鉴定学序列比对结果.docx"),
+    ),
 }
 
 
@@ -820,24 +833,24 @@ def _enforce_authoritative_pin(query: str, results: List[Dict], top_k: int) -> L
         return results
 
     target_set = set(target_files)
-    pinned = [r for r in results if r.get("filename") in target_set]
-    others = [r for r in results if r.get("filename") not in target_set]
 
-    # 已经有至少 1 条权威 chunk 进 top-k：把它们置顶即可
-    if pinned:
-        pinned.sort(key=lambda r: r.get("score", 0), reverse=True)
-        return (pinned + others)[:top_k]
-
-    # 没有权威 chunk 进 top-k：从大池里捞
+    # 从大池里捞所有权威 chunk（不仅仅是当前 results 里的）
+    # —— 权威文件必须"独占前排"，不能被 BM25 数量更多的原论文稀释
     pool = search(query, top_k=200)
     pool_pinned = [r for r in pool if r.get("filename") in target_set]
+    others_pool = [r for r in pool if r.get("filename") not in target_set]
+
     if not pool_pinned:
         return results
+
     pool_pinned.sort(key=lambda r: r.get("score", 0), reverse=True)
-    # 顶入前 2 位（不足则有几条顶几条），其余保留原 results
-    lead = pool_pinned[:min(2, top_k)]
+    # 前排配额 = min(命中权威 chunk 数, ceil(top_k/2), 5)
+    # 至少让权威文件占据 top-k 的前一半，压过原论文的多数派
+    lead_n = min(len(pool_pinned), max(1, top_k // 2 + 1), 5, top_k)
+    lead = pool_pinned[:lead_n]
     lead_ids = {(r.get("filename"), r.get("chunk_index")) for r in lead}
-    tail = [r for r in results if (r.get("filename"), r.get("chunk_index")) not in lead_ids]
+    tail = [r for r in (results + others_pool)
+            if (r.get("filename"), r.get("chunk_index")) not in lead_ids]
     return (lead + tail)[:top_k]
 
 
@@ -1164,6 +1177,11 @@ def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000)
         "- **优先采纳 A 类证据**作为结论主干；B 类作为方法学细节与佐证；C 类**仅在 A/B 类都未涉及时**"
         "作为补充线索使用，且必须明确标注『该结论仅见于 C 类文献，尚待高等级证据验证』。\n"
         "- 若 A 类与 B/C 类结论冲突，**以 A 类为准**，同时以中性语言呈现 B/C 类的不同报道供参考。\n"
+        "- **覆盖性反驳优先规则**：当参考资料里同时出现『某方法/序列可鉴别 X』与『经数据清洗/重新分析后该方法无法鉴别 X』时，"
+        "一律以**后者（清洗/复核结论）**为准，前者视为已被推翻的旧结论。典型场景：桑属 ITS2 分子鉴定——"
+        "早期原论文（如熊永兴、沈烈行、刘宸浩等的 DNA 条形码研究）声称 ITS2 可区分鸡桑/华桑/蒙桑等桑属近缘种，"
+        "但郑铭志《国内桑属物种 DNA 序列数据清洗与分析报告》经序列清洗后证实：ITS2 只能分开构树、柘树等**其他属**，"
+        "**分不开鸡桑、华桑等桑的近缘种**。回答此类问题必须以清洗结论为准，不得沿用原论文的旧说法。\n"
         "- 回答中每处关键数据/结论后，请用简短括注标明来源等级，如"
         "『（据《中国药典》2025 版，A 类）』『（相关 SCI 研究，B 类）』；无需完整点作者/年份的夹注。\n\n"
         "【定位说明——写作口吻硬规则】\n"
