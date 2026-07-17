@@ -89,6 +89,9 @@
   .drawers {
     display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
   }
+  .drawers-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+  }
   .drawer {
     background: linear-gradient(180deg, var(--bucm-green) 0%, var(--bucm-green-dark) 100%);
     color: #fff8e1;
@@ -620,6 +623,7 @@
     .side .panel h3 { font-size: 13px; }
     .side .panel .quote { white-space: normal !important; }
     .drawers { grid-template-columns: 1fr 1fr; }
+    .drawers-inner { grid-template-columns: 1fr 1fr; }
 
     /* 抽屉触发按钮：浮在 header 两侧 */
     .drawer-trigger {
@@ -1051,10 +1055,10 @@
       <div class="drawers" id="drawerBox"></div>
     </div>
 
-    <!-- 桑白皮要点 -->
+    <!-- 桑白皮要点 · 每日一测 -->
     <div class="panel">
-      <h3><span class="dot"></span>桑白皮要点</h3>
-      <div class="quote" id="dailyExamBox" style="line-height:1.75;font-size:12.5px;"></div>
+      <h3><span class="dot"></span>桑白皮要点<span style="font-size:11px;font-weight:400;color:#8a7228;margin-left:6px;letter-spacing:0;">· 每日一测</span></h3>
+      <div id="dailyExamBox" style="font-size:12.5px;line-height:1.7;"></div>
     </div>
   </aside>
 
@@ -1132,10 +1136,13 @@
       </div>
     </div>
 
-    <!-- 桑白皮纲要 -->
+    <!-- 桑白皮纲要（阅读式 · 学习参考，不触发 AI） -->
     <div class="panel">
-      <h3><span class="dot"></span>桑白皮纲要</h3>
-      <div class="quote" id="rhymeBox" style="font-size:12.5px;line-height:1.9;"></div>
+      <h3><span class="dot"></span>桑白皮纲要<span style="font-size:11px;font-weight:400;color:#8a7228;margin-left:6px;letter-spacing:0;">· 学习参考</span></h3>
+      <div style="font-size:10.5px;color:#8a7228;background:#fff8e3;padding:4px 8px;border-radius:4px;margin-bottom:6px;border-left:3px solid #c9a13a;">
+        📖 速记表 · 只看不问，追问请到"速查"或输入框
+      </div>
+      <div class="quote reader" id="rhymeBox" style="font-size:12.5px;line-height:1.9;"></div>
     </div>
 
     <!-- 桑白皮研究 -->
@@ -1485,6 +1492,17 @@ const QUICK_LIST = [
   ["河南产","河南产桑白皮质量"]
 ];
 
+/* 速查分组：按 7 大类切 QUICK_LIST 的 [start, end) 区间 */
+const QUICK_GROUPS = [
+  ["🌱 基础",       0, 11, "#3a8f7a"],
+  ["🔬 性状·显微",  11, 18, "#4a90b8"],
+  ["⚠️ 伪品辨识",   18, 26, "#a83224"],
+  ["🧪 炮制",       26, 32, "#8b5a2b"],
+  ["💊 化学成分",   32, 38, "#6b4a8a"],
+  ["🏥 临床·配伍",  38, 43, "#c44a3a"],
+  ["🌍 产地",       43, 47, "#b89a3e"],
+];
+
 /* ============ 桑白皮研究（一次性渲染全部，不轮换）============
  * 定位：化学成分深度、质量控制、分子鉴定、药理机制、本草考证、前沿议题——科研学术向
  */
@@ -1676,30 +1694,58 @@ const DAILY_QUOTES = [
 ];
 
 function renderSidebars() {
-  // 桑白皮速查：一次性渲染全部条目
+  // 桑白皮速查：按 7 大类分组，每组小标题 + 组内按钮
   const drawerBox = $("drawerBox");
   if (drawerBox) {
-    drawerBox.innerHTML = QUICK_LIST.map(
-      ([name, q]) => `<div class="drawer" data-q="${q}" data-len="${[...name].length}">${name}</div>`
-    ).join("");
+    drawerBox.innerHTML = QUICK_GROUPS.map(([label, s, e, color]) => `
+      <div class="quick-group" style="margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:700;color:${color};letter-spacing:1px;margin-bottom:4px;padding-left:2px;">${label}</div>
+        <div class="drawers-inner">
+          ${QUICK_LIST.slice(s, e).map(([name, q]) =>
+            `<div class="drawer" data-q="${q}" data-len="${[...name].length}">${name}</div>`
+          ).join("")}
+        </div>
+      </div>
+    `).join("");
   }
 
-  // 桑白皮研究：一次性渲染全部条目
+  // 桑白皮研究：点击生成结构化研究综述 prompt
   const tagsBox = $("tagsBox");
   if (tagsBox) {
     tagsBox.innerHTML = RESEARCH_LIST.map(
-      ([cls, q, label]) => `<span class="tag${cls?' '+cls:''}" data-q="${q}">${label}</span>`
+      ([cls, q, label]) => {
+        const structuredQ = `以研究综述模式讲一下桑白皮的「${label}」方向，请按以下四段结构输出：\n①研究现状（这个方向目前做到什么程度）\n②已知结论（有共识的核心发现）\n③方法学证据（关键实验/数据支撑）\n④研究空白与可拓展方向（还没人做/做得不够的切入点）`;
+        const safeQ = structuredQ.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        return `<span class="tag${cls?' '+cls:''}" data-q="${safeQ}" title="点击生成结构化研究综述">${label}</span>`;
+      }
     ).join("");
   }
 
-  // 桑白皮要点：7 个主题一次性全部展开，分块小标题分隔
+  // 桑白皮要点 · 每日一测：按当日索引挑主题，点击按钮把出题 prompt 送进聊天流
   const examBox = $("dailyExamBox");
   if (examBox) {
-    examBox.innerHTML = EXAM_GROUPS.map(([title, html], i) => `
-      <div style="${i>0?'margin-top:10px;padding-top:10px;border-top:1px dashed #d4c8a0;':''}">
-        <div style="font-weight:700;color:#3a8f7a;letter-spacing:2px;font-size:12px;margin-bottom:4px;">▍${title}</div>
-        ${html}
-      </div>`).join("");
+    const topics = EXAM_GROUPS.map(g => g[0]);
+    const dayIdx = Math.floor(Date.now() / 86400000) % topics.length;
+    const topic = topics[dayIdx];
+    const quizPrompt = `请以「桑白皮 · ${topic}」为主题出一道单项选择题，严格按以下格式输出，不要提前公布答案：\n\n【题目】<一句话题干>\nA. <选项A>\nB. <选项B>\nC. <选项C>\nD. <选项D>\n\n（请我回复 A/B/C/D 后，你再给出正确答案、逐项讲解，并追加一个可延伸追问的方向）`;
+    const safe = quizPrompt.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    examBox.innerHTML = `
+      <div style="background:#fff8e3;border-left:3px solid #c9a13a;padding:6px 10px;border-radius:4px;margin-bottom:8px;font-size:11.5px;color:#8a7228;">
+        📖 每日随机出题，答完即讲，无题库、每次新题
+      </div>
+      <div style="margin-bottom:6px;color:#8a5c2b;">
+        <strong>今日主题：</strong><span style="color:#a83224;">${topic}</span>
+      </div>
+      <button data-q="${safe}" style="width:100%;padding:8px 12px;background:linear-gradient(135deg,#c9a13a,#a8862b);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:1px;box-shadow:0 2px 4px rgba(168,134,43,0.3);">
+        🎯 开始今日测验
+      </button>
+      <div style="margin-top:8px;font-size:11px;color:#8a7228;line-height:1.6;">
+        <strong>可选主题：</strong>${topics.map((t,i)=>{
+          const p = `请以「桑白皮 · ${t}」为主题出一道单项选择题，严格按以下格式输出，不要提前公布答案：\n\n【题目】<一句话题干>\nA. <选项A>\nB. <选项B>\nC. <选项C>\nD. <选项D>\n\n（请我回复 A/B/C/D 后，你再给出正确答案、逐项讲解，并追加一个可延伸追问的方向）`;
+          const sp = p.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          return `<span data-q="${sp}" style="display:inline-block;margin:2px 3px;padding:2px 6px;background:#f5efd8;border:1px solid #d4c8a0;border-radius:3px;cursor:pointer;color:${i===dayIdx?'#a83224':'#6b5a2b'};${i===dayIdx?'font-weight:700;':''}">${t}</span>`;
+        }).join('')}
+      </div>`;
   }
 
   // 桑白皮纲要：7 个主题一次性全部展开，分块小标题分隔
