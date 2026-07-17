@@ -87,10 +87,13 @@
 
   /* 桑白皮速查按钮 */
   .drawers {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    display: block;
   }
   .drawers-inner {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+    display: flex; flex-wrap: wrap; gap: 4px;
+  }
+  .drawers-inner .drawer {
+    flex: 1 1 auto; min-width: 0; white-space: nowrap;
   }
   .drawer {
     background: linear-gradient(180deg, var(--bucm-green) 0%, var(--bucm-green-dark) 100%);
@@ -622,8 +625,8 @@
     .side .panel { flex: 0 0 auto; padding: 10px 12px; }
     .side .panel h3 { font-size: 13px; }
     .side .panel .quote { white-space: normal !important; }
-    .drawers { grid-template-columns: 1fr 1fr; }
-    .drawers-inner { grid-template-columns: 1fr 1fr; }
+    .drawers { display: block; }
+    .drawers-inner { display: flex; flex-wrap: wrap; gap: 4px; }
 
     /* 抽屉触发按钮：浮在 header 两侧 */
     .drawer-trigger {
