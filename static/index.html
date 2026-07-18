@@ -628,19 +628,19 @@
     .drawers { display: block; }
     .drawers-inner { display: flex; flex-wrap: wrap; gap: 4px; }
 
-    /* 抽屉触发按钮：浮在 header 两侧 */
+    /* 抽屉触发按钮：固定在视口左右，保证对称，永不被裁掉 */
     .drawer-trigger {
       display: flex; align-items: center; justify-content: center;
-      position: absolute; top: 10px;
+      position: fixed; top: 10px;
       width: 36px; height: 36px;
       border-radius: 50%; border: 1.5px solid #c9a771;
       background: #fff8e3; color: #6b4a24;
       font-size: 16px; cursor: pointer;
-      z-index: 100;
+      z-index: 2100;
       box-shadow: 0 2px 6px rgba(0,0,0,.1);
     }
-    .drawer-trigger-left  { left: 10px; }
-    .drawer-trigger-right { right: 10px; }
+    .drawer-trigger-left  { left: calc(10px + env(safe-area-inset-left)); }
+    .drawer-trigger-right { right: calc(10px + env(safe-area-inset-right)); }
 
     /* 遮罩 */
     .drawer-mask {
@@ -678,8 +678,8 @@
       aspect-ratio: 1 / 1 !important;
       flex-shrink: 0 !important;
     }
-    .drawer-trigger-left  { left: 10px !important; }
-    .drawer-trigger-right { right: 10px !important; }
+    .drawer-trigger-left  { left: calc(10px + env(safe-area-inset-left)) !important; }
+    .drawer-trigger-right { right: calc(10px + env(safe-area-inset-right)) !important; }
 
     /* 标题：单行 nowrap，允许被压缩 */
     h1 {
