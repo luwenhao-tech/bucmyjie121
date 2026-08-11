@@ -18,7 +18,7 @@ from fastapi.responses import StreamingResponse, FileResponse, HTMLResponse, JSO
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from llm_client import generate_stream, generate, vision_client, generate_followups, resolve_intent_extra, classify_intent
+from llm_client import generate_stream, generate, vision_client, generate_followups, resolve_intent_extra, classify_intent, is_off_topic
 
 # RAG 检索引擎（论文知识库）
 try:
@@ -443,6 +443,11 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
         is_chat = any(kw in query_lower for kw in _CHAT_WHITELIST)
         if is_chat:
             rag_context = ""  # 闲聊：不拒答也不注入 RAG
+        elif await is_off_topic(req.prompt):
+            # 主题闸门：非桑白皮药材 → 强制走拒答分支，不让 RAG 分数决定
+            # 修复：茯苓/黄芪等其他药材会因通用词命中桑白皮 chunk 而拿到高 BM25 分，
+            # 仅靠 score>=20 闸门拦不住；此处提前判定主题，复用 __NO_RESULTS__ 拒答 prompt。
+            rag_context = "__NO_RESULTS__"
         else:
             try:
                 # 审稿模式：top_k 拉高，且强制关键词二次召回（药典/含量测定/HPLC）

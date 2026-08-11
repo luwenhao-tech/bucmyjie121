@@ -665,6 +665,61 @@ async def classify_intent(user_prompt: str, has_image: bool = False) -> str:
     return "concept"
 
 
+# ============ 药材主题闸门（防止讲课模式回复非桑白皮药材） ============
+# 背景：仅靠 RAG 分数闸门（score>=20）不够——学生问"茯苓/黄芪/当归"时，
+# tokenize 会把"性状/鉴别/药典"这些通用词切成 n-gram，命中一堆桑白皮 chunk，
+# BM25 分数轻松 >=20 → 闸门不关 → LLM 拿桑白皮资料回答其他药 → 参数知识兜底 → 幻觉。
+#
+# 修法：在 RAG 之前先跑一个**主题分类器**，判断学生问的是不是桑白皮方向。
+# 非桑白皮直接返回 True，主流程复用 __NO_RESULTS__ 拒答分支。
+_TOPIC_GATE_SYSTEM = """你是中药学主题过滤器。仅输出一个英文单词，无其他字符。
+判定用户问题是否属于"桑白皮"方向（含：桑白皮本身、桑属植物 Morus、桑树各部位、桑白皮的鉴定/化学成分/药理/炮制/质控/DNA 条形码/伪品鉴别/本草/市场/药典条文）。
+- 若属于桑白皮方向、闲聊寒暄、询问老师本人/课程/平台 → 输出 SANG
+- 若在问其他中药材（茯苓、黄芪、当归、甘草、人参、白术、山药……）或其他方剂/针灸/西药 → 输出 OTHER
+只输出 SANG 或 OTHER。"""
+
+# 常见"非桑白皮"药材硬名单——启发式先过一遍，命中直接拒，省一次 LLM 调用
+_NON_SANG_HERBS = (
+    "茯苓", "茯神", "黄芪", "当归", "甘草", "人参", "党参", "西洋参", "白术", "苍术",
+    "山药", "枸杞", "麦冬", "天冬", "熟地", "生地", "地黄", "川芎", "白芍", "赤芍",
+    "丹参", "三七", "红花", "藏红花", "金银花", "连翘", "板蓝根", "大黄", "黄连", "黄芩",
+    "黄柏", "栀子", "柴胡", "薄荷", "菊花", "牛蒡子", "桔梗", "杏仁", "百合", "五味子",
+    "远志", "酸枣仁", "茯神", "陈皮", "青皮", "枳实", "枳壳", "香附", "木香", "砂仁",
+    "厚朴", "苍耳子", "辛夷", "细辛", "麻黄", "桂枝", "生姜", "干姜", "附子", "肉桂",
+    "杜仲", "续断", "牛膝", "淫羊藿", "巴戟天", "肉苁蓉", "何首乌", "灵芝", "冬虫夏草",
+    "石斛", "玉竹", "沙参", "玄参", "半夏", "天麻", "钩藤", "决明子", "车前子",
+)
+
+
+async def is_off_topic(user_prompt: str) -> bool:
+    """True = 非桑白皮方向，应触发拒答；False = 桑白皮方向或闲聊，正常走 RAG。"""
+    text = (user_prompt or "").strip()
+    if not text:
+        return False
+    # 启发式硬名单：命中即拒，最快最稳
+    if any(herb in text for herb in _NON_SANG_HERBS):
+        # 但如果同时提到桑白皮（对比题、伪品鉴别），仍视为桑白皮方向
+        if any(k in text for k in ("桑白皮", "桑皮", "桑根皮", "Morus", "morus", "桑树")):
+            return False
+        return True
+    # 其他情况让小模型判
+    try:
+        resp = await client.chat.completions.create(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": _TOPIC_GATE_SYSTEM},
+                {"role": "user", "content": text[:300]},
+            ],
+            temperature=0,
+            max_tokens=4,
+        )
+        out = (resp.choices[0].message.content or "").strip().upper()
+        return out.startswith("OTHER")
+    except Exception as e:
+        print(f"[topic gate error] {e}")
+        return False  # fail-open，不阻塞正常回答
+
+
 async def generate_stream(
     user_prompt: str,
     system_prompt: Optional[str] = None,
