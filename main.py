@@ -20,6 +20,14 @@ from pydantic import BaseModel
 
 from llm_client import generate_stream, generate, vision_client, generate_followups, resolve_intent_extra, classify_intent, is_off_topic
 
+# 审稿模式 · 统计学硬检验（scipy 回填 p 值）
+try:
+    from scoring.stats_checks import audit_text as _stats_audit_text
+    _stats_available = True
+except Exception as _e:
+    _stats_available = False
+    print(f"[INFO] stats_checks 未加载：{_e}")
+
 # RAG 检索引擎（论文知识库）
 try:
     from rag_engine import search as rag_search, search_async as rag_search_async, format_context_for_prompt, get_index_stats
@@ -414,10 +422,11 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
         return StreamingResponse(meta_stream(), media_type="text/event-stream")
 
     # 自动识别意图（前端不再传，全部由后端判别）
-    # 审稿模式不分意图，走固定五步核验流程
+    # 审稿模式 / 方案预审模式不分意图，走各自固定流程
     is_audit = (req.mode == "audit")
-    if is_audit:
-        detected_intent = "audit"
+    is_protocol = (req.mode == "protocol")
+    if is_audit or is_protocol:
+        detected_intent = req.mode
         intent_extra = ""
     else:
         detected_intent = await classify_intent(req.prompt, has_image=bool(req.image))
@@ -503,6 +512,19 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
             mode=req.mode or "",
         )
         text = strip_followup(text)
+        # 非流式审稿模式：同样跑 scipy 回填 + 收尾
+        if req.mode == "audit" and _stats_available:
+            try:
+                stats_md, _ = _stats_audit_text(text)
+                if stats_md:
+                    text += stats_md
+            except Exception as _se:
+                print(f"[stats_checks error] {_se}")
+            if not text.rstrip().endswith("—— 本轮核查报告完 ——"):
+                text += "\n\n—— 本轮核查报告完 ——"
+        elif req.mode == "protocol":
+            if not text.rstrip().endswith("—— 本轮方案预审完 ——"):
+                text += "\n\n—— 本轮方案预审完 ——"
         log_chat(client_ip, user_agent, user_name, user_id, prompt_for_log, text, req.think, int((time.time() - started) * 1000))
         return {"content": text}
 
@@ -545,7 +567,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                     emitted_len = safe_until
                     yield f"data: {json.dumps({'token': delta}, ensure_ascii=False)}\n\n"
                 # 出现了 💬 或复读起点之后的内容直接丢弃，不再下发
-            # 审稿模式：截掉复读尾巴 + 追加固定收尾
+            # 审稿模式：截掉复读尾巴 + 跑 scipy 硬检验 + 追加固定收尾
             if req.mode == "audit":
                 audit_marker = "### 一、文献分类"
                 first = full_answer.find(audit_marker)
@@ -553,9 +575,25 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                     second = full_answer.find(audit_marker, first + len(audit_marker))
                     if second != -1:
                         full_answer = full_answer[:second].rstrip()
-                        tail = "\n\n—— 本轮核查报告完 ——"
-                        yield f"data: {json.dumps({'token': tail}, ensure_ascii=False)}\n\n"
-                        full_answer += tail
+                # scipy 回填：从 LLM 结构化 JSON 抓取块跑 χ²/Benford/Shapiro/步长方差
+                if _stats_available:
+                    try:
+                        stats_md, _reports = _stats_audit_text(full_answer)
+                    except Exception as _se:
+                        print(f"[stats_checks error] {_se}")
+                        stats_md = ""
+                    if stats_md:
+                        yield f"data: {json.dumps({'token': stats_md}, ensure_ascii=False)}\n\n"
+                        full_answer += stats_md
+                tail = "\n\n—— 本轮核查报告完 ——"
+                if not full_answer.rstrip().endswith("—— 本轮核查报告完 ——"):
+                    yield f"data: {json.dumps({'token': tail}, ensure_ascii=False)}\n\n"
+                    full_answer += tail
+            elif req.mode == "protocol":
+                tail = "\n\n—— 本轮方案预审完 ——"
+                if not full_answer.rstrip().endswith("—— 本轮方案预审完 ——"):
+                    yield f"data: {json.dumps({'token': tail}, ensure_ascii=False)}\n\n"
+                    full_answer += tail
             # 流结束：剥掉 💬 行后落库
             full_answer = strip_followup(full_answer)
             yield "data: [DONE]\n\n"
@@ -859,3 +897,11 @@ if static_dir.exists():
     @app.get("/admin")
     async def admin_page():
         return FileResponse(static_dir / "admin.html", headers=NO_CACHE_HEADERS)
+
+    @app.get("/audit")
+    async def audit_page():
+        return FileResponse(static_dir / "audit.html", headers=NO_CACHE_HEADERS)
+
+    @app.get("/protocol")
+    async def protocol_page():
+        return FileResponse(static_dir / "protocol.html", headers=NO_CACHE_HEADERS)

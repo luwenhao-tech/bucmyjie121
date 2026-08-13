@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>中药论文智能审稿引擎 · 桑白皮</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+         background:#f5f7f6; color:#222; }
+  header { padding:14px 22px; background:#2f4f43; color:#fff;
+           display:flex; justify-content:space-between; align-items:center; }
+  header h1 { font-size:16px; margin:0; font-weight:600; }
+  header a { color:#c9e2d5; text-decoration:none; font-size:13px; }
+  .wrap { max-width:1100px; margin:22px auto; padding:0 20px;
+          display:grid; grid-template-columns: 1fr 1.6fr; gap:18px; }
+  .card { background:#fff; border:1px solid #e2e6e4; border-radius:10px;
+          padding:16px 18px; }
+  h2 { font-size:14px; margin:0 0 10px; color:#2f4f43; letter-spacing:.5px; }
+  textarea { width:100%; min-height:180px; padding:10px 12px; font-size:14px;
+             border:1px solid #cdd5d1; border-radius:6px; resize:vertical;
+             font-family:inherit; line-height:1.6; }
+  input[type=text] { width:100%; padding:8px 10px; border:1px solid #cdd5d1;
+                     border-radius:6px; font-size:13px; }
+  button { padding:9px 22px; background:#3aa088; color:#fff; border:0;
+           border-radius:6px; font-size:14px; cursor:pointer; margin-top:10px; }
+  button:disabled { background:#a5c8bb; cursor:not-allowed; }
+  .hint { font-size:12px; color:#7a857f; margin-top:6px; }
+  .report { min-height:520px; max-height:78vh; overflow:auto; font-size:14px;
+            line-height:1.72; white-space:pre-wrap; word-wrap:break-word;
+            background:#fbfcfb; padding:14px 16px; border-radius:6px;
+            border:1px solid #e8ecea; font-family:"SF Mono","Menlo","Consolas",monospace; }
+  .status { font-size:12px; color:#6a7570; margin-top:6px; }
+  .tag { display:inline-block; padding:2px 8px; background:#e7f3ee;
+         color:#2f7f66; border-radius:4px; font-size:11px; margin-left:6px; }
+  .row { margin-bottom:12px; }
+  label { font-size:12px; color:#4a5751; display:block; margin-bottom:4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔬 中药论文智能审稿引擎 <span class="tag">桑白皮 · 六步核验</span></h1>
+  <a href="/">← 返回讲课模式</a>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <h2>📥 提交待审文献 / 问题</h2>
+    <div class="row">
+      <label>核查主题（或粘贴论文段落）</label>
+      <textarea id="prompt" placeholder="例：
+· 审一下库内桑白皮抗炎论文的方法学与含量数据
+· 桑皮苷 A 的 HPLC 含量测定是否可信
+· 附：论文正文段落 / 数据表复制在此..."></textarea>
+    </div>
+    <div class="row">
+      <label>可选 · 关注文件名（模糊匹配）</label>
+      <input type="text" id="filename" placeholder="留空 = 全库检索" />
+    </div>
+    <button id="run">开始审稿</button>
+    <div class="hint">六步流程：文献分类 → 数值核验（含 scipy 硬检验）→ 方法学 → 可靠性判定 → 研究缺口 → 修正答案</div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="card">
+    <h2>📄 审稿报告</h2>
+    <div class="report" id="report">（等待提交...）</div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const btn = $("run"), report = $("report"), status = $("status");
+
+btn.onclick = async () => {
+  const prompt = $("prompt").value.trim();
+  const fn = $("filename").value.trim();
+  if (!prompt) { alert("请输入核查主题或论文段落"); return; }
+  btn.disabled = true;
+  report.textContent = "";
+  status.textContent = "⏳ 检索库内文献 + 六步核验中...";
+
+  const finalPrompt = fn ? `【关注文件名】${fn}\n\n${prompt}` : prompt;
+
+  try {
+    const resp = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        prompt: finalPrompt,
+        mode: "audit",
+        stream: true,
+        temperature: 0.3
+      })
+    });
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let buf = "";
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, {stream:true});
+      const lines = buf.split("\n");
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith("data:")) continue;
+        const payload = line.slice(5).trim();
+        if (payload === "[DONE]") { status.textContent = "✅ 审稿完成"; continue; }
+        try {
+          const obj = JSON.parse(payload);
+          if (obj.token) { report.textContent += obj.token; report.scrollTop = report.scrollHeight; }
+          if (obj.error) { status.textContent = "❌ " + obj.error; }
+        } catch(e) {}
+      }
+    }
+  } catch (e) {
+    status.textContent = "❌ " + e.message;
+  } finally {
+    btn.disabled = false;
+  }
+};
+</script>
+</body>
+</html>

@@ -8,3 +8,5 @@ PyMuPDF>=1.24.0
 openpyxl>=3.1.0
 python-docx>=1.1.0
 python-pptx>=1.0.0
+# 审稿模式 · 统计学硬检验（χ² / Benford / Shapiro-Wilk / 线性回归）
+scipy>=1.11.0

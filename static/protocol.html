@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>实验方案合规性预审 · ARRIVE 2.0</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+         background:#f7f5f2; color:#222; }
+  header { padding:14px 22px; background:#5a4232; color:#fff;
+           display:flex; justify-content:space-between; align-items:center; }
+  header h1 { font-size:16px; margin:0; font-weight:600; }
+  header a { color:#e8d8c8; text-decoration:none; font-size:13px; }
+  .wrap { max-width:1100px; margin:22px auto; padding:0 20px;
+          display:grid; grid-template-columns: 1fr 1.6fr; gap:18px; }
+  .card { background:#fff; border:1px solid #ebe4dc; border-radius:10px;
+          padding:16px 18px; }
+  h2 { font-size:14px; margin:0 0 10px; color:#5a4232; letter-spacing:.5px; }
+  textarea { width:100%; min-height:340px; padding:10px 12px; font-size:14px;
+             border:1px solid #d8ccbe; border-radius:6px; resize:vertical;
+             font-family:inherit; line-height:1.6; }
+  button { padding:9px 22px; background:#a86a3e; color:#fff; border:0;
+           border-radius:6px; font-size:14px; cursor:pointer; margin-top:10px; }
+  button:disabled { background:#c9a988; cursor:not-allowed; }
+  .hint { font-size:12px; color:#8a7767; margin-top:6px; line-height:1.6; }
+  .report { min-height:520px; max-height:78vh; overflow:auto; font-size:14px;
+            line-height:1.72; white-space:pre-wrap; word-wrap:break-word;
+            background:#fdfbf8; padding:14px 16px; border-radius:6px;
+            border:1px solid #ece2d5; }
+  .status { font-size:12px; color:#7a685a; margin-top:6px; }
+  .tag { display:inline-block; padding:2px 8px; background:#f2e6d8;
+         color:#8a5a30; border-radius:4px; font-size:11px; margin-left:6px; }
+  .tmpl { font-size:12px; color:#8a5a30; cursor:pointer; text-decoration:underline; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🧪 实验方案合规性预审 <span class="tag">ARRIVE 2.0 · 桑白皮</span></h1>
+  <a href="/">← 返回讲课模式</a>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <h2>📋 粘贴你的实验方案</h2>
+    <textarea id="prompt" placeholder="示例：
+研究目的：评价 Morusin 对胃癌细胞 HGC-27 的增殖抑制作用
+干预：Morusin 0/5/10/20 μM，DMSO 溶解
+对照：顺铂阳性对照（10 μM）
+样本量：n=3
+指标：CCK-8 检测存活率，Western blot 检测 Bax/Bcl-2
+统计：t 检验
+..."></textarea>
+    <div>
+      <span class="tmpl" onclick="loadDemo()">↩ 载入示例方案</span>
+    </div>
+    <button id="run">开始预审</button>
+    <div class="hint">
+      对照 ARRIVE 2.0 Essential 10 + 对照组硬约束 + 桑白皮领域惯例 + 期刊硬要求<br>
+      输出：方案摘要 → 逐项对照表（✅🟡🔴）→ 风险优先级 → 修订建议
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="card">
+    <h2>📝 预审报告</h2>
+    <div class="report" id="report">（粘贴方案后点击"开始预审"...）</div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const btn = $("run"), report = $("report"), status = $("status");
+
+function loadDemo() {
+  $("prompt").value = `研究目的：评价 Morusin 对胃癌 HGC-27 增殖抑制作用
+细胞：HGC-27（本实验室保存，代次 10-15）
+干预：Morusin 0/10/40 μM，DMSO 溶解
+对照：DMSO 空白
+样本量：生物学重复 n=3
+主要指标：CCK-8 检测 24/48h 存活率
+次要指标：Western blot（Bax/Bcl-2）
+统计方法：Student t 检验，p<0.05
+`;
+}
+
+btn.onclick = async () => {
+  const prompt = $("prompt").value.trim();
+  if (!prompt) { alert("请粘贴实验方案"); return; }
+  btn.disabled = true;
+  report.textContent = "";
+  status.textContent = "⏳ ARRIVE 2.0 逐项对照中...";
+
+  try {
+    const resp = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        prompt: prompt,
+        mode: "protocol",
+        stream: true,
+        temperature: 0.3
+      })
+    });
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let buf = "";
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, {stream:true});
+      const lines = buf.split("\n");
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith("data:")) continue;
+        const payload = line.slice(5).trim();
+        if (payload === "[DONE]") { status.textContent = "✅ 预审完成"; continue; }
+        try {
+          const obj = JSON.parse(payload);
+          if (obj.token) { report.textContent += obj.token; report.scrollTop = report.scrollHeight; }
+          if (obj.error) { status.textContent = "❌ " + obj.error; }
+        } catch(e) {}
+      }
+    }
+  } catch (e) {
+    status.textContent = "❌ " + e.message;
+  } finally {
+    btn.disabled = false;
+  }
+};
+</script>
+</body>
+</html>
