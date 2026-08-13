@@ -966,8 +966,9 @@
   }
   .theme-toggle:hover { transform: rotate(20deg); }
   html.dark .theme-toggle { background: #2a2e35; color: #ffd97a; border-color: #3a3f45; }
-#loginMask { display: flex; transition: opacity .35s; }
-#loginMask.hidden { opacity: 0; pointer-events: none; display: flex !important; }
+#loginMask { display: none; transition: opacity .35s; }
+#loginMask.show { display: flex; }
+#loginMask.hidden { opacity: 0; pointer-events: none; }
 #loginMask.gone { display: none !important; }
 .user-chip {
   display: inline-flex; align-items: center; gap: 6px;
@@ -1375,9 +1376,10 @@ const chat = $("chat");
     if (big) big.textContent = `${name}，您来啦？`;
   };
   if (saved && token) {
-    mask.classList.add("hidden");
     mask.classList.add("gone");
     showChip(saved);
+  } else {
+    mask.classList.add("show");
   }
   $("loginBtn").onclick = async () => {
     hideErr();

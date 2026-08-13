@@ -53,10 +53,6 @@
 · 桑皮苷 A 的 HPLC 含量测定是否可信
 · 附：论文正文段落 / 数据表复制在此..."></textarea>
     </div>
-    <div class="row">
-      <label>可选 · 关注文件名（模糊匹配）</label>
-      <input type="text" id="filename" placeholder="留空 = 全库检索" />
-    </div>
     <button id="run">开始审稿</button>
     <div class="hint">六步流程：文献分类 → 数值核验（含 scipy 硬检验）→ 方法学 → 可靠性判定 → 研究缺口 → 修正答案</div>
     <div class="status" id="status"></div>
@@ -74,13 +70,12 @@ const btn = $("run"), report = $("report"), status = $("status");
 
 btn.onclick = async () => {
   const prompt = $("prompt").value.trim();
-  const fn = $("filename").value.trim();
   if (!prompt) { alert("请输入核查主题或论文段落"); return; }
   btn.disabled = true;
   report.textContent = "";
   status.textContent = "⏳ 检索库内文献 + 六步核验中...";
 
-  const finalPrompt = fn ? `【关注文件名】${fn}\n\n${prompt}` : prompt;
+  const finalPrompt = prompt;
 
   try {
     const resp = await fetch("/api/chat", {
