@@ -35,11 +35,26 @@
          color:#2f7f66; border-radius:4px; font-size:11px; margin-left:6px; }
   .row { margin-bottom:12px; }
   label { font-size:12px; color:#4a5751; display:block; margin-bottom:4px; }
+  header h1 .logo { display:inline-flex;align-items:center;justify-content:center;
+    width:30px;height:30px;border-radius:8px;
+    background:linear-gradient(135deg,#5cc4a7,#3aa088);color:#fff8e1;
+    font-size:18px;font-weight:900;border:1.5px solid #f2cc6b;
+    box-shadow:0 2px 6px rgba(0,0,0,.2);margin-right:8px;vertical-align:-6px}
+  @media(max-width:800px){
+    header{padding:10px 14px;flex-wrap:wrap;gap:8px}
+    header h1{font-size:14px;line-height:1.5;flex:1 1 100%}
+    header h1 .tag{display:inline-block;margin-top:4px}
+    header a{font-size:12px}
+    .wrap{grid-template-columns:1fr!important;margin:14px auto;padding:0 14px;gap:14px}
+    .report{max-height:60vh;min-height:320px}
+    textarea{min-height:140px}
+    button{width:100%;padding:11px;font-size:14px}
+  }
 </style>
 </head>
 <body>
 <header>
-  <h1>🔬 中药论文智能审稿引擎 <span class="tag">桑白皮 · 六步核验</span></h1>
+  <h1><span class="logo">药</span>🔬 中药论文智能审稿引擎 <span class="tag">桑白皮 · 六步核验</span></h1>
   <a href="/">← 返回讲课模式</a>
 </header>
 
