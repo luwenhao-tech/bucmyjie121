@@ -933,8 +933,12 @@ async def api_protocol_rules(rule_id: Optional[str] = None):
 
 
 @app.get("/api/matrix")
-async def api_matrix():
-    """成分×药理矩阵 + 冲突检测。数据来自 scoring/extracted/*.json 缓存。"""
+async def api_matrix(top: int = 30):
+    """成分×药理矩阵 + 冲突检测。数据来自 scoring/extracted/*.json 缓存。
+
+    参数：
+        top: 只返回按论文频次排序的前 N 个化合物（默认 30，传 0 = 全部）。
+    """
     try:
         from scoring.matrix import build_matrix, find_conflicts
         from scoring.e2e_matrix_regression import load_cached
@@ -948,21 +952,36 @@ async def api_matrix():
         }
     mat = build_matrix(docs)
     conflicts = find_conflicts(docs)
-    # 把 tuple key 展平成前端易用的格式
+
+    # 按化合物出现频次（行合计）排序
+    def _row_total(c: str) -> int:
+        return sum(mat["counts"].get((c, a), 0) for a in mat["actions"])
+
+    all_compounds = sorted(mat["compounds"], key=_row_total, reverse=True)
+    total_compounds = len(all_compounds)
+    shown = all_compounds if (top or 0) <= 0 else all_compounds[:top]
+    shown_set = set(shown)
+
     cells = []
-    for c in mat["compounds"]:
+    for c in shown:
         for a in mat["actions"]:
             n = mat["counts"].get((c, a), 0)
             cells.append({
                 "compound": c, "action": a, "n": n,
                 "papers": mat["papers"].get((c, a), []),
             })
+
+    compound_totals = [{"compound": c, "n": _row_total(c)} for c in shown]
+
     return {
         "doc_count": len(docs),
-        "compounds": mat["compounds"],
+        "compounds": shown,
+        "compounds_total": total_compounds,
+        "compound_totals": compound_totals,
+        "top": top,
         "actions": mat["actions"],
         "cells": cells,
-        "gaps": [{"compound": c, "action": a} for c, a in mat["gaps"]],
-        "saturated": [{"compound": c, "action": a} for c, a in mat["saturated"]],
+        "gaps": [{"compound": c, "action": a} for c, a in mat["gaps"] if c in shown_set],
+        "saturated": [{"compound": c, "action": a} for c, a in mat["saturated"] if c in shown_set],
         "conflicts": conflicts,
     }

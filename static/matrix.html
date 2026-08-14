@@ -134,8 +134,11 @@ async function load() {
 }
 
 function render(j) {
+  const totC = j.compounds_total || j.compounds.length;
+  const shown = j.compounds.length;
+  const topNote = (totC > shown) ? `(按频次显示 Top ${shown}/${totC})` : "";
   $("meta").textContent =
-    `共 ${j.doc_count} 篇原始实验 · ${j.compounds.length} 个化合物 × ${j.actions.length} 个药理 · `
+    `共 ${j.doc_count} 篇原始实验 · ${shown} 个化合物 ${topNote} × ${j.actions.length} 个药理 · `
     + `空白格 ${j.gaps.length} · 密集格 ${j.saturated.length}`;
 
   const cellMap = {};
