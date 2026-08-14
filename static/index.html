@@ -660,8 +660,8 @@
       flex-wrap: nowrap !important;
       align-items: center !important;
       justify-content: flex-start !important;
-      gap: 5px !important;
-      padding: 10px 50px !important;   /* 左右留 ☰/📖 位 */
+      gap: 4px !important;
+      padding: 8px 46px !important;
       position: relative;
       overflow-x: auto !important;
       overflow-y: hidden;
@@ -671,8 +671,16 @@
     .main header::-webkit-scrollbar { display: none; }
     .main header > h1 { margin-right: auto !important; }
     .main header > * { min-width: 0; flex-shrink: 0; }
-    /* 更紧凑的按钮尺寸，避免 6 个按钮挤不下 */
-    .hist-btn { width: 28px !important; min-width: 28px !important; height: 28px !important; }
+    .hist-btn {
+      width: 26px !important; min-width: 26px !important; height: 26px !important;
+    }
+    .hist-btn::before { font-size: 13px !important; }
+    /* 用户 chip 更紧凑 */
+    #userChip { font-size: 10px !important; padding: 2px 6px !important; }
+    /* 标题字号更小、间距更紧 */
+    h1 { font-size: 13px !important; gap: 4px !important; }
+    h1 > span:first-child { width: 22px !important; height: 22px !important; font-size: 12px !important; }
+    h1 > span:nth-child(2) { letter-spacing: 0.5px !important; }
     /* ☰ / 📖 强制正圆 */
     .drawer-trigger {
       width: 36px !important;
