@@ -33,6 +33,16 @@
   .status { font-size:12px; color:#6a7570; margin-top:6px; }
   .tag { display:inline-block; padding:2px 8px; background:#e7f3ee;
          color:#2f7f66; border-radius:4px; font-size:11px; margin-left:6px; }
+  .stats-cards { margin-top:14px; display:grid; gap:10px;
+                 grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); }
+  .stats-card { border-radius:8px; padding:10px 12px; font-size:12.5px;
+                border-left:4px solid #bbb; background:#fbfcfb; line-height:1.55; }
+  .stats-card.ok { border-left-color:#3aa088; background:#f0f8f4; }
+  .stats-card.warn { border-left-color:#e5a83a; background:#fdf7ea; }
+  .stats-card.bad { border-left-color:#c94a3a; background:#fbeee9; }
+  .stats-card .h { font-weight:600; color:#333; margin-bottom:4px; font-size:13px; }
+  .stats-card .m { color:#666; font-size:11.5px; }
+  .stats-card .p { font-family:"SF Mono","Menlo",monospace; font-size:11.5px; }
   .row { margin-bottom:12px; }
   label { font-size:12px; color:#4a5751; display:block; margin-bottom:4px; }
   header h1 .logo { display:inline-flex;align-items:center;justify-content:center;
@@ -76,18 +86,54 @@
   <div class="card">
     <h2>📄 审稿报告</h2>
     <div class="report" id="report">（等待提交...）</div>
+    <div class="stats-cards" id="statsCards"></div>
   </div>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
-const btn = $("run"), report = $("report"), status = $("status");
+const btn = $("run"), report = $("report"), status = $("status"), statsCards = $("statsCards");
+
+function verdictClass(v) {
+  if (!v) return "";
+  const s = String(v);
+  if (/正常|通过|OK|✅/.test(s)) return "ok";
+  if (/嫌疑|异常|❌|失败|偏离/.test(s)) return "bad";
+  return "warn";
+}
+function renderStatsCards(reports) {
+  if (!reports || !reports.length) { statsCards.innerHTML = ""; return; }
+  const cards = [];
+  for (const rep of reports) {
+    const head = `${rep.filename || "?"} · ${rep.compound || "?"}${rep.unit ? "（"+rep.unit+"）" : ""} · n=${rep.n}`;
+    if (!rep.results || !rep.results.length) {
+      cards.push(`<div class="stats-card"><div class="h">${head}</div><div class="m">样本量不足或指标缺失</div></div>`);
+      continue;
+    }
+    for (const r of rep.results) {
+      const cls = verdictClass(r.verdict);
+      let body = "";
+      if (r.method === "chisquare_lastdigit")
+        body = `末位 χ² · <span class="p">p=${r.p}</span>｜0/5 占比 ${r.zero_five_ratio}`;
+      else if (r.method === "benford")
+        body = `Benford 首位 · <span class="p">p=${r.p}</span>`;
+      else if (r.method === "runlength")
+        body = `步长方差 · <span class="p">rel=${r.step_var_rel}${r.R2!=null?", R²="+r.R2:""}</span>`;
+      else if (r.method === "shapiro")
+        body = `Shapiro-Wilk · <span class="p">W=${r.stat}, p=${r.p}</span>`;
+      else body = r.method;
+      cards.push(`<div class="stats-card ${cls}"><div class="h">${head}</div><div class="m">${body}</div><div class="m">→ ${r.verdict || ""}</div></div>`);
+    }
+  }
+  statsCards.innerHTML = cards.join("");
+}
 
 btn.onclick = async () => {
   const prompt = $("prompt").value.trim();
   if (!prompt) { alert("请输入核查主题或论文段落"); return; }
   btn.disabled = true;
   report.textContent = "";
+  statsCards.innerHTML = "";
   status.textContent = "⏳ 检索库内文献 + 六步核验中...";
 
   const finalPrompt = prompt;
@@ -120,6 +166,7 @@ btn.onclick = async () => {
         try {
           const obj = JSON.parse(payload);
           if (obj.token) { report.textContent += obj.token; report.scrollTop = report.scrollHeight; }
+          if (obj.stats_cards) { renderStatsCards(obj.stats_cards); }
           if (obj.error) { status.textContent = "❌ " + obj.error; }
         } catch(e) {}
       }

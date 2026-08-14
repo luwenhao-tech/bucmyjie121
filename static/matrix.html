@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>成分 × 药理 矩阵 · 桑白皮</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+         background:#f5f7f6; color:#222; }
+  header { padding:14px 22px; background:#2f4f43; color:#fff;
+           display:flex; justify-content:space-between; align-items:center; }
+  header h1 { font-size:16px; margin:0; font-weight:600; }
+  header a { color:#c9e2d5; text-decoration:none; font-size:13px; }
+  .tag { display:inline-block; padding:2px 8px; background:#e7f3ee;
+         color:#2f7f66; border-radius:4px; font-size:11px; margin-left:6px; }
+  .wrap { max-width:1200px; margin:22px auto; padding:0 20px; }
+  .card { background:#fff; border:1px solid #e2e6e4; border-radius:10px;
+          padding:16px 18px; margin-bottom:16px; }
+  h2 { font-size:14px; margin:0 0 10px; color:#2f4f43; letter-spacing:.5px; }
+  .meta { font-size:12px; color:#7a857f; margin-bottom:8px; }
+  .legend { display:flex; gap:14px; font-size:12px; color:#555;
+            flex-wrap:wrap; margin-bottom:10px; }
+  .legend span { display:inline-flex; align-items:center; gap:4px; }
+  .swatch { width:14px; height:14px; border-radius:3px; display:inline-block; }
+  .sw-red { background:#f5d4cd; border:1px solid #d88a7a; }
+  .sw-yellow { background:#fbeec3; border:1px solid #d4b155; }
+  .sw-green { background:#c8e6d3; border:1px solid #5aa377; }
+  .matrix-scroll { overflow-x:auto; }
+  table.mat { border-collapse:collapse; font-size:12.5px; }
+  table.mat th, table.mat td { border:1px solid #eee; padding:6px 10px;
+                               text-align:center; white-space:nowrap; min-width:70px; }
+  table.mat th { background:#f7faf8; color:#2f4f43; font-weight:600;
+                 position:sticky; top:0; }
+  table.mat th.rowh { position:sticky; left:0; text-align:left;
+                      background:#f7faf8; z-index:2; }
+  td.c-red { background:#fbeae4; color:#a83224; cursor:pointer; }
+  td.c-yellow { background:#fdf6e0; color:#8a5a30; cursor:pointer; }
+  td.c-green { background:#dbeee1; color:#276a4a; cursor:pointer; }
+  td.c-red:hover, td.c-yellow:hover, td.c-green:hover { outline:2px solid #3aa088; }
+  .conflicts li { font-size:13px; line-height:1.7; margin-bottom:6px; }
+  .conflicts code { background:#f0f5f2; padding:1px 6px; border-radius:4px;
+                    color:#3aa088; font-size:12px; }
+  .empty { color:#999; font-size:13px; padding:20px; text-align:center; }
+  .err { color:#a83224; padding:20px; text-align:center; font-size:13px;
+         background:#fbeae4; border-radius:6px; }
+  /* 抽屉 */
+  .drawer-bg { position:fixed; inset:0; background:rgba(0,0,0,.35);
+               display:none; z-index:99; }
+  .drawer-bg.on { display:block; }
+  .drawer { position:fixed; right:0; top:0; bottom:0; width:min(420px, 92vw);
+            background:#fff; box-shadow:-4px 0 20px rgba(0,0,0,.15);
+            padding:20px; overflow:auto; z-index:100; transform:translateX(100%);
+            transition:transform .25s; }
+  .drawer.on { transform:translateX(0); }
+  .drawer h3 { margin:0 0 12px; font-size:15px; color:#2f4f43; }
+  .drawer .close { position:absolute; top:12px; right:14px; cursor:pointer;
+                   font-size:20px; color:#888; }
+  .drawer .field { font-size:13px; margin:8px 0; line-height:1.7; }
+  .drawer .field b { color:#2f4f43; }
+  .drawer .papers { font-size:12px; color:#555; line-height:1.8;
+                    background:#f7faf8; padding:10px; border-radius:6px;
+                    max-height:40vh; overflow:auto; }
+  @media(max-width:800px){
+    header{padding:10px 14px;flex-wrap:wrap;gap:8px}
+    header h1{font-size:14px;line-height:1.5;flex:1 1 100%}
+    header a{font-size:12px}
+    .wrap{margin:14px auto;padding:0 14px}
+    table.mat th, table.mat td{padding:5px 7px;font-size:11.5px;min-width:56px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>📊 成分 × 药理 矩阵 <span class="tag">桑白皮 · 空白识别 + 冲突检测</span></h1>
+  <a href="/">← 返回讲课模式</a>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <h2>矩阵图例</h2>
+    <div class="legend">
+      <span><i class="swatch sw-red"></i>空白格 (0 篇) — 潜在选题</span>
+      <span><i class="swatch sw-yellow"></i>零星 (1-4 篇) — 可拓展</span>
+      <span><i class="swatch sw-green"></i>密集 (≥5 篇) — 做烂了</span>
+    </div>
+    <div class="meta" id="meta">加载中…</div>
+    <div class="matrix-scroll" id="matWrap">
+      <div class="empty">加载中…</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔥 结论矛盾检测</h2>
+    <div class="meta">同化合物+同药理作用,不同论文 IC50/EC50 差 ≥3 倍 → 候选"澄清型"选题</div>
+    <ol class="conflicts" id="conflicts"><li class="empty">加载中…</li></ol>
+  </div>
+</div>
+
+<div class="drawer-bg" id="drawerBg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <span class="close" onclick="closeDrawer()">✕</span>
+  <h3 id="dTitle"></h3>
+  <div class="field" id="dSummary"></div>
+  <div class="field"><b>覆盖论文</b>:</div>
+  <div class="papers" id="dPapers"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let DATA = null;
+
+function cls(n) {
+  if (n === 0) return "c-red";
+  if (n >= 5) return "c-green";
+  return "c-yellow";
+}
+
+async function load() {
+  try {
+    const r = await fetch("/api/matrix");
+    const j = await r.json();
+    if (j.error && (!j.compounds || !j.compounds.length)) {
+      $("matWrap").innerHTML = `<div class="err">${j.error}</div>`;
+      $("meta").textContent = "";
+      $("conflicts").innerHTML = "";
+      return;
+    }
+    DATA = j;
+    render(j);
+  } catch (e) {
+    $("matWrap").innerHTML = `<div class="err">加载失败: ${e.message}</div>`;
+  }
+}
+
+function render(j) {
+  $("meta").textContent =
+    `共 ${j.doc_count} 篇原始实验 · ${j.compounds.length} 个化合物 × ${j.actions.length} 个药理 · `
+    + `空白格 ${j.gaps.length} · 密集格 ${j.saturated.length}`;
+
+  const cellMap = {};
+  for (const c of j.cells) cellMap[c.compound+"|"+c.action] = c;
+
+  let html = `<table class="mat"><thead><tr><th class="rowh">化合物 \\ 药理</th>`;
+  for (const a of j.actions) html += `<th>${a}</th>`;
+  html += `</tr></thead><tbody>`;
+  for (const cp of j.compounds) {
+    html += `<tr><th class="rowh">${cp}</th>`;
+    for (const a of j.actions) {
+      const cell = cellMap[cp+"|"+a] || {n:0, papers:[]};
+      html += `<td class="${cls(cell.n)}" onclick="openCell('${escapeAttr(cp)}','${escapeAttr(a)}')">${cell.n||""}</td>`;
+    }
+    html += `</tr>`;
+  }
+  html += `</tbody></table>`;
+  $("matWrap").innerHTML = html;
+
+  // 冲突列表
+  const cf = j.conflicts || [];
+  if (!cf.length) {
+    $("conflicts").innerHTML = `<li class="empty">当前抽取结果里没检测到显著冲突</li>`;
+  } else {
+    $("conflicts").innerHTML = cf.map(c => `
+      <li><code>${escapeHtml(c.compound || "?")}</code> · <b>${escapeHtml(c.action || "?")}</b>
+        — IC50 相差 <b>${c.fold ? c.fold.toFixed(1) : "?"}×</b>
+        (${c.min_uM}–${c.max_uM} μM,中位 ${c.median_uM}),
+        涉及 ${(c.papers||[]).length} 篇 → <i>候选澄清选题</i></li>
+    `).join("");
+  }
+}
+
+function openCell(cp, a) {
+  if (!DATA) return;
+  const cell = DATA.cells.find(x => x.compound === cp && x.action === a);
+  if (!cell) return;
+  $("dTitle").textContent = `${cp} × ${a}`;
+  let sum;
+  if (cell.n === 0)
+    sum = `<b style="color:#a83224">🎯 空白格 (0 篇)</b> — 候选选题:"探索 ${cp} 对 ${a} 作用"。建议先做体外验证 + 剂量效应。`;
+  else if (cell.n >= 5)
+    sum = `<b style="color:#276a4a">✅ 密集格 (${cell.n} 篇)</b> — 该组合已充分研究,不建议重复;可考虑"澄清型"或"机制型"研究。`;
+  else
+    sum = `<b style="color:#8a5a30">🟡 零星 (${cell.n} 篇)</b> — 证据初步,适合重复验证或方法学补强(样本量/加样回收/统计)。`;
+  $("dSummary").innerHTML = sum;
+  $("dPapers").innerHTML = (cell.papers && cell.papers.length)
+    ? cell.papers.map(p => "· " + escapeHtml(p)).join("<br>")
+    : "<span style='color:#999'>(空)</span>";
+  $("drawer").classList.add("on");
+  $("drawerBg").classList.add("on");
+}
+function closeDrawer() {
+  $("drawer").classList.remove("on");
+  $("drawerBg").classList.remove("on");
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function escapeAttr(s) { return String(s).replace(/'/g, "\\'"); }
+
+load();
+</script>
+</body>
+</html>

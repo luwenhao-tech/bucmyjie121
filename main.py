@@ -577,14 +577,17 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                         full_answer = full_answer[:second].rstrip()
                 # scipy 回填：从 LLM 结构化 JSON 抓取块跑 χ²/Benford/Shapiro/步长方差
                 if _stats_available:
+                    stats_md = ""
+                    _reports = []
                     try:
                         stats_md, _reports = _stats_audit_text(full_answer)
                     except Exception as _se:
                         print(f"[stats_checks error] {_se}")
-                        stats_md = ""
                     if stats_md:
                         yield f"data: {json.dumps({'token': stats_md}, ensure_ascii=False)}\n\n"
                         full_answer += stats_md
+                    if _reports:
+                        yield f"data: {json.dumps({'stats_cards': _reports}, ensure_ascii=False)}\n\n"
                 tail = "\n\n—— 本轮核查报告完 ——"
                 if not full_answer.rstrip().endswith("—— 本轮核查报告完 ——"):
                     yield f"data: {json.dumps({'token': tail}, ensure_ascii=False)}\n\n"
@@ -905,3 +908,43 @@ if static_dir.exists():
     @app.get("/protocol")
     async def protocol_page():
         return FileResponse(static_dir / "protocol.html", headers=NO_CACHE_HEADERS)
+
+    @app.get("/matrix")
+    async def matrix_page():
+        return FileResponse(static_dir / "matrix.html", headers=NO_CACHE_HEADERS)
+
+
+@app.get("/api/matrix")
+async def api_matrix():
+    """成分×药理矩阵 + 冲突检测。数据来自 scoring/extracted/*.json 缓存。"""
+    try:
+        from scoring.matrix import build_matrix, find_conflicts
+        from scoring.e2e_matrix_regression import load_cached
+    except Exception as e:
+        return {"error": f"matrix 模块不可用: {e}", "compounds": [], "actions": [], "cells": [], "conflicts": []}
+    docs = load_cached()
+    if not docs:
+        return {
+            "error": "尚无结构化抽取缓存。请先跑 `python -m scoring.e2e_matrix_regression --limit 130`",
+            "compounds": [], "actions": [], "cells": [], "conflicts": [], "doc_count": 0,
+        }
+    mat = build_matrix(docs)
+    conflicts = find_conflicts(docs)
+    # 把 tuple key 展平成前端易用的格式
+    cells = []
+    for c in mat["compounds"]:
+        for a in mat["actions"]:
+            n = mat["counts"].get((c, a), 0)
+            cells.append({
+                "compound": c, "action": a, "n": n,
+                "papers": mat["papers"].get((c, a), []),
+            })
+    return {
+        "doc_count": len(docs),
+        "compounds": mat["compounds"],
+        "actions": mat["actions"],
+        "cells": cells,
+        "gaps": [{"compound": c, "action": a} for c, a in mat["gaps"]],
+        "saturated": [{"compound": c, "action": a} for c, a in mat["saturated"]],
+        "conflicts": conflicts,
+    }
