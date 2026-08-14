@@ -36,7 +36,7 @@ CACHE_DIR = ROOT / "scoring" / "extracted"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 REPORT_PATH = ROOT / "scoring" / "matrix_report.md"
 
-MAX_CHARS = 8000  # 单篇喂给 LLM 的正文截断长度
+MAX_CHARS = 20000  # 单篇喂给 LLM 的正文截断长度（覆盖结果段，含 IC50 数值）
 
 
 def _safe_name(fn: str) -> str:
