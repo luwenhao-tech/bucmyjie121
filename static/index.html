@@ -653,23 +653,23 @@
     }
     .drawer-mask.show { opacity: 1; pointer-events: auto; }
 
-    /* header：单行 nowrap，标题左、按钮右，永不换行 */
+    /* header：两行布局。标题占第 1 行，按钮全部在第 2 行居中 */
     .main header {
       display: flex !important;
       flex-direction: row !important;
-      flex-wrap: nowrap !important;
+      flex-wrap: wrap !important;
       align-items: center !important;
-      justify-content: flex-start !important;
-      gap: 4px !important;
-      padding: 8px 46px !important;
+      justify-content: center !important;
+      gap: 6px !important;
+      padding: 8px 46px 10px !important;
       position: relative;
-      overflow-x: auto !important;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
     }
-    .main header::-webkit-scrollbar { display: none; }
-    .main header > h1 { margin-right: auto !important; }
+    .main header > h1 {
+      flex: 1 1 100% !important;
+      justify-content: center !important;
+      text-align: center !important;
+      margin-bottom: 4px !important;
+    }
     .main header > * { min-width: 0; flex-shrink: 0; }
     .hist-btn {
       width: 26px !important; min-width: 26px !important; height: 26px !important;
