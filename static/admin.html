@@ -16,7 +16,18 @@
     border-bottom: 3px solid #f2cc6b;
     display: flex; align-items: center; gap: 14px;
   }
-  header h1 { margin: 0; font-size: 18px; letter-spacing: 2px; flex: 1; }
+  header h1 {
+    margin: 0; font-size: 18px; letter-spacing: 2px; flex: 1;
+    display: flex; align-items: center; gap: 10px;
+  }
+  header h1 .logo {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 8px;
+    background: linear-gradient(135deg, #5cc4a7, #3aa088);
+    color: #fff8e1; font-size: 18px; font-weight: 900;
+    border: 1.5px solid #f2cc6b;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2); letter-spacing: 0;
+  }
   header .logout {
     background: rgba(255,255,255,0.2); color: #fff;
     border: 1px solid rgba(255,255,255,0.5); border-radius: 16px;
@@ -151,7 +162,8 @@
   /* ===== 手机端响应式 ===== */
   @media (max-width: 800px) {
     header { padding: 10px 14px; gap: 8px; flex-wrap: wrap; }
-    header h1 { font-size: 14px; letter-spacing: 1px; line-height: 1.4; }
+    header h1 { font-size: 15px; letter-spacing: 1px; line-height: 1.4; gap: 8px; }
+    header h1 .logo { width: 28px; height: 28px; font-size: 15px; }
     header .logout { padding: 4px 10px; font-size: 12px; }
     .container { padding: 12px; }
     .login-box { margin: 40px 16px; padding: 22px 18px; }
@@ -191,7 +203,7 @@
 
 <div id="adminView" style="display:none;">
   <header>
-    <h1>📊 刘春生 AI 助教 · 后台</h1>
+    <h1><span class="logo">药</span>春生说药 · 后台管理</h1>
     <button class="logout" onclick="logout()">退出</button>
   </header>
   <div class="container">
