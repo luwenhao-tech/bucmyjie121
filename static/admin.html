@@ -147,6 +147,32 @@
   }
   .pager button:disabled { opacity: 0.4; cursor: not-allowed; }
   .err { color: #a83224; text-align: center; padding: 10px; }
+
+  /* ===== 手机端响应式 ===== */
+  @media (max-width: 800px) {
+    header { padding: 10px 14px; gap: 8px; flex-wrap: wrap; }
+    header h1 { font-size: 14px; letter-spacing: 1px; line-height: 1.4; }
+    header .logout { padding: 4px 10px; font-size: 12px; }
+    .container { padding: 12px; }
+    .login-box { margin: 40px 16px; padding: 22px 18px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+    .stat-card { padding: 12px 8px; }
+    .stat-card .value { font-size: 22px; }
+    .stat-card .label { font-size: 11px; letter-spacing: 1px; }
+    .panel { padding: 12px 14px; margin-bottom: 12px; }
+    .panel h3 { font-size: 13px; letter-spacing: 1px; }
+    .bar-chart { height: 100px; }
+    .bar-chart .bar .lbl { font-size: 9px; }
+    /* 账号管理表单：单列堆叠 */
+    .panel > div[style*="flex-wrap"] { flex-direction: column; align-items: stretch !important; }
+    .panel > div[style*="flex-wrap"] > * { width: 100%; min-width: 0 !important; }
+    /* 表格：允许横向滚动，字号缩小 */
+    table { font-size: 12px; }
+    th, td { padding: 6px 8px; }
+    td.prompt, td.answer { max-width: 200px; font-size: 12px; }
+    .pager button { padding: 5px 12px; font-size: 12px; }
+    .pager span { display: block; margin: 8px 0; font-size: 12px; }
+  }
 </style>
 </head>
 <body>
