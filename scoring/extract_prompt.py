@@ -56,6 +56,22 @@ EXTRACT_SYSTEM_PROMPT = """你是中药论文结构化抽取器。
 4. action 用规范术语：降糖 / 降脂 / 抗炎 / 抗肿瘤 / 抗氧化 / 神经保护 / 抗菌 / 抗病毒 / 免疫调节 / 保肝 / 利尿 / 平喘 / 其他。
 5. model 尽量落到细胞系名（HGC-27 / RAW264.7 / HepG2 / SH-SY5Y / MCF-7 ...）或动物种属（SD 大鼠 / C57 小鼠 / db/db 小鼠 ...）+ 造模方式。
 6. 综述 / 药典 / 其他文档类型：只填 filename + doc_kind + herb，其余字段留空。
+
+【★ pharmacology 逐条强制字段（关系到冲突检测，必须尽全力填写）★】
+7. compound 字段：**必须**归属到具体化合物名。如果原文这段活性归属不到具体化合物（"总提取物"/"总黄酮"），才填 null；否则一律必填。
+8. dose 字段：原文写了浓度/剂量就**必填**（如 "10 μM"、"50 mg/kg"），带单位。原文没写才 null。
+9. endpoint 字段：**必须包含具体检测数值**。凡是原文里出现 IC50 / EC50 / CC50 / MIC / IC₅₀ 数值，一律照搬进 endpoint 字符串（例："IL-6 IC50 = 12.3 μM"）。只有原文完全没报数值，才写"XX 抑制活性"这种定性描述。
+
+【★ 化合物名归一化词表（在 compounds.name 和 pharmacology.compound 里都用规范名）★】
+- Mulberroside A / mulberroside A → 桑皮苷A
+- Sanggenon C / sanggenon C → 桑根酮C
+- Oxyresveratrol → 氧化白藜芦醇
+- Moracin M / moracin M → 桑辛素M
+- Moracin N / moracin N → 桑辛素N
+- Morusin → Morusin（保留英文）
+- Kuwanon G / kuwanon G → 桑黄酮G
+- Sanggenol A → 桑根醇A
+- 遇到 IUPAC 系统名（如"2,6,8,10-四甲基…"这种冗长化学式）：**优先使用论文正文里同义给出的俗名/英文商品名**；两者都没有才落 IUPAC 名，并把 IUPAC 全名放进 aliases 里。
 """
 
 
@@ -108,9 +124,15 @@ def normalize_compound(name: str) -> str:
     table = {
         "Mulberroside A": "桑皮苷A", "mulberroside a": "桑皮苷A",
         "Sanggenon C": "桑根酮C", "sanggenon c": "桑根酮C",
+        "Sanggenon D": "桑根酮D", "sanggenon d": "桑根酮D",
         "Oxyresveratrol": "氧化白藜芦醇", "oxyresveratrol": "氧化白藜芦醇",
         "Moracin M": "桑辛素M", "moracin m": "桑辛素M",
         "Moracin N": "桑辛素N", "moracin n": "桑辛素N",
-        "Morusin": "Morusin",  # 保留英文（无常用中文名）
+        "Kuwanon G": "桑黄酮G", "kuwanon g": "桑黄酮G",
+        "Kuwanon H": "桑黄酮H", "kuwanon h": "桑黄酮H",
+        "Sanggenol A": "桑根醇A", "sanggenol a": "桑根醇A",
+        "Morusin": "Morusin",
+        "morusin": "Morusin",
+        "桑辛素": "桑辛素",
     }
     return table.get(n, table.get(n.lower(), n))
