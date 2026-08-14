@@ -74,7 +74,7 @@ def init_db():
         )
     """)
     # 给历史库补字段（已存在则忽略错误）
-    for col in ("user_name TEXT", "user_id TEXT"):
+    for col in ("user_name TEXT", "user_id TEXT", "mode TEXT"):
         try:
             conn.execute(f"ALTER TABLE chat_log ADD COLUMN {col}")
         except sqlite3.OperationalError:
@@ -238,12 +238,12 @@ def require_user(authorization: Optional[str] = Header(None)) -> Dict:
     return info
 
 
-def log_chat(ip: str, ua: str, user_name: str, user_id: str, prompt: str, answer: str, think: bool, duration_ms: int):
+def log_chat(ip: str, ua: str, user_name: str, user_id: str, prompt: str, answer: str, think: bool, duration_ms: int, mode: str = ""):
     try:
         conn = sqlite3.connect(DB_PATH)
         conn.execute(
-            "INSERT INTO chat_log (ts, ip, ua, user_name, user_id, prompt, answer, think, duration_ms) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (datetime.now().isoformat(timespec="seconds"), ip, ua, user_name, user_id, prompt, answer, 1 if think else 0, duration_ms),
+            "INSERT INTO chat_log (ts, ip, ua, user_name, user_id, prompt, answer, think, duration_ms, mode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (datetime.now().isoformat(timespec="seconds"), ip, ua, user_name, user_id, prompt, answer, 1 if think else 0, duration_ms, mode or ""),
         )
         conn.commit()
         conn.close()
@@ -413,7 +413,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
         meta_reply = _meta_question_reply()
         log_chat(client_ip, user_agent, user_name, user_id,
                  "[元问题拦截] " + prompt_for_log, meta_reply,
-                 req.think, int((time.time() - started) * 1000))
+                 req.think, int((time.time() - started) * 1000), mode=req.mode or "")
         if not req.stream:
             return {"content": meta_reply}
         async def meta_stream():
@@ -525,7 +525,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
         elif req.mode == "protocol":
             if not text.rstrip().endswith("—— 本轮方案预审完 ——"):
                 text += "\n\n—— 本轮方案预审完 ——"
-        log_chat(client_ip, user_agent, user_name, user_id, prompt_for_log, text, req.think, int((time.time() - started) * 1000))
+        log_chat(client_ip, user_agent, user_name, user_id, prompt_for_log, text, req.think, int((time.time() - started) * 1000), mode=req.mode or "")
         return {"content": text}
 
     async def event_stream():
@@ -604,7 +604,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
             err = json.dumps({"error": str(e)}, ensure_ascii=False)
             yield f"data: {err}\n\n"
         finally:
-            log_chat(client_ip, user_agent, user_name, user_id, prompt_for_log, full_answer, req.think, int((time.time() - started) * 1000))
+            log_chat(client_ip, user_agent, user_name, user_id, prompt_for_log, full_answer, req.think, int((time.time() - started) * 1000), mode=req.mode or "")
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
@@ -800,6 +800,18 @@ async def admin_stats(password: str = ""):
         "SELECT ip, COUNT(*) AS c FROM chat_log GROUP BY ip ORDER BY c DESC LIMIT 10"
     ).fetchall()
 
+    # 按模式统计（讲课 / 审稿 / 方案预审）
+    mode_rows = cur.execute(
+        "SELECT COALESCE(NULLIF(mode,''),'lecture') AS m, COUNT(*) FROM chat_log GROUP BY m ORDER BY 2 DESC"
+    ).fetchall()
+    mode_labels = {"lecture": "讲课模式", "audit": "论文审稿", "protocol": "方案预审", "": "讲课模式"}
+    by_mode = [{"mode": r[0], "label": mode_labels.get(r[0], r[0]), "count": r[1]} for r in mode_rows]
+    today_mode_rows = cur.execute(
+        "SELECT COALESCE(NULLIF(mode,''),'lecture') AS m, COUNT(*) FROM chat_log WHERE ts LIKE ? GROUP BY m",
+        (today + "%",),
+    ).fetchall()
+    by_mode_today = {r[0]: r[1] for r in today_mode_rows}
+
     conn.close()
     return {
         "total": total,
@@ -811,6 +823,8 @@ async def admin_stats(password: str = ""):
         "daily": daily,
         "hot_keywords": hot[:20],
         "top_ips": [{"ip": r[0], "count": r[1]} for r in top_ips],
+        "by_mode": by_mode,
+        "by_mode_today": by_mode_today,
     }
 
 

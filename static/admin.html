@@ -148,6 +148,13 @@
     background: #fff8e3; color: #a83224; border: 1px solid #f2cc6b;
     padding: 1px 6px; border-radius: 8px; font-size: 11px;
   }
+  .mode-tag {
+    padding: 2px 8px; border-radius: 10px; font-size: 11px;
+    white-space: nowrap; letter-spacing: .3px;
+  }
+  .m-lecture  { background: #eaf3ec; color: #2f6f5a; border: 1px solid #b8d8c9; }
+  .m-audit    { background: #fce8de; color: #a83224; border: 1px solid #efbea6; }
+  .m-protocol { background: #efe6d8; color: #8a5a30; border: 1px solid #d8bd8f; }
   .ts { color: #888; font-size: 11.5px; white-space: nowrap; }
   .ip { color: #666; font-size: 11.5px; }
   .pager { text-align: center; padding: 14px; }
@@ -254,7 +261,7 @@
       <div style="overflow-x:auto;">
         <table>
           <thead><tr>
-            <th>时间</th><th>IP</th><th>模式</th>
+            <th>时间</th><th>IP</th><th>用户</th><th>模式</th>
             <th>用户问题</th><th>AI 回答（点击展开）</th><th>耗时</th>
           </tr></thead>
           <tbody id="logsBody"></tbody>
@@ -322,12 +329,21 @@ async function tryLoad() {
 }
 
 function renderStats(s) {
+  const modeMap = {lecture:'📖 讲课', audit:'🔬 审稿', protocol:'🧪 方案预审', '':'📖 讲课'};
+  const by = s.by_mode || [];
+  const today = s.by_mode_today || {};
+  const modeCards = by.map(m => {
+    const label = modeMap[m.mode] || m.mode;
+    const todayN = today[m.mode] || 0;
+    return `<div class="stat-card"><div class="label">${label}</div><div class="value">${m.count}</div><div class="sub">今日 ${todayN}</div></div>`;
+  }).join("");
   document.getElementById("statsGrid").innerHTML = `
     <div class="stat-card"><div class="label">累计问答</div><div class="value">${s.total}</div></div>
     <div class="stat-card"><div class="label">今日问答</div><div class="value">${s.today_count}</div></div>
     <div class="stat-card"><div class="label">累计独立访客</div><div class="value">${s.unique_ips}</div><div class="sub">按 IP 计</div></div>
     <div class="stat-card"><div class="label">今日访客</div><div class="value">${s.today_ips}</div></div>
     <div class="stat-card"><div class="label">深度思考使用</div><div class="value">${s.think_count}</div><div class="sub">占比 ${s.think_rate}%</div></div>
+    ${modeCards}
   `;
 
   const max = Math.max(...s.daily.map(d => d.count), 1);
@@ -351,16 +367,21 @@ async function loadLogs() {
   if (r.status === 401) { logout(); return; }
   const j = await r.json();
   total = j.total;
-  document.getElementById("logsBody").innerHTML = j.logs.map(l => `
+  const modeLabel = {audit:'🔬 审稿', protocol:'🧪 方案预审', '': '📖 讲课'};
+  const modeCls = {audit:'m-audit', protocol:'m-protocol', '': 'm-lecture'};
+  document.getElementById("logsBody").innerHTML = j.logs.map(l => {
+    const m = l.mode || '';
+    return `
     <tr>
       <td class="ts">${l.ts.replace("T", " ")}</td>
       <td class="ip">${l.ip || ""}</td>
-      <td>${l.think ? '<span class="think-tag">🧠 思考</span>' : ''}</td>
+      <td>${escapeHtml(l.user_name || '') || '<span style="color:#bbb">-</span>'}</td>
+      <td><span class="mode-tag ${modeCls[m] || 'm-lecture'}">${modeLabel[m] || m}</span>${l.think ? ' <span class="think-tag">🧠</span>' : ''}</td>
       <td class="prompt">${escapeHtml(l.prompt || "")}</td>
       <td class="answer" onclick="this.classList.toggle('expanded')">${escapeHtml(l.answer || "")}</td>
       <td class="ts">${l.duration_ms ? (l.duration_ms / 1000).toFixed(1) + "s" : ""}</td>
-    </tr>
-  `).join("");
+    </tr>`;
+  }).join("");
   const maxPage = Math.ceil(total / pageSize);
   document.getElementById("pageInfo").textContent = `第 ${page + 1} / ${maxPage || 1} 页（共 ${total} 条）`;
   document.getElementById("prevBtn").disabled = page === 0;
