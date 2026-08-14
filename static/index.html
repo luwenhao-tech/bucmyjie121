@@ -659,13 +659,20 @@
       flex-direction: row !important;
       flex-wrap: nowrap !important;
       align-items: center !important;
-      justify-content: space-between !important;
-      gap: 6px !important;
-      padding: 10px 56px !important;   /* 左右留 ☰/📖 位 */
+      justify-content: flex-start !important;
+      gap: 5px !important;
+      padding: 10px 50px !important;   /* 左右留 ☰/📖 位 */
       position: relative;
-      overflow: hidden;
+      overflow-x: auto !important;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+    .main header::-webkit-scrollbar { display: none; }
+    .main header > h1 { margin-right: auto !important; }
     .main header > * { min-width: 0; flex-shrink: 0; }
+    /* 更紧凑的按钮尺寸，避免 6 个按钮挤不下 */
+    .hist-btn { width: 28px !important; min-width: 28px !important; height: 28px !important; }
     /* ☰ / 📖 强制正圆 */
     .drawer-trigger {
       width: 36px !important;
@@ -760,6 +767,8 @@
     #newChatBtn::before { content: "✨"; }
     #themeBtn::before   { content: "🎨"; }
     #paperBtn::before   { content: "📚"; }
+    #auditBtn::before   { content: "🔬"; }
+    #protocolBtn::before{ content: "🧪"; }
     #histBtn::before    { content: "📜"; }
     .hist-btn:active { transform: scale(.92); }
     #newChatBtn {
@@ -1092,8 +1101,8 @@
       <button class="hist-btn" id="newChatBtn">✨ 新对话</button>
       <button class="hist-btn" id="themeBtn" title="换主题色">🎨 主题</button>
       <button class="hist-btn" id="paperBtn">📚 论著</button>
-      <button class="hist-btn" onclick="location.href='/audit'" title="中药论文智能审稿引擎">🔬 审稿</button>
-      <button class="hist-btn" onclick="location.href='/protocol'" title="实验方案 ARRIVE 2.0 合规性预审">🧪 方案预审</button>
+      <button class="hist-btn" id="auditBtn" onclick="location.href='/audit'" title="中药论文智能审稿引擎">🔬 审稿</button>
+      <button class="hist-btn" id="protocolBtn" onclick="location.href='/protocol'" title="实验方案 ARRIVE 2.0 合规性预审">🧪 方案预审</button>
       <button class="hist-btn" id="histBtn">📜 历史</button>
     </header>
 
