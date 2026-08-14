@@ -733,14 +733,19 @@
 
     /* 按钮行：7 个圆按钮均匀排列 */
     #userChip {
-      display: none !important;   /* 手机端隐藏用户 chip，避免挤占按钮空间 */
+      margin: 0 !important;
+      padding: 3px 10px !important;
+      font-size: 12px !important;
+      border-radius: 14px !important;
+      flex: 0 0 auto !important;
+      order: -1 !important;   /* 放到按钮行最左 */
     }
     .hist-btn {
       flex: 0 0 auto !important;
       max-width: none !important;
-      height: 36px !important;
-      min-width: 36px !important;
-      width: 36px !important;
+      height: 32px !important;
+      min-width: 32px !important;
+      width: 32px !important;
       padding: 0 !important;
       font-size: 14px !important;
       letter-spacing: 0 !important;
