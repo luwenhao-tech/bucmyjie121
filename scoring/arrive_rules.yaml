@@ -1,0 +1,212 @@
+# ARRIVE 2.0 完整 21 条（Essential 10 + Recommended 11-21）
+# 官方文档：Percie du Sert et al. (2020) PLOS Biology 18(7): e3000410
+# https://arriveguidelines.org/arrive-guidelines
+#
+# 字段说明：
+#   id       条目号（E1-E10 = Essential, R11-R21 = Recommended）
+#   item     条目名
+#   official ARRIVE 官方原文（简译）
+#   page     ARRIVE 2.0 Explanation & Elaboration PDF 中的页码（用于追溯）
+#   must     必须包含要素（用于 LLM 逐项对照）
+#   hint     桑白皮 / 中药领域的经验判定
+
+essential:
+  - id: E1
+    item: 研究设计
+    official: 为每个实验提供设计细节，包括实验组和对照组的数量、实验单位。
+    page: 4
+    must: [每组样本数 n, 实验/对照组划分, 生物学重复次数, 实验单位定义]
+    hint: n≥5 起报；仅生物学重复 n=3 → 🟡；无重复 → 🔴
+
+  - id: E2
+    item: 样本量说明
+    official: 说明如何确定样本量，包括任何 a priori 样本量计算的细节。
+    page: 6
+    must: [样本量确定依据, power analysis 或先验数据]
+    hint: 缺乏 power analysis 或经验依据 → 🟡；细胞实验可用类似文献 n 值支撑
+
+  - id: E3
+    item: 入组 / 排除标准
+    official: 描述实验对象、实验单位或数据点的纳入和排除标准。
+    page: 8
+    must: [纳入标准, 排除标准, 排除个体报告]
+    hint: 细胞实验也需说明代次范围与状态判据；已排除样本必须报告数量与原因
+
+  - id: E4
+    item: 随机化
+    official: 说明将实验单位分配到实验组的方法；描述使用的随机化方法。
+    page: 10
+    must: [分组随机方法, 是否用随机数表/软件, 分层随机说明]
+    hint: 未提及随机化 → 🟡；"顺序分组"未说明随机方式 → 🔴
+
+  - id: E5
+    item: 盲法
+    official: 描述在实验流程的哪些阶段实施了盲法以及具体做法。
+    page: 12
+    must: [分组盲法, 干预盲法, 结局评估盲法]
+    hint: 关键定量指标未盲评 → 🟡；主观评分未盲评 → 🔴
+
+  - id: E6
+    item: 结局指标
+    official: 明确定义所有实验结果的评估方法（如测量、评分、图像）。
+    page: 14
+    must: [主要指标, 次要指标, 测量方法, 数据采集时机]
+    hint: 指标定义不清 → 🔴；只报"细胞活力"未说明检测方式 → 🟡
+
+  - id: E7
+    item: 统计方法
+    official: 提供所有统计方法的详细信息，包括使用的软件包。
+    page: 16
+    must: [检验方法名, 显著性阈值, 软件与版本, 数据分布检验]
+    hint: 推荐：单因素 ANOVA + Tukey / Dunnett；两组 t 检验；非正态 → Mann-Whitney
+
+  - id: E8
+    item: 实验对象
+    official: 提供实验对象的详细信息，包括物种、品系、性别、年龄/发育阶段、来源。
+    page: 18
+    must: [物种/细胞系, 性别, 年龄/代次, 来源, STR 鉴定/支原体检测]
+    hint: 细胞系未写 STR 鉴定 → 🔴（多数期刊已强制）
+
+  - id: E9
+    item: 实验条件
+    official: 提供研究场所和实验时使用的所有条件的详细信息。
+    page: 20
+    must: [温度, 湿度, 饲养/培养条件, 时间地点]
+    hint: 细胞：培养基+血清批号+CO₂；动物：昼夜循环+饲料+温湿度
+
+  - id: E10
+    item: 干预 / 给药
+    official: 描述干预的具体细节以及在实验中的应用方式。
+    page: 22
+    must: [剂量, 浓度, 剂量梯度, 溶媒, 给药方式, 时长, 频次]
+    hint: 剂量梯度 <3 → 🔴；≤4 → 🟡；≥5 用于剂量-效应曲线才合格
+
+recommended:
+  - id: R11
+    item: 摘要（Abstract）
+    official: 提供准确、简明的实验目的、关键方法、结果和结论摘要。
+    page: 24
+    must: [目的, 方法, 主要结果, 结论]
+    hint: 摘要缺主要定量结果 → 🟡
+
+  - id: R12
+    item: 背景（Background）
+    official: 说明研究的科学背景和临床/科学重要性，包括可靠的前期研究引用。
+    page: 26
+    must: [研究缺口, 假设, 前期证据]
+    hint: 未明确假设 → 🟡
+
+  - id: R13
+    item: 目的（Objectives）
+    official: 明确本研究要检验的假设、主要目标以及要回答的具体问题。
+    page: 28
+    must: [主要目标, 次要目标, 明确的可检验假设]
+    hint: 目的与结局指标不匹配 → 🔴
+
+  - id: R14
+    item: 伦理批准
+    official: 说明获得伦理批准的机构、批准号、遵循的动物福利/生物安全指南。
+    page: 30
+    must: [伦理委员会名, 批准号, 遵循指南（如 IACUC / 3R）]
+    hint: 动物实验无伦理批号 → 🔴；未提及 → 🔴
+
+  - id: R15
+    item: 研究方案
+    official: 说明是否有预登记的研究方案或注册计划。
+    page: 32
+    must: [是否预注册, 注册平台与编号]
+    hint: 中药药理暂无强制预注册；PRECLINICALTRIALS.EU 可选
+
+  - id: R16
+    item: 处理与关怀（Housing and Husbandry）
+    official: 描述实验对象的饲养/培养环境、材料、日常管理和潜在的环境改善措施。
+    page: 34
+    must: [饲养笼具/培养器皿, 群养/单养, 环境富集, 日常管理者]
+    hint: 动物实验缺饲养细节 → 🟡
+
+  - id: R17
+    item: 动物照护与监测
+    official: 说明监测健康、痛苦评估以及人道终止（endpoint）标准。
+    page: 36
+    must: [人道终止标准, 痛苦评估工具, 监测频率]
+    hint: 动物实验未定义人道终止 → 🔴
+
+  - id: R18
+    item: 结果解释
+    official: 讨论结果与研究假设的关系，说明局限性。
+    page: 38
+    must: [研究局限性, 与前期研究对比, 推论边界]
+    hint: 未讨论局限性 → 🟡
+
+  - id: R19
+    item: 结果推广性
+    official: 讨论结果对临床/其他物种/其他情境的可推广性。
+    page: 40
+    must: [向人/其他物种外推的边界, 3R 原则说明]
+    hint: 直接从体外 IC50 外推临床剂量 → 🔴
+
+  - id: R20
+    item: 利益冲突
+    official: 报告作者及其机构的任何潜在利益冲突。
+    page: 42
+    must: [利益冲突声明, 资金来源, 赞助方角色]
+    hint: 未声明 → 🟡（多数期刊已强制）
+
+  - id: R21
+    item: 数据可及性 / 补充材料
+    official: 说明如何获取原始数据、脚本、可复现材料。
+    page: 44
+    must: [原始数据存放位置, 分析脚本, 关键试剂/质粒来源]
+    hint: 中药类论文 40%+ 未说明数据可及性 → 🟡
+
+# ============ 桑白皮 / 中药领域附加清单（不属于 ARRIVE，是本引擎特色）============
+domain_sangbaipi:
+  - id: S1
+    item: 样品来源
+    hint: 必须说明产地（亳州/安徽/川黔）+ 采收年份 + 药用部位（根皮内层 vs 粗皮）+ 生用/蜜炙
+  - id: S2
+    item: 指标成分
+    hint: 推荐至少测桑皮苷A / 桑根酮C / 氧化白藜芦醇 三者之一；仅测总黄酮 → 🟡
+  - id: S3
+    item: 色谱条件（含量测定）
+    hint: HPLC-DAD 需报柱型号 + 流动相 + 检测波长；HPLC 单一检测器建议升级到 UPLC-MS/MS
+  - id: S4
+    item: 方法学验证
+    hint: 必须报 n / RSD / 加样回收率 / R² / 检测限；n<3 → 🔴，RSD>5% → 🟡
+  - id: S5
+    item: 抗肿瘤模型选择
+    hint: Morusin 类抗胃癌常用 HGC-27 / MKN-45；抗肝癌 HepG2；抗乳腺癌 MCF-7；孤证单一细胞系 → 🟡
+  - id: S6
+    item: 剂量范围合理性
+    hint: 异戊烯基黄酮体外 IC50 常见 5–50 μM；超出 100 μM 提示非特异性毒性
+  - id: S7
+    item: 近缘种/伪品对照
+    hint: 鉴定研究应对照蒙桑/鸡桑/构树皮；缺伪品对照 → 🟡
+
+controls:
+  - id: C1
+    item: 阴性对照
+    hint: 抗肿瘤/抗炎实验缺阴性对照 → 🔴
+  - id: C2
+    item: 阳性对照
+    hint: 抗肿瘤推荐顺铂/紫杉醇；抗炎推荐地塞米松；缺 → 🟡
+  - id: C3
+    item: 溶媒对照
+    hint: DMSO 溶解的化合物必须设最高浓度 DMSO 对照，缺 → 🔴
+  - id: C4
+    item: 空白对照
+    hint: 含量测定/HPLC 必须设空白，缺 → 🔴
+
+journal:
+  - id: J1
+    item: STR 鉴定
+    hint: Chinese Medicine / JEP 等强制细胞系 STR 鉴定报告
+  - id: J2
+    item: 支原体检测
+    hint: 细胞培养需报支原体阴性
+  - id: J3
+    item: 伦理批号
+    hint: 动物实验必须提供 IACUC/伦理委员会批号
+  - id: J4
+    item: 数据可及性
+    hint: 原始数据 supplementary 或公共仓库存档

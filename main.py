@@ -914,6 +914,24 @@ if static_dir.exists():
         return FileResponse(static_dir / "matrix.html", headers=NO_CACHE_HEADERS)
 
 
+@app.get("/api/protocol/rules")
+async def api_protocol_rules(rule_id: Optional[str] = None):
+    """ARRIVE 2.0 + 桑白皮领域清单查询。
+    - 无参数：返回全部规则清单（分组）+ 元信息
+    - ?rule_id=E7：返回单条规则详情
+    """
+    try:
+        from scoring.arrive_checklist import CHECKLIST, rules_summary, get_rule_by_id
+    except Exception as e:
+        return {"error": f"ARRIVE 模块不可用: {e}"}
+    if rule_id:
+        rule = get_rule_by_id(rule_id)
+        if not rule:
+            return {"error": f"未找到规则 {rule_id}"}
+        return {"rule": rule}
+    return {"summary": rules_summary(), "checklist": CHECKLIST}
+
+
 @app.get("/api/matrix")
 async def api_matrix():
     """成分×药理矩阵 + 冲突检测。数据来自 scoring/extracted/*.json 缓存。"""
