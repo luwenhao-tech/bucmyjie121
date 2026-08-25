@@ -36,7 +36,15 @@ except ImportError:
     _rag_available = False
     print("[INFO] RAG 模块未加载（缺少依赖），将不使用论文检索")
 
-app = FastAPI(title="中药鉴定学 - 刘春生教授 AI 助教")
+class UTF8JSONResponse(JSONResponse):
+    """默认 JSON 响应带 charset=utf-8，避免中文 Windows 浏览器直接查看接口时按 GBK 解码出乱码。"""
+    media_type = "application/json; charset=utf-8"
+
+
+app = FastAPI(
+    title="中药鉴定学 - 刘春生教授 AI 助教",
+    default_response_class=UTF8JSONResponse,
+)
 
 # CORS：默认收紧到自有域名，可通过 ALLOWED_ORIGINS 环境变量覆盖（逗号分隔）
 _default_origins = "https://lcsbucm.tech,https://www.lcsbucm.tech,http://localhost:8000,http://127.0.0.1:8000"
