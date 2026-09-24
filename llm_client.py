@@ -311,14 +311,14 @@ def build_system_prompt(user_name: str = "", extra: str = "", rag_context: str =
         except Exception:
             checklist_text = ""
         prompt = PROTOCOL_REVIEW_SYSTEM_PROMPT + "\n\n" + checklist_text
-        if rag_context and rag_context != "__NO_RESULTS__":
+        if rag_context and rag_context not in ("__NO_RESULTS__", "__GENERAL_THEORY__"):
             prompt += f"\n\n【★参考资料（可选佐证）★】\n{rag_context}"
         return prompt
 
     # 审稿模式：切换到文献核查人设，绕过讲课人设与意图分档
     if mode == "audit":
         prompt = AUDIT_MODE_SYSTEM_PROMPT
-        if rag_context and rag_context != "__NO_RESULTS__":
+        if rag_context and rag_context not in ("__NO_RESULTS__", "__GENERAL_THEORY__"):
             prompt += f"""
 
 【★本轮参考资料★】
@@ -367,6 +367,24 @@ def build_system_prompt(user_name: str = "", extra: str = "", rag_context: str =
     base = LIU_CHUNSHENG_SYSTEM_PROMPT_TEMPLATE.format(greeting=greeting)
     prompt = base + (extra or "")
 
+    # 学科通论：知识库为桑白皮专题文献，方法学总论检索不到证据，但它是本课程的
+    # 基础理论部分，必须讲。此处保留完整教师人设与分类红线，另加"依教材作答"约束。
+    if rag_context == "__GENERAL_THEORY__":
+        prompt += """
+
+【本轮为学科通论题 · 按教材讲，不要拒答】
+学生问的是中药鉴定学的**方法学总论**（如五大鉴定方法的分类、各类方法的定义与边界、
+术语概念辨析等），不是某一味具体药材。这类问题属于本课程的基础理论部分，**必须正面回答**，
+严禁用"不在讨论范围"婉拒——拒答等于拒绝讲课。
+
+本轮作答要求：
+1. **严格依照上文【★中药鉴定方法分类★】的口径**讲，教材口径与本栏工作口径的区别要交代清楚。
+2. 讲完总论后，**尽量落回桑白皮举例**，体现本课程的专题定位。例如讲显微鉴定就举
+   桑白皮的含晶厚壁细胞与石细胞方晶，讲分子鉴定就举 DNA 条形码在桑属近缘种上的应用。
+3. 本轮没有检索到具体文献，所以**只讲教材层面的通行分类与定义，不要编造任何具体数据、
+   数值、文献出处或研究结论**。需要具体数据时，请学生把问题落到桑白皮的某个具体方面。
+4. 保持一贯的教师语体与术语规范。"""
+
     # 深度思考模式：从"形式约束"切到"内容硬约束"——强调机制/数据/分歧/所以呢
     # 不限点数、不限字数，资料能撑多深就讲多深，撑不住就老实少讲
     if think:
@@ -400,7 +418,9 @@ def build_system_prompt(user_name: str = "", extra: str = "", rag_context: str =
 """
 
     # 如果有 RAG 检索到的论文内容，追加到 system prompt
-    if rag_context:
+    # （__GENERAL_THEORY__ 是通论哨兵而非真实资料，上面已单独处理，此处必须排除，
+    #   否则哨兵字符串会被当成"参考资料"原样注入，触发"只能基于上述资料"的死锁）
+    if rag_context and rag_context != "__GENERAL_THEORY__":
         prompt += f"""
 
 【★本轮参考资料★】
@@ -781,10 +801,23 @@ async def classify_intent(user_prompt: str, has_image: bool = False) -> str:
 # 修法：在 RAG 之前先跑一个**主题分类器**，判断学生问的是不是桑白皮方向。
 # 非桑白皮直接返回 True，主流程复用 __NO_RESULTS__ 拒答分支。
 _TOPIC_GATE_SYSTEM = """你是中药学主题过滤器。仅输出一个英文单词，无其他字符。
-判定用户问题是否属于"桑白皮"方向（含：桑白皮本身、桑属植物 Morus、桑树各部位、桑白皮的鉴定/化学成分/药理/炮制/质控/DNA 条形码/伪品鉴别/本草/市场/药典条文）。
-- 若属于桑白皮方向、闲聊寒暄、询问老师本人/课程/平台 → 输出 SANG
-- 若在问其他中药材（茯苓、黄芪、当归、甘草、人参、白术、山药……）或其他方剂/针灸/西药 → 输出 OTHER
+判定用户问题是否应由"桑白皮课程"的授课教师回答。
+- 若属于桑白皮方向（桑白皮本身、桑属植物 Morus、桑树各部位、桑白皮的鉴定/化学成分/药理/炮制/质控/DNA 条形码/伪品鉴别/本草/市场/药典条文）→ 输出 SANG
+- 若属于**中药鉴定学的学科通论与方法学**（鉴定方法有哪几类、各类方法的定义与适用范围、性状/显微/理化/分子鉴定的原理与操作、取样与检查方法、术语概念辨析、《中国药典》体例与通则等**不限定于某一味具体药材**的问题）→ 输出 SANG。这类问题是本课程的基础理论部分，教师必须回答。
+- 若闲聊寒暄、询问老师本人/课程/平台 → 输出 SANG
+- 若在问**其他某味具体中药材**（茯苓、黄芪、当归、甘草、人参、白术、山药……）或其他方剂/针灸/西药 → 输出 OTHER
+关键区分：问"方法本身"输出 SANG，问"别的药材"才输出 OTHER。
 只输出 SANG 或 OTHER。"""
+
+# 学科通论白名单——中药鉴定学的方法学问题不限定具体药材，属本课程基础理论。
+# ★只收"学科方法学专有词"，不收"什么是/区别/定义"这类通用疑问词★：
+#   通用词会被"当归和川芎的区别"这类问题蹭中，导致其他药材被误放行。
+# 命中本表仍会再过一遍药材硬名单（见 is_off_topic），双重把关。
+_GENERAL_METHODOLOGY_KEYS = (
+    "五大鉴定", "五类鉴定", "鉴定方法", "鉴别方法", "鉴定学",
+    "基原鉴定", "来源鉴定", "性状鉴定", "显微鉴定", "理化鉴定", "生物鉴定", "分子鉴定",
+    "经验鉴别", "药典通则", "药典体例",
+)
 
 # 常见"非桑白皮"药材硬名单——启发式先过一遍，命中直接拒，省一次 LLM 调用
 _NON_SANG_HERBS = (
@@ -810,6 +843,10 @@ async def is_off_topic(user_prompt: str) -> bool:
         if any(k in text for k in ("桑白皮", "桑皮", "桑根皮", "Morus", "morus", "桑树")):
             return False
         return True
+    # 学科通论：方法学总论不限定具体药材，是本课程的基础理论部分，必须回答。
+    # 放在药材名单之后——"茯苓的性状鉴定"应判 OTHER，不能因含"性状鉴定"而放行。
+    if any(k in text for k in _GENERAL_METHODOLOGY_KEYS):
+        return False
     # 其他情况让小模型判
     try:
         resp = await client.chat.completions.create(

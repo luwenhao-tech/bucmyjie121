@@ -18,7 +18,16 @@ from fastapi.responses import StreamingResponse, FileResponse, HTMLResponse, JSO
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from llm_client import generate_stream, generate, vision_client, generate_followups, resolve_intent_extra, classify_intent, is_off_topic
+from llm_client import generate_stream, generate, vision_client, generate_followups, resolve_intent_extra, classify_intent, is_off_topic, _GENERAL_METHODOLOGY_KEYS
+
+
+def _is_general_methodology(text: str) -> bool:
+    """中药鉴定学的方法学总论题（不限定具体药材）。
+
+    这类问题在桑白皮专题知识库里检索不到证据，但属于本课程的基础理论，
+    不应走拒答分支——否则学生问"五大鉴定方法是哪五类"会被婉拒，明显不合理。
+    """
+    return any(k in (text or "") for k in _GENERAL_METHODOLOGY_KEYS)
 
 # 审稿模式 · 统计学硬检验（scipy 回填 p 值）
 try:
@@ -501,6 +510,11 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                 # score>=20 才认为命中；否则触发拒答，避免大模型瞎编
                 if results and results[0]["score"] >= 20:
                     rag_context = format_context_for_prompt(results)
+                elif _is_general_methodology(req.prompt):
+                    # 学科通论（五大鉴定方法、各类方法定义与边界等）：知识库全是桑白皮
+                    # 专题文献，这类问题本就检索不到证据，但它是本课程的基础理论，
+                    # 拒答等于拒绝讲课。此处不拒答，改为按教材口径作答并加约束。
+                    rag_context = "__GENERAL_THEORY__"
                 else:
                     rag_context = "__NO_RESULTS__"
             except Exception as e:
