@@ -871,19 +871,26 @@ _NON_SANG_HERBS = (
     "石斛", "玉竹", "沙参", "玄参", "半夏", "天麻", "钩藤", "决明子", "车前子",
 )
 
+# 桑白皮正品 / 同属近缘 / 混淆品 / 伪品白名单——命中即视为本领域，优先级最高。
+# 混淆品鉴别正是本系统的核心用途，必须先于硬名单与小模型判定。
+_SANG_WHITELIST = (
+    "桑白皮", "桑皮", "桑根皮", "桑树", "桑科", "Morus", "morus",
+    "柘树", "拓树", "柘木", "构树", "楮", "鸡桑", "华桑", "蒙桑", "鲁桑", "白桑",
+    "肥皂荚", "商陆", "混淆品", "伪品", "晶鞘纤维", "含晶纤维",
+)
+
 
 async def is_off_topic(user_prompt: str) -> bool:
     """True = 非桑白皮方向，应触发拒答；False = 桑白皮方向或闲聊，正常走 RAG。"""
     text = (user_prompt or "").strip()
     if not text:
         return False
+    # 白名单优先：混淆品对比题（如"构树皮和柘树皮怎么区分"）不含硬名单药材，
+    # 若交给小模型会被误判为 OTHER 而拒答，故必须前置。
+    if any(k in text for k in _SANG_WHITELIST):
+        return False
     # 启发式硬名单：命中即拒，最快最稳
     if any(herb in text for herb in _NON_SANG_HERBS):
-        # 但如果同时提到桑白皮（对比题、伪品鉴别），仍视为桑白皮方向
-        if any(k in text for k in ("桑白皮", "桑皮", "桑根皮", "Morus", "morus", "桑树",
-                                   "柘树", "拓树", "构树", "鸡桑", "华桑", "蒙桑",
-                                   "肥皂荚", "混淆品", "伪品")):
-            return False
         return True
     # 学科通论：方法学总论不限定具体药材，是本课程的基础理论部分，必须回答。
     # 放在药材名单之后——"茯苓的性状鉴定"应判 OTHER，不能因含"性状鉴定"而放行。
