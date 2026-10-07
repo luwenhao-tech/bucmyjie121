@@ -1577,39 +1577,6 @@
     "credibility": 0.665,
     "tier": "B"
   },
-  "桑白皮.xlsx": {
-    "doc_kind": "质量评价原始",
-    "study_type_score": 0.7,
-    "journal_tier_score": 0.65,
-    "methodology_score": 0.8,
-    "recency_score": 1.0,
-    "consensus_score": 0.7,
-    "meta": {
-      "title_cn": "不同产地桑白皮中7种成分的含量测定及化学计量学评价",
-      "journal": "中国实验方剂学杂志",
-      "year": 2023,
-      "language": "zh"
-    },
-    "checklist_used": "A",
-    "checklist_hits": [
-      "样品来源(产地/批号)",
-      "对照品来源与纯度",
-      "色谱条件完整(柱/流动相/波长/柱温/流速/进样量)",
-      "线性范围",
-      "精密度",
-      "重复性",
-      "加样回收率",
-      "RSD报告",
-      "样本≥3批"
-    ],
-    "checklist_miss": [
-      "系统适用性(理论塔板数/分离度)"
-    ],
-    "notes": "HPLC多成分定量方法学完整，仅缺系统适用性描述，期刊为北大核心，时效性好，共识度较高",
-    "filename": "桑白皮.xlsx",
-    "credibility": 0.752,
-    "tier": "B"
-  },
   "桑白皮DNA条形码分析研究_刘宸浩.pdf": {
     "doc_kind": "中文核心原始",
     "study_type_score": 0.7,
