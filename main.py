@@ -224,6 +224,20 @@ class LoginRequest(BaseModel):
     name: Optional[str] = ""
 
 
+def _sources_of(results: list) -> list:
+    """按文件聚合检索片段的页码，供界面层来源清单使用。"""
+    out: dict = {}
+    for r in results:
+        fn = r.get("filename") or ""
+        if not fn:
+            continue
+        e = out.setdefault(fn, {"filename": fn, "title": r.get("title") or fn, "tier": r.get("tier", ""), "pages": []})
+        pg = r.get("page") or ""
+        if pg and pg not in e["pages"]:
+            e["pages"].append(pg)
+    return list(out.values())
+
+
 @app.post("/api/login")
 async def api_login(req: LoginRequest):
     accounts = load_accounts()
@@ -457,6 +471,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
     # （历史上用过 _SANGBAIPI_KEYWORDS 显式过滤，但学生不在问题里写"桑白皮"三个字
     #  就一律走拒答分支，导致"正品断面纤维性怎么区分"这类问题永远拿不到论文资料。）
     rag_context = ""
+    rag_sources: list = []
     # 闲聊/自我认知类问题白名单：问老师本人的，不走 RAG，用正常 prompt 回答
     _CHAT_WHITELIST = ("你是谁", "您是谁", "你叫什么", "你是什么", "你做什么",
                        "你教什么", "你是哪", "你好", "您好", "谢谢", "感谢",
@@ -510,6 +525,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                 # score>=20 才认为命中；否则触发拒答，避免大模型瞎编
                 if results and results[0]["score"] >= 20:
                     rag_context = format_context_for_prompt(results)
+                    rag_sources = _sources_of(results)
                 elif _is_general_methodology(req.prompt):
                     # 学科通论（五大鉴定方法、各类方法定义与边界等）：知识库全是桑白皮
                     # 专题文献，这类问题本就检索不到证据，但它是本课程的基础理论，
@@ -548,7 +564,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
             if not text.rstrip().endswith("—— 本轮方案预审完 ——"):
                 text += "\n\n—— 本轮方案预审完 ——"
         log_chat(client_ip, user_agent, user_name, user_id, prompt_for_log, text, req.think, int((time.time() - started) * 1000), mode=req.mode or "")
-        return {"content": text}
+        return {"content": text, "sources": rag_sources}
 
     async def event_stream():
         full_answer = ""
@@ -621,6 +637,8 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                     full_answer += tail
             # 流结束：剥掉 💬 行后落库
             full_answer = strip_followup(full_answer)
+            if rag_sources:
+                yield f"data: {json.dumps({'sources': rag_sources}, ensure_ascii=False)}\n\n"
             yield "data: [DONE]\n\n"
         except Exception as e:
             err = json.dumps({"error": str(e)}, ensure_ascii=False)

@@ -467,6 +467,67 @@ def save_index(data: Dict):
     print(f"  索引已保存到: {index_path}")
 
 
+# ============ 页码定位（不改 chunk 文本，只补 page 字段）============
+def _norm_ws(s: str) -> str:
+    return re.sub(r"\s+", "", s)
+
+
+def _page_texts(path: Path) -> List[tuple]:
+    name = path.name.lower()
+    if name.endswith(".pdf"):
+        import fitz
+        doc = fitz.open(str(path))
+        pages = [(i + 1, doc[i].get_text("text")) for i in range(len(doc))]
+        doc.close()
+        if not "".join(t for _, t in pages).strip():
+            ocr = path.with_name(path.stem + "_ocr.txt")
+            if ocr.exists():
+                # OCR 文本按空行分页，与扫描版 PDF 页序一致
+                pages = [(i + 1, t) for i, t in enumerate(ocr.read_text(encoding="utf-8").split("\n\n"))]
+        return pages
+    if name.endswith(".pptx"):
+        txt = extract_text_from_pptx(str(path))
+        return [(int(m.group(1)), m.group(2)) for m in re.finditer(r"\[幻灯片 (\d+)\]\n(.*?)(?=\n\n\[幻灯片 |\Z)", txt, re.S)]
+    return []
+
+
+def assign_pages(chunks: List[Dict], papers_path: Path) -> None:
+    cache: Dict[str, tuple] = {}
+    for c in chunks:
+        fn = c.get("filename", "")
+        if c.get("text", "").startswith("【中文摘要】"):
+            continue
+        if fn not in cache:
+            f = papers_path / fn
+            pages = _page_texts(f) if f.exists() else []
+            cat, offs = "", []
+            for p, t in pages:
+                offs.append((len(cat), p))
+                cat += _norm_ws(t)
+            cache[fn] = (cat, offs)
+        cat, offs = cache[fn]
+        if not offs:
+            continue
+        lines = c["text"].split("\n")
+        # 跳过开头的 overlap 尾巴，用正文定位
+        body = _norm_ws("\n".join(lines[1:]) if len(lines) > 1 else c["text"])
+        pos = -1
+        for L in (40, 20, 10):
+            for st in range(0, max(1, len(body) - L), L):
+                pos = cat.find(body[st:st + L])
+                if pos >= 0:
+                    pos -= st
+                    break
+            if pos >= 0:
+                break
+        if pos < 0:
+            continue
+        pos = max(pos, 0)
+        first = [p for o, p in offs if o <= pos][-1]
+        last = [p for o, p in offs if o <= pos + len(body) - 1][-1]
+        c["page"] = str(first) if first == last else f"{first}-{last}"
+
+
 # ============ 索引构建 ============
 def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, int]:
     """扫描目录下所有 PDF 和 Excel 并构建索引，保存为 JSON。"""
@@ -637,6 +698,8 @@ def build_index(papers_dir: str = PAPERS_DIR, force: bool = False) -> Dict[str, 
             except Exception as e:
                 print(f"  [错误] {xlsx_file.name}: {e}")
                 results[xlsx_file.name] = -1
+
+    assign_pages(all_chunks, papers_path)
 
     # 计算文档频率（IDF 用）—— 统一用 _chunk_tokens，让 filename/title 也计入
     doc_freq: Dict[str, int] = Counter()
@@ -1114,6 +1177,7 @@ def search(query: str, top_k: int = TOP_K) -> List[Dict]:
             "credibility": round(cred, 3),
             "tier": _tier_of_score(cred),
             "chunk_index": idx,
+            "page": chunk.get("page", ""),
         })
 
     return results

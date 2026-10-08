@@ -1014,6 +1014,11 @@
   padding-left: 8px; margin-left: 4px;
 }
 .user-chip .logout:hover { opacity: 1; }
+.src-list{margin-top:10px;font-size:12.5px;color:#6b5a48;border-top:1px dashed #d8c9b0;padding-top:6px}
+.src-list summary{cursor:pointer;color:#8a6d3b}
+.src-list ol{margin:6px 0 0 18px;padding:0}
+.src-list li{margin:2px 0;line-height:1.5}
+.src-tier{display:inline-block;font-size:11px;padding:0 4px;margin-right:6px;border:1px solid #c9a13a;border-radius:3px;color:#a0762a}
 </style>
 </head>
 <body>
@@ -2233,6 +2238,21 @@ function attachUserActions(bubble, getText) {
   wrap.appendChild(row);
 }
 
+function renderSources(list) {
+  const box = document.createElement("details");
+  box.className = "src-list";
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const items = list.map(x => {
+    const name = esc(x.filename.replace(/\.(pdf|docx|pptx|xlsx)$/i, ""));
+    const unit = /\.pptx$/i.test(x.filename) ? "幻灯片" : "第";
+    const pg = x.pages && x.pages.length ? `　${unit} ${esc(x.pages.join("、"))}${unit === "第" ? " 页" : ""}` : "";
+    const tier = x.tier ? `<span class="src-tier">${esc(x.tier)}类</span>` : "";
+    return `<li>${tier}${name}${pg}</li>`;
+  }).join("");
+  box.innerHTML = `<summary>参考来源（${list.length}）</summary><ol>${items}</ol>`;
+  return box;
+}
+
 function attachAssistantActions(bubble, getText, followups) {
   const wrap = bubble.parentElement;
   if (!wrap) return;
@@ -2349,7 +2369,7 @@ async function send() {
     const reader = resp.body.getReader();
     const decoder = new TextDecoder("utf-8");
     let buf = "";
-    let full = "";
+    let full = ""; let sources = [];
     let cotEl = null;       // 思考过程容器（仅 think 模式 + 模型真的吐了 reasoning 才创建）
     let cotBodyEl = null;
     let cotText = "";
@@ -2404,6 +2424,7 @@ async function send() {
             bubble.innerHTML = renderRich(full);
             scrollIfBottom();
           }
+          if (obj.sources) sources = obj.sources;
           if (obj.replace_followup) {
             const oldQ = obj.replace_followup.old || "";
             const newQ = obj.replace_followup.new || "";
@@ -2430,6 +2451,7 @@ async function send() {
     }
     // 流式完成后：再渲染一次，保证完整
     bubble.innerHTML = renderRich(full);
+    if (sources.length && full.trim()) bubble.appendChild(renderSources(sources));
     // 思考块默认折叠起来，让正文成为视觉重心；想看的人自己点开
     if (cotEl) {
       cotEl.classList.add("done", "collapsed");
