@@ -493,8 +493,18 @@ def _page_texts(path: Path) -> List[tuple]:
 
 def assign_pages(chunks: List[Dict], papers_path: Path) -> None:
     cache: Dict[str, tuple] = {}
+    # 药典 Word 摘录无页码：按纸本药典核对后的页码按片段顺序写入
+    ov_file = papers_path / "page_overrides.json"
+    overrides = json.loads(ov_file.read_text(encoding="utf-8")) if ov_file.exists() else {}
+    ov_pos: Dict[str, int] = {}
     for c in chunks:
         fn = c.get("filename", "")
+        if fn in overrides:
+            i = ov_pos.get(fn, 0)
+            ov_pos[fn] = i + 1
+            if i < len(overrides[fn]) and overrides[fn][i]:
+                c["page"] = overrides[fn][i]
+            continue
         if c.get("text", "").startswith("【中文摘要】"):
             continue
         if fn not in cache:

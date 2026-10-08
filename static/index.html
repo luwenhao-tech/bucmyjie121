@@ -2245,7 +2245,8 @@ function renderSources(list) {
   const items = list.map(x => {
     const name = esc(x.filename.replace(/\.(pdf|docx|pptx|xlsx)$/i, ""));
     const unit = /\.pptx$/i.test(x.filename) ? "幻灯片" : "第";
-    const pg = x.pages && x.pages.length ? `　${unit} ${esc(x.pages.join("、"))}${unit === "第" ? " 页" : ""}` : "";
+    const pg = !(x.pages && x.pages.length) ? "" :
+      /^\d/.test(x.pages[0]) ? `　${unit} ${esc(x.pages.join("、"))}${unit === "第" ? " 页" : ""}` : `　${esc(x.pages.join("、"))}`;
     const tier = x.tier ? `<span class="src-tier">${esc(x.tier)}类</span>` : "";
     return `<li>${tier}${name}${pg}</li>`;
   }).join("");
