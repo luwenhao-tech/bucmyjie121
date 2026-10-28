@@ -2068,27 +2068,6 @@
     "credibility": 0.633,
     "tier": "B"
   },
-  "桑白皮及其伪品肥皂荚的鉴别_刘龙先.pdf": {
-    "doc_kind": "普刊原始",
-    "study_type_score": 0.7,
-    "journal_tier_score": 0.4,
-    "methodology_score": 0.5,
-    "recency_score": 0.4,
-    "consensus_score": 0.6,
-    "meta": {
-      "title_cn": "桑白皮及其伪品肥皂荚的鉴别",
-      "journal": "江西中医",
-      "year": 1994,
-      "language": "zh"
-    },
-    "checklist_used": "D",
-    "checklist_hits": [],
-    "checklist_miss": [],
-    "notes": "文献为1994年普刊鉴别类短文，方法学简单，仅描述性状特征，无系统实验数据，时效性差，期刊层级低。",
-    "filename": "桑白皮及其伪品肥皂荚的鉴别_刘龙先.pdf",
-    "credibility": 0.53,
-    "tier": "C"
-  },
   "桑白皮及其混伪品的DNA条形码鉴定研究_熊永兴.pdf": {
     "doc_kind": "中文核心原始",
     "study_type_score": 0.7,
