@@ -1254,37 +1254,6 @@
     "credibility": 0.617,
     "tier": "B"
   },
-  "国内桑属物种DNA序列数据清洗与分析报告 (1).pptx": {
-    "doc_kind": "学位",
-    "study_type_score": 0.55,
-    "journal_tier_score": 0.55,
-    "methodology_score": 0.65,
-    "recency_score": 1.0,
-    "consensus_score": 0.6,
-    "meta": {
-      "title_cn": "国内桑属物种DNA序列数据清洗与分析报告",
-      "journal": "学位论文/汇报PPT",
-      "year": 2026,
-      "language": "zh"
-    },
-    "checklist_used": "C",
-    "checklist_hits": [
-      "样本来源(品种/产地/采集时间)",
-      "样本量≥30",
-      "测定方法标准化",
-      "统计方法(方差分析/主成分/聚类)",
-      "数据可视化"
-    ],
-    "checklist_miss": [
-      "表型指标定义清晰",
-      "重复次数≥3",
-      "结论有生态或育种意义"
-    ],
-    "notes": "学位论文/汇报PPT，非正式期刊发表；方法学较完整但缺少重复次数和表型指标明确定义，共识度中等",
-    "filename": "国内桑属物种DNA序列数据清洗与分析报告 (1).pptx",
-    "credibility": 0.643,
-    "tier": "B"
-  },
   "基于HPLC指纹图谱、主成分分析和聚类分析的炒桑白皮质量研究_赵凯.pdf": {
     "doc_kind": "质量评价原始",
     "study_type_score": 0.7,
@@ -2717,27 +2686,6 @@
     "credibility": 0.45,
     "tier": "C"
   },
-  "桑白皮鉴别.pptx": {
-    "doc_kind": "其他",
-    "study_type_score": 0.4,
-    "journal_tier_score": 0.4,
-    "methodology_score": 0.4,
-    "recency_score": 1.0,
-    "consensus_score": 0.6,
-    "meta": {
-      "title_cn": "桑白皮的鉴定和质量",
-      "journal": "PPT演示文稿",
-      "year": 2025,
-      "language": "zh"
-    },
-    "checklist_used": "F",
-    "checklist_hits": [],
-    "checklist_miss": [],
-    "notes": "PPT演示文稿，非正式学术文献，无期刊发表，方法学不适用，按市场/产业分析/科普类给分，时效性按当前年份满分，共识度默认0.6",
-    "filename": "桑白皮鉴别.pptx",
-    "credibility": 0.51,
-    "tier": "C"
-  },
   "桑的药用历史和功效_肖霞.pdf": {
     "doc_kind": "综述",
     "study_type_score": 0.5,
@@ -3093,5 +3041,26 @@
     "filename": "鸡桑、华桑和桑的根皮中7种核苷类成分的含量测定_黎海灵.pdf",
     "credibility": 0.738,
     "tier": "B"
+  },
+  "中药鉴定学桑白皮.pdf": {
+    "doc_kind": "教材",
+    "study_type_score": 1.0,
+    "journal_tier_score": 1.0,
+    "methodology_score": 1.0,
+    "recency_score": 1.0,
+    "consensus_score": 1.0,
+    "meta": {
+      "title_cn": "中药鉴定学（第5版）桑白皮",
+      "journal": "中国中医药出版社",
+      "year": 2021,
+      "language": "zh"
+    },
+    "checklist_used": "E",
+    "checklist_hits": [],
+    "checklist_miss": [],
+    "notes": "规划教材（康廷国、闫永红《中药鉴定学》第5版）桑白皮条目，与药典、团标同等直接赋满分",
+    "filename": "中药鉴定学桑白皮.pdf",
+    "credibility": 1.0,
+    "tier": "A"
   }
 }
