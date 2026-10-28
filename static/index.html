@@ -254,8 +254,8 @@
   }
 
   /* 历史记录按钮 */
+  .hist-btn[hidden] { display: none !important; }
   .hist-btn {
-    background: rgba(255, 255, 255, 0.18);
     color: #fff;
     border: 1.5px solid rgba(255, 244, 214, 0.5);
     border-radius: 14px;
@@ -1117,9 +1117,10 @@
       <button class="hist-btn" id="newChatBtn">✨ 新对话</button>
       <button class="hist-btn" id="themeBtn" title="换主题色">🎨 主题</button>
       <button class="hist-btn" id="paperBtn">📚 论著</button>
-      <button class="hist-btn" id="auditBtn" onclick="location.href='/audit'" title="中药论文智能审稿引擎">🔬 审稿</button>
-      <button class="hist-btn" id="protocolBtn" onclick="location.href='/protocol'" title="实验方案 ARRIVE 2.0 合规性预审">🧪 方案预审</button>
-      <button class="hist-btn" id="matrixBtn" onclick="location.href='/matrix'" title="成分×药理矩阵 / 空白格识别 / 冲突检测">📊 选题矩阵</button>
+      <!-- 暂时收起：审稿 / 方案预审 / 选题矩阵入口（页面与接口保留，删掉 hidden 即可恢复） -->
+      <button class="hist-btn" id="auditBtn" hidden onclick="location.href='/audit'" title="中药论文智能审稿引擎">🔬 审稿</button>
+      <button class="hist-btn" id="protocolBtn" hidden onclick="location.href='/protocol'" title="实验方案 ARRIVE 2.0 合规性预审">🧪 方案预审</button>
+      <button class="hist-btn" id="matrixBtn" hidden onclick="location.href='/matrix'" title="成分×药理矩阵 / 空白格识别 / 冲突检测">📊 选题矩阵</button>
       <button class="hist-btn" id="histBtn">📜 历史</button>
     </header>
 

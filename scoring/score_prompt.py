@@ -179,7 +179,7 @@ def compute_credibility(scores: dict) -> float:
 
 
 def tier_of(cred: float) -> str:
-    if cred >= 0.85:
+    if cred >= 0.80:
         return "A"
     if cred >= 0.60:
         return "B"

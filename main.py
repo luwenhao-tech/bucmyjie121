@@ -524,7 +524,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
 
                 # score>=20 才认为命中；否则触发拒答，避免大模型瞎编
                 if results and results[0]["score"] >= 20:
-                    rag_context = format_context_for_prompt(results)
+                    rag_context = format_context_for_prompt(results, show_tier=is_audit)
                     rag_sources = _sources_of(results)
                 elif _is_general_methodology(req.prompt):
                     # 学科通论（五大鉴定方法、各类方法定义与边界等）：知识库全是桑白皮
@@ -532,7 +532,7 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                     # 拒答等于拒绝讲课。此处不拒答，改为按教材口径作答并加约束。
                     rag_context = "__GENERAL_THEORY__"
                 else:
-                    rag_context = "__NO_RESULTS__"
+                    rag_context = "__IN_SCOPE_NO_EVIDENCE__"
             except Exception as e:
                 print(f"[RAG search error] {e}")
                 rag_context = "__NO_RESULTS__"
@@ -955,16 +955,28 @@ if static_dir.exists():
     async def admin_page():
         return FileResponse(static_dir / "admin.html", headers=NO_CACHE_HEADERS)
 
+    # 暂时收起：审稿 / 方案预审 / 选题矩阵（设环境变量 SHOW_EXTRA_TOOLS=1 可恢复）
+    _SHOW_EXTRA_TOOLS = os.getenv("SHOW_EXTRA_TOOLS", "0") == "1"
+
+    def _hidden_page():
+        raise HTTPException(status_code=404, detail="Not Found")
+
     @app.get("/audit")
     async def audit_page():
+        if not _SHOW_EXTRA_TOOLS:
+            _hidden_page()
         return FileResponse(static_dir / "audit.html", headers=NO_CACHE_HEADERS)
 
     @app.get("/protocol")
     async def protocol_page():
+        if not _SHOW_EXTRA_TOOLS:
+            _hidden_page()
         return FileResponse(static_dir / "protocol.html", headers=NO_CACHE_HEADERS)
 
     @app.get("/matrix")
     async def matrix_page():
+        if not _SHOW_EXTRA_TOOLS:
+            _hidden_page()
         return FileResponse(static_dir / "matrix.html", headers=NO_CACHE_HEADERS)
 
 

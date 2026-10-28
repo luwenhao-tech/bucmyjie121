@@ -349,7 +349,7 @@
     "notes": "SCI Q1期刊，原始药理研究，方法学完整，时效性好，共识度因结论新颖但未与药典直接对比给0.6",
     "filename": "Bioguided isolation, identification and bioactivity evaluation of anti-MRSA .pdf",
     "credibility": 0.848,
-    "tier": "B"
+    "tier": "A"
   },
   "Discovery and characterization of the flavonoids in Cortex Mori Radicis as .pdf": {
     "doc_kind": "SCI原始",
@@ -380,7 +380,7 @@
     "notes": "原始研究论文，方法学完整，但缺少动物细胞来源与伦理说明，共识度因无法判断主流一致性给0.6",
     "filename": "Discovery and characterization of the flavonoids in Cortex Mori Radicis as .pdf",
     "credibility": 0.848,
-    "tier": "B"
+    "tier": "A"
   },
   "Fungal Growth and Mycotoxins Production Types, Toxicities, Control Strategies, and Detoxification.pdf": {
     "doc_kind": "综述",
@@ -462,7 +462,7 @@
     "notes": "原始实验文献，方法学完整，含分离、结构鉴定及活性测试，但期刊未明确给出，按SCI Q1推测给分，共识度因无法判断主流一致性给0.6",
     "filename": "Isolation,characterization and biological activities of phenolics from the.pdf",
     "credibility": 0.802,
-    "tier": "B"
+    "tier": "A"
   },
   "Isoprenylated Flavonoids and 2-Arylbenzofurans from the Root Bark of Morus alba L. and Their Cytotoxic Activity against HGC27 Cancer Cells.pdf": {
     "doc_kind": "SCI原始",
@@ -523,7 +523,7 @@
     "notes": "SCI原始药理研究，方法学完整，期刊Q1，时效性良好，共识度较高",
     "filename": "Morusin induces apoptosis and autophagy.pdf",
     "credibility": 0.828,
-    "tier": "B"
+    "tier": "A"
   },
   "Occurrence and Characterization of Fungi and Mycotoxins in Contaminated Medicinal Herbs.pdf": {
     "doc_kind": "SCI原始",
@@ -1638,7 +1638,7 @@
     "notes": "原始实验类，方法学完整，样本15批，所有checklist项均满足，期刊为中国中药杂志(CSCD核心)，时效性好，结论与主流一致",
     "filename": "桑白皮、炒桑白皮及其标准汤剂的质量评价方法及质量传递规律研究_郝丽霞.pdf",
     "credibility": 0.808,
-    "tier": "B"
+    "tier": "A"
   },
   "桑白皮不去粗皮与去粗皮指纹图谱及色度值的比较研究_刘佩仪.pdf": {
     "doc_kind": "质量评价原始",

@@ -1193,7 +1193,7 @@ def search(query: str, top_k: int = TOP_K) -> List[Dict]:
     return results
 
 
-def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000) -> str:
+def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000, show_tier: bool = False) -> str:
     """将检索结果格式化为可注入 system prompt 的参考文本。
 
     max_chars 默认 6000：deepseek 64K context 完全够用，3000 在 top_k=10 时
@@ -1232,7 +1232,7 @@ def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000)
         merged_text = "\n---\n".join(g["chunks"])
         hit_note = f"（共命中 {len(g['chunks'])} 段）" if len(g["chunks"]) > 1 else ""
         cred_str = g["credibility"] if isinstance(g["credibility"], str) else f"{g['credibility']:.2f}"
-        tier_tag = f"[{g['tier']}类·{g['doc_kind']}·可信度{cred_str}]"
+        tier_tag = f"[{g['tier']}类·{g['doc_kind']}·可信度{cred_str}]" if show_tier else ""
         entry = f"【参考{i}】{tier_tag}（来源：{g['title']}）{hit_note}\n{merged_text}\n"
         if total_len + len(entry) > max_chars:
             break
@@ -1242,22 +1242,26 @@ def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000)
     if not parts:
         return ""
 
-    header = (
-        "以下是从知识库中收录的公开研究文献（涵盖历年桑白皮相关论文、《中国药典》条文、团体标准等）"
-        "中检索到的相关内容。回答时必须以这些内容为依据，不得编造资料中没有的信息。\n\n"
+    tier_rules = (
         "【证据分层说明——本次回答的引用规则】\n"
         "- 每条【参考N】都标注了证据等级：**A 类**（药典/团标/SCI 顶级原始研究，可信度 ≥ 0.80）、"
         "**B 类**（核心期刊原始实验、方法学基本完整的综述，0.60–0.80）、**C 类**（普刊/科普/市场/老文献，< 0.60）。\n"
         "- **优先采纳 A 类证据**作为结论主干；B 类作为方法学细节与佐证；C 类**仅在 A/B 类都未涉及时**"
         "作为补充线索使用，且必须明确标注『该结论仅见于 C 类文献，尚待高等级证据验证』。\n"
         "- 若 A 类与 B/C 类结论冲突，**以 A 类为准**，同时以中性语言呈现 B/C 类的不同报道供参考。\n"
+        "- 回答中每处关键数据/结论后，请用简短括注标明来源等级，如"
+        "『（据《中国药典》2025 版，A 类）』『（相关 SCI 研究，B 类）』；无需完整点作者/年份的夹注。\n\n"
+    ) if show_tier else ""
+    header = (
+        "以下是从知识库中收录的公开研究文献（涵盖历年桑白皮相关论文、《中国药典》条文、团体标准等）"
+        "中检索到的相关内容。回答时必须以这些内容为依据，不得编造资料中没有的信息。\n\n"
+        + tier_rules +
+        "【冲突处理】\n"
         "- **覆盖性反驳优先规则**：当参考资料里同时出现『某方法/序列可鉴别 X』与『经数据清洗/重新分析后该方法无法鉴别 X』时，"
         "一律以**后者（清洗/复核结论）**为准，前者视为已被推翻的旧结论。典型场景：桑属 ITS2 分子鉴定——"
         "早期原论文（如熊永兴、沈烈行、刘宸浩等的 DNA 条形码研究）声称 ITS2 可区分鸡桑/华桑/蒙桑等桑属近缘种，"
         "但郑铭志《国内桑属物种 DNA 序列数据清洗与分析报告》经序列清洗后证实：ITS2 只能分开构树、柘树等**其他属**，"
-        "**分不开鸡桑、华桑等桑的近缘种**。回答此类问题必须以清洗结论为准，不得沿用原论文的旧说法。\n"
-        "- 回答中每处关键数据/结论后，请用简短括注标明来源等级，如"
-        "『（据《中国药典》2025 版，A 类）』『（相关 SCI 研究，B 类）』；无需完整点作者/年份的夹注。\n\n"
+        "**分不开鸡桑、华桑等桑的近缘种**。回答此类问题必须以清洗结论为准，不得沿用原论文的旧说法。\n\n"
         "【定位说明——写作口吻硬规则】\n"
         "- 这些文献是**已公开发表的现有研究**，不是当前老师或团队产出的成果。\n"
         "- 讲述时一律以**第三人称、客观转述**的方式行文，例如：『现有研究表明……』"

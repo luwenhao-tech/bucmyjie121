@@ -19,8 +19,8 @@
 credibility = 0.30*study_type + 0.25*journal_tier + 0.20*methodology + 0.15*recency + 0.10*consensus
 ```
 分档：
-- **A 类**：credibility ≥ 0.85（药典、团标、高分区 SCI 原始研究）
-- **B 类**：0.60 ≤ credibility < 0.85（核心期刊原始实验、方法学基本完整的综述）
+- **A 类**：credibility ≥ 0.80（药典、团标、高分区 SCI 原始研究）
+- **B 类**：0.60 ≤ credibility < 0.80（核心期刊原始实验、方法学基本完整的综述）
 - **C 类**：credibility < 0.60（普刊、方法学缺失、时效差）
 
 ## 方法学 checklist（桑白皮质量评价类通用，命中一项 +1/N）
