@@ -3029,15 +3029,15 @@
     "recency_score": 1.0,
     "consensus_score": 1.0,
     "meta": {
-      "title_cn": "中药鉴定学（第5版）桑白皮",
+      "title_cn": "中药鉴定学（第6版）桑白皮",
       "journal": "中国中医药出版社",
-      "year": 2021,
+      "year": 2026,
       "language": "zh"
     },
     "checklist_used": "E",
     "checklist_hits": [],
     "checklist_miss": [],
-    "notes": "规划教材（康廷国、闫永红《中药鉴定学》第5版）桑白皮条目，与药典、团标同等直接赋满分",
+    "notes": "规划教材（闫永红、张慧《中药鉴定学》第6版，中国中医药出版社，2026）桑白皮条目，与药典、团标同等直接赋满分",
     "filename": "中药鉴定学桑白皮.pdf",
     "credibility": 1.0,
     "tier": "A"
