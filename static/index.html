@@ -570,8 +570,9 @@
   .quick span:hover { background: #f5e6c4; border-color: #a83224; }
 
   em, i, cite, dfn, address, var { font-style: normal; }
-  /* 例外：气泡内 renderRich 生成的 <em> 用于拉丁学名，必须斜体 */
-  .bubble em { font-style: italic; font-family: "Times New Roman", "Nimbus Roman", "Liberation Serif", Georgia, serif; }
+  /* 拉丁学名的属名和种加词保留斜体。 */
+  .bubble em,
+  #rhymeBox .scientific-name { font-style: italic; font-family: "Times New Roman", "Nimbus Roman", "Liberation Serif", Georgia, serif; }
 
   /* 意图分流芯片 */
   .intent-chip {
@@ -1468,9 +1469,7 @@ const QUICK_GROUPS = [
     ["质地","桑白皮药材的轻重、韧性和纤维性如何描述？"],
     ["断面","桑白皮药材的断面及折断、撕裂时的表现如何？"],
     ["气","桑白皮药材的气如何描述？只回答嗅闻特征。"],
-    ["味","桑白皮药材的味如何描述？只回答性状鉴定中的口尝特征。"],
-    ["水试（通论）","水试在中药鉴定学中归哪一类？桑白皮教材或药典条目是否列有专门的水试判据？不要套用其他药材的表现。"],
-    ["火试（通论）","火试在中药鉴定学中归哪一类？桑白皮教材或药典条目是否列有专门的火试判据？不要套用其他药材的表现。"]
+    ["味","桑白皮药材的味如何描述？只回答性状鉴定中的口尝特征。"]
   ], [
     ["混淆品性状对照","从性状鉴定看，桑白皮与构树根皮有哪些可比较的区别？"],
     ["饮片性状","桑白皮与蜜桑白皮的饮片性状有哪些区别？"]
@@ -1504,7 +1503,7 @@ const RHYME_GROUPS = [
   ["基原鉴定", [
     ["科名","桑科（Moraceae）。"],
     ["原植物名","桑。"],
-    ["拉丁学名","<i>Morus alba</i> L."],
+    ["拉丁学名","<i class=\"scientific-name\">Morus alba</i> L."],
     ["药用部位","干燥根皮。"]
   ], "依据：《中药鉴定学》第6版桑白皮【来源】、2025年版《中国药典》一部桑白皮。"],
   ["性状鉴定｜桑白皮药材", [
