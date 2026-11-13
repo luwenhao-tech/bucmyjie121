@@ -522,8 +522,8 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
                             seen_ids.add(key)
                             results.append(r)
 
-                # score>=20 才认为命中；否则触发拒答，避免大模型瞎编
-                if results and results[0]["score"] >= 20:
+                # 直接命中的权威条文不依赖 BM25 阈值；通用检索仍按原门槛。
+                if results and (results[0].get("authoritative_match") or results[0]["score"] >= 20):
                     rag_context = format_context_for_prompt(results, show_tier=is_audit)
                     rag_sources = _sources_of(results)
                 elif _is_general_methodology(req.prompt):

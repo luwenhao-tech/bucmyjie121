@@ -813,6 +813,15 @@ async def search_async(query: str, top_k: int = TOP_K) -> List[Dict]:
     """
     if not query or not query.strip():
         return []
+    if top_k <= 0:
+        return []
+
+    # 明确询问桑白皮饮片水分限度时，先找对应法定条文。
+    # 不等通用检索或相关性判断，也不要求提问中包含“药典”。
+    moisture_check = _sangbaipi_moisture_check(query)
+    if moisture_check is not None:
+        return [moisture_check]
+
     if len(query) > _QUERY_EXPAND_MAX_LEN or not _is_mostly_chinese(query):
         # 走原始 search 也要保证配额：拉大池子后强制分层
         pool_size = max(top_k * 10, 100)
@@ -846,6 +855,47 @@ async def search_async(query: str, top_k: int = TOP_K) -> List[Dict]:
     results = _enforce_authoritative_pin(query, results, top_k=top_k)
 
     return results
+
+
+_SANGBAIPI_MONOGRAPH = "2025版中国药典—桑白皮.docx"
+_MOISTURE_LIMIT_QUERY = re.compile(
+    r"桑白皮饮片(?:的)?(?:水分限度(?:是)?(?:多少|什么)|"
+    r"水分(?:是|为)?(?:不得过|不得超过|不能超过|不超过)?多少|水分限度|水分要求)"
+)
+_MOISTURE_CHECK_LINE = re.compile(r"(?m)^【检查】\s*水分[^\n]+")
+
+
+def _sangbaipi_moisture_check(query: str) -> Optional[Dict]:
+    """从现有药典索引取生品饮片的水分条文，不硬编码限度或借用蜜炙品条文。"""
+    normalized = re.sub(r"\s+", "", query).rstrip("？?。")
+    if not _MOISTURE_LIMIT_QUERY.fullmatch(normalized):
+        return None
+
+    for i, chunk in enumerate(load_index().get("chunks", [])):
+        if chunk.get("filename") != _SANGBAIPI_MONOGRAPH:
+            continue
+        text = chunk.get("text", "")
+        heading = re.search(r"(?m)^饮片[ \t　]*\r?\n【炮制】\s*桑白皮", text)
+        if not heading:
+            continue
+        raw_section = text[heading.end():].split("蜜桑白皮", 1)[0]
+        check = _MOISTURE_CHECK_LINE.search(raw_section)
+        if not check:
+            continue
+        cred = _cred_of(_SANGBAIPI_MONOGRAPH)
+        return {
+            "text": "饮片（桑白皮）\n" + check.group().strip(),
+            "title": chunk.get("title") or _SANGBAIPI_MONOGRAPH,
+            "filename": _SANGBAIPI_MONOGRAPH,
+            "page": chunk.get("page", ""),
+            "chunk_index": i,
+            "score": 0.0,
+            "bm25": 0.0,
+            "credibility": cred,
+            "tier": _tier_of_score(cred),
+            "authoritative_match": True,
+        }
+    return None
 
 
 # ============ 官方权威文件 pin（药典 / 团标优先）============
@@ -1204,6 +1254,14 @@ def format_context_for_prompt(search_results: List[Dict], max_chars: int = 6000,
     """
     if not search_results:
         return ""
+
+    first = search_results[0]
+    if first.get("authoritative_match") and not show_tier:
+        return (
+            f"【参考1】（来源：{first['title']}）\n{first['text']}\n\n"
+            "这是所问品种和检查项目的现行条文。请直接给出限度和测定方法，"
+            "保留原数值与单位，不补写其他检查项目。"
+        )
 
     # 按 filename 分组，保持首次出现顺序（=最高分先出现）
     grouped: Dict[str, Dict] = {}
