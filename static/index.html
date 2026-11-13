@@ -1470,17 +1470,14 @@ const QUICK_GROUPS = [
     ["断面","桑白皮药材的断面及折断、撕裂时的表现如何？"],
     ["气","桑白皮药材的气如何描述？只回答嗅闻特征。"],
     ["味","桑白皮药材的味如何描述？只回答性状鉴定中的口尝特征。"]
-  ], [
-    ["混淆品性状对照","从性状鉴定看，桑白皮与构树根皮有哪些可比较的区别？"],
-    ["饮片性状","桑白皮与蜜桑白皮的饮片性状有哪些区别？"]
   ]],
   ["显微鉴定", "#4a90b8", [
     ["组织横切面","桑白皮药材的组织横切面有哪些显微鉴定特征？"],
     ["粉末特征","桑白皮粉末有哪些显微鉴定特征？"]
   ]],
-  ["理化鉴定与检查", "#8b5a2b", [
-    ["薄层色谱鉴别","2025年版《中国药典》桑白皮薄层色谱鉴别的判定依据是什么？"],
-    ["饮片水分检查","桑白皮饮片的水分限度是多少"]
+  ["理化鉴定", "#8b5a2b", [
+    ["薄层色谱","2025年版《中国药典》桑白皮薄层色谱鉴别的判定依据是什么？"],
+    ["检查与测定（水分测定）","桑白皮饮片的水分限度是多少"]
   ]],
   ["生物鉴定", "#6b4a8a", [
     ["DNA条形码（ITS2）","以ITS2为标记的DNA条形码方法对桑白皮与所研究的混伪品鉴别有什么作用和局限？请区分种内变异与种间差异。"]
@@ -1558,17 +1555,14 @@ function renderSidebars() {
   // 桑白皮速查：按五类鉴定方法分组。
   const drawerBox = $("drawerBox");
   if (drawerBox) {
-    const renderEntries = (entries) => `
-      <div class="drawers-inner">
-        ${entries.map(([name, q]) =>
-          `<div class="drawer" data-q="${q}" data-len="${[...name].length}">${name}</div>`
-        ).join("")}
-      </div>`;
-    drawerBox.innerHTML = [...QUICK_GROUPS, QUICK_REFERENCE].map(([label, color, entries, applications]) => `
+    drawerBox.innerHTML = [...QUICK_GROUPS, QUICK_REFERENCE].map(([label, color, entries]) => `
       <div class="quick-group" style="margin-bottom:8px;">
         <div style="font-size:11px;font-weight:700;color:${color};letter-spacing:1px;margin-bottom:4px;padding-left:2px;">${label}</div>
-        ${renderEntries(entries)}
-        ${applications ? `<div style="font-size:11px;margin:6px 0 4px;padding-left:2px;">性状对照</div>${renderEntries(applications)}` : ""}
+        <div class="drawers-inner">
+          ${entries.map(([name, q]) =>
+            `<div class="drawer" data-q="${q}" data-len="${[...name].length}">${name}</div>`
+          ).join("")}
+        </div>
       </div>
     `).join("");
   }
