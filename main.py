@@ -19,6 +19,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from llm_client import generate_stream, generate, vision_client, generate_followups, resolve_intent_extra, classify_intent, is_off_topic, _GENERAL_METHODOLOGY_KEYS
+from llm_client import _NON_SANG_HERBS, _SANG_WHITELIST
 
 
 def _is_general_methodology(text: str) -> bool:
@@ -389,6 +390,40 @@ def _meta_question_reply() -> str:
     return random.choice(_META_REPLIES)
 
 
+_TEACHING_SCOPE_REPLY = (
+    "本站只用于桑白皮鉴定教学，不提供功效主治、用法用量或个体化用药建议。"
+    "如有实际用药问题，请咨询医师或药师。"
+)
+_OTHER_HERB_REPLY = "本站只回答桑白皮鉴定教学相关问题，不介绍其他药材的鉴别要点。"
+_MEDICATION_QUESTION = re.compile(
+    r"功效|主治|归经|临床(?:应用|用药|治疗)|"
+    r"使用禁忌|用药禁忌|服用禁忌|用法[与和]?用量|"
+    r"用药剂量|服用剂量|内服用量|煎服用量|一[次天](?:吃|喝|服|用)(?:多少|几克)|"
+    r"(?:怎么|如何)(?:吃|喝|服用|煎服)|"
+    r"(?:吃|喝|服用|煎服)(?:几克|多少|多长时间)|"
+    r"煎水喝|泡水喝|泡茶喝|(?:能|可以)(?:治|治疗)(?:咳|喘|水肿)|"
+    r"(?:儿童|孩子|孕妇|哺乳期).{0,12}(?:能|可以)(?:吃|喝|用|服用)|"
+    r"(?:配伍|合用).{0,12}(?:用药|服用|治疗|止咳)"
+)
+_BARE_DOSAGE_QUESTION = re.compile(r"(?:它的|桑白皮的?|蜜桑白皮的?)?(?:用量|剂量)(?:是)?(?:多少|几克)?[？?。\s]*")
+_BARE_USE_QUESTION = re.compile(r"(?:它|桑白皮|蜜桑白皮)(?:怎么|如何)用[？?。\s]*")
+
+
+def _teaching_scope_reply(text: str) -> str:
+    compact = re.sub(r"\s+", "", text or "")
+    if (
+        _MEDICATION_QUESTION.search(compact)
+        or _BARE_DOSAGE_QUESTION.fullmatch(compact)
+        or _BARE_USE_QUESTION.fullmatch(compact)
+    ):
+        return _TEACHING_SCOPE_REPLY
+    if not any(key in compact for key in _SANG_WHITELIST) and any(
+        herb in compact for herb in _NON_SANG_HERBS
+    ):
+        return _OTHER_HERB_REPLY
+    return ""
+
+
 class ChatRequest(BaseModel):
     prompt: str
     history: Optional[List[Message]] = None
@@ -436,21 +471,25 @@ async def api_chat(req: ChatRequest, request: Request, user: Dict = Depends(requ
     # 日志里的 prompt 标记是否带图
     prompt_for_log = req.prompt + ("  [📷 含图片]" if req.image else "")
 
-    # ============ 元问题硬过滤 ============
-    # 学生问"你的知识库里有多少篇桑白皮论文""你引用的是哪几篇""你的训练数据是什么"等
-    # 暴露后台/系统/数据库结构的问题，一律不走 LLM，直接返回固定话术。
-    # 仅在文本提问场景生效（带图片时跳过，避免误伤）。
-    if not req.image and _is_meta_question(req.prompt):
-        meta_reply = _meta_question_reply()
+    # 明确的元问题或越出教学范围的文本提问直接回复，不进入检索或生成。
+    # 带图时保留原有路径；审稿及方案预审不套用鉴定教学范围。
+    fixed_reply = ""
+    fixed_reason = ""
+    if not req.image:
+        if _is_meta_question(req.prompt):
+            fixed_reply, fixed_reason = _meta_question_reply(), "元问题拦截"
+        elif req.mode not in ("audit", "protocol"):
+            fixed_reply, fixed_reason = _teaching_scope_reply(req.prompt), "鉴定教学范围"
+    if fixed_reply:
         log_chat(client_ip, user_agent, user_name, user_id,
-                 "[元问题拦截] " + prompt_for_log, meta_reply,
+                 f"[{fixed_reason}] " + prompt_for_log, fixed_reply,
                  req.think, int((time.time() - started) * 1000), mode=req.mode or "")
         if not req.stream:
-            return {"content": meta_reply}
-        async def meta_stream():
-            yield f"data: {json.dumps({'token': meta_reply}, ensure_ascii=False)}\n\n"
+            return {"content": fixed_reply}
+        async def fixed_stream():
+            yield f"data: {json.dumps({'token': fixed_reply}, ensure_ascii=False)}\n\n"
             yield "data: [DONE]\n\n"
-        return StreamingResponse(meta_stream(), media_type="text/event-stream")
+        return StreamingResponse(fixed_stream(), media_type="text/event-stream")
 
     # 自动识别意图（前端不再传，全部由后端判别）
     # 审稿模式 / 方案预审模式不分意图，走各自固定流程
@@ -669,7 +708,7 @@ class FollowupReq(BaseModel):
 @app.post("/api/followups")
 async def api_followups(req: FollowupReq, user: Dict = Depends(require_user)):
     """根据本次问答 + 当前页面已出现的追问，生成 3 条全新追问。"""
-    if not req.answer.strip():
+    if not req.answer.strip() or _teaching_scope_reply(req.prompt):
         return {"followups": []}
     qs = await generate_followups(req.prompt or "", req.answer, req.existing or [])
     # 二次保险：服务端再做一次去重（按归一化键）
@@ -680,7 +719,7 @@ async def api_followups(req: FollowupReq, user: Dict = Depends(require_user)):
     out = []
     for q in qs:
         k = norm(q)
-        if k and k not in seen:
+        if k and k not in seen and not _teaching_scope_reply(q):
             seen.add(k)
             out.append(q)
     return {"followups": out}
